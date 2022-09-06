@@ -1,3 +1,8 @@
+# Far Near
+
+* ThreeJS
+* Svelte -> web component build
+
 # Svelte + TS + Vite
 
 This template should help get you started developing with Svelte and TypeScript in Vite.
