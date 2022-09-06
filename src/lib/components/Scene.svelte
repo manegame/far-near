@@ -34,7 +34,8 @@
    * Variables
    * Will be set in later functions
    */
-   let  renderer,
+   let  data,
+        renderer,
         camera,
         scene,
         uniforms,
@@ -62,6 +63,8 @@
    * Variables 
    * with a default
    */
+  const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
+
   let dark = true
   let pointerDown = false;
 	let backgroundColor = new THREE.Vector3(0.0);
@@ -69,6 +72,18 @@
 	let patternBias1 = 0.5 
 	let patternBias2 = 0.1 
   
+  async function getData () {
+    try {
+      const response = await fetch(apiUrl)
+  
+      data = await response.json()
+
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
 	/**
 	 * Pre-Init: 
    * Runs before mount, use this to preset variables needed in init
@@ -114,9 +129,7 @@
 		const { w, h } = getSizes();
 
 		createScene();
-
     createRenderer()
-
     createRenderTargets()
 
     background = createBackground()
@@ -135,13 +148,11 @@
     innerGeometry.scale.set(1.2, 1.2)
 
     addPostProcessing()
-
 		addEvents()
 
 		clock.start()
 
     onResize();
-
 		animate();
 	}
 
@@ -367,6 +378,7 @@
   preInit()
 
 	onMount(async () => {
+    data = await getData()
 		await init();
 	});
 
