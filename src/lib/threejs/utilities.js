@@ -3,7 +3,7 @@ import { Matrix4 } from "three"
 export function getSizes () {
   return {
     w: window.innerWidth * window.devicePixelRatio,
-    h: window.innerHeight * window.devicePixelRatio + window.innerHeight * window.devicePixelRatio / 4
+    h: window.innerHeight * window.devicePixelRatio
   }
 }
 

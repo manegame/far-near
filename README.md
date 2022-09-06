@@ -2,6 +2,7 @@
 
 * ThreeJS
 * Svelte -> web component build
+* Easy installation on wordpress sites
 
 # Svelte + TS + Vite
 
