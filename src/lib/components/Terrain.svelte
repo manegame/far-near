@@ -25,7 +25,7 @@
   import { getSizes } from '$lib/threejs/utilities'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
   import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js'
-  // import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+  import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
 
 
   // Svelte
@@ -64,6 +64,7 @@
    */
   const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
 
+  let player = true
   let pointerDown = false
   let moveForward = false;
   let moveBackward = false;
@@ -180,6 +181,12 @@
 
     requestAnimationFrame( animate );
 
+    const delta = clock.getDelta()
+
+    if (player) {
+      controls.update(delta)
+    }
+
 		composer.render(scene, camera);
 	}
 
@@ -202,18 +209,17 @@
    * Add controls
   */
   function addControls () {
-    controls = new OrbitControls( camera, renderer.domElement );
+    if (player === false) {
+      controls = new OrbitControls( camera, renderer.domElement );
+    } else {
+      controls = new FirstPersonControls( camera, renderer.domElement );
+      controls.movementSpeed = 150;
+      controls.lookSpeed = 0.1;
+    }
 
 
     // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     // controls.dampingFactor = 0.05;
-
-    controls.screenSpacePanning = false;
-
-    controls.minDistance = 0;
-    controls.maxDistance = 1000;
-
-    controls.maxPolarAngle = Math.PI / 2;
     // raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 )
 
     // scene.add( controls.getObject() )
@@ -227,48 +233,6 @@
     sphere.name = 'Sphere'
     scene.add(sphere)
   }
-
-  /**
-   * Add a floor to walk on
-   */
-  /*function addFloor () {
-    let floorGeometry = new THREE.PlaneGeometry( 200, 200, 10, 10 );
-    floorGeometry.rotateX( - Math.PI / 2 );
-    floorGeometry.translate(0, -1, 0);
-
-  // vertex displacement
-    let position = floorGeometry.attributes.position;
-
-    for ( let i = 0, l = position.count; i < l; i ++ ) {
-      vertex.fromBufferAttribute( position, i );
-
-      vertex.x += Math.random() * .2 - .1;
-      vertex.y += Math.random() * .2;
-      vertex.z += Math.random() * .2 - .1;
-
-      position.setXYZ( i, vertex.x, vertex.y, vertex.z );
-    }
-
-    floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
-
-    position = floorGeometry.attributes.position;
-    const colorsFloor = [];
-
-    for ( let i = 0, l = position.count; i < l; i ++ ) {
-      color.setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-      colorsFloor.push( color.r, color.g, color.b );
-    }
-
-    floorGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colorsFloor, 3 ) );
-
-    const floorMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );
-
-    const floor = new THREE.Mesh( floorGeometry, floorMaterial );
-    floor.name = 'Floor'
-    // floor.position.x -= 1
-    scene.add( floor );
-  }*/
-
 
   function generateHeight( width, height ) {
 
@@ -418,14 +382,6 @@ function generateTexture( data, width, height ) {
     }
   }
 
-  /**
-   * Play the scene
-  */
- function play () {
-    controls.lock()
- }
-
-
 	/**
 	 * Events
 	 */
@@ -553,8 +509,9 @@ function generateTexture( data, width, height ) {
     renderer.domElement.setAttribute('width', w);
     renderer.domElement.setAttribute('height', h);
 
-    console.log(w, h)
-    console.log(window.innerWidth, window.innerHeight)
+    if (player) {
+      controls.handleResize();
+    }
   }
 
 	/**
@@ -599,14 +556,6 @@ function generateTexture( data, width, height ) {
   on:keydown={handleKeyDown}
   on:keyup={handleKeyUp}
 />
-
-{#if controls}
-  {#if controls.isLocked === false}
-    <div class="instructions" on:click={play}>
-      ClllLick toO PlayyYAYyyy
-    </div>
-  {/if}
-{/if}
 
 <!-- Container -->
 <div bind:this={container} />
