@@ -73,7 +73,7 @@
     far: 35000
   }
   let terrainOptions = {
-    width: 20, // inactive
+    width: 150, // inactive
     height: 150
   }
 	/**
@@ -113,41 +113,11 @@
 
     addControls()
 
-    //addFloor()
-    const data  = generateHeight( worldWidth, worldDepth );
-
-    const geometry = new THREE.PlaneGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
-
-    //we have to rotate otherwise the terrain is vertically oriented
-    geometry.rotateX( - Math.PI / 2 );
-    
-
-    const vertices = geometry.attributes.position.array;
-
-				for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-					vertices[ j + 1 ] = data[ i ] * 10;
-				}
-    
-    texture = new THREE.CanvasTexture( generateTexture( data, worldWidth, worldDepth ) );
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-		texture.wrapT = THREE.ClampToEdgeWrapping;
-
-
-    var material = new THREE.MeshPhongMaterial({map: texture /*wireframe: true*/});
-
-
-
-    mesh = new THREE.Mesh( geometry, material);
-		scene.add( mesh );
-
-    //change the position of the terrain so it's under the camera Y pos
-    mesh.position.y = -200;
     addTerrain()
 
     addSphere()
 
     addPostProcessing()
-		addEvents()
 
 		clock.start()
 
@@ -241,153 +211,6 @@
     scene.add( mesh )
   }
 
-  /**
-   * Add a floor to walk on
-   */
-  /*function addFloor () {
-    let floorGeometry = new THREE.PlaneGeometry( 200, 200, 10, 10 );
-    floorGeometry.rotateX( - Math.PI / 2 );
-    floorGeometry.translate(0, -1, 0);
-
-  // vertex displacement
-    let position = floorGeometry.attributes.position;
-
-    for ( let i = 0, l = position.count; i < l; i ++ ) {
-      vertex.fromBufferAttribute( position, i );
-
-      vertex.x += Math.random() * .2 - .1;
-      vertex.y += Math.random() * .2;
-      vertex.z += Math.random() * .2 - .1;
-
-      position.setXYZ( i, vertex.x, vertex.y, vertex.z );
-    }
-
-    floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
-
-    position = floorGeometry.attributes.position;
-    const colorsFloor = [];
-
-    for ( let i = 0, l = position.count; i < l; i ++ ) {
-      color.setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-      colorsFloor.push( color.r, color.g, color.b );
-    }
-
-    floorGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colorsFloor, 3 ) );
-
-    const floorMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );
-
-    const floor = new THREE.Mesh( floorGeometry, floorMaterial );
-    floor.name = 'Floor'
-    // floor.position.x -= 1
-    scene.add( floor );
-  }*/
-
-
-  // generate the heightmap using ImprovedNoise addon
-  function generateHeight( width, height ) {
-
-      let seed = Math.PI / 4;
-      window.Math.random = function () {
-
-        const x = Math.sin( seed ++ ) * 10000;
-        return x - Math.floor( x );
-
-      };
-
-
-      const size = width * height, data = new Uint8Array( size );
-      const perlin = new ImprovedNoise(), z = Math.random() * 100;
-
-      // The highest quality is, the less there is different volumes. example : if quality = 3, terrain look like a lot of little pic while if quality = 100, the terrain look like dune
-      let quality = 20;
-
-      // j < 'maximum height value', change this to get higher or lower volumes
-      for ( let j = 0; j < 1; j ++ ) {
-
-        for ( let i = 0; i < size; i ++ ) {
-
-          const x = i % width, y = ~ ~ ( i / width );
-          data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 2 );
-
-        }
-        
-        //multiply the number of polygons
-        quality *= 3;
-
-      }
-
-      return data;
-
-}
-
-
-function generateTexture( data, width, height ) {
-
-        let context, image, imageData, shade;
-
-        const vector3 = new THREE.Vector3( 0, 0, 0 );
-
-        //sun intensity
-        const sun = new THREE.Vector3( 1, 1, 1 );
-        sun.normalize();
-
-        const canvas = document.createElement( 'canvas' );
-        canvas.width = width;
-        canvas.height = height;
-
-        context = canvas.getContext( '2d' );
-        context.fillStyle = '#000';
-        context.fillRect( 0, 0, width, height );
-
-        image = context.getImageData( 0, 0, canvas.width, canvas.height );
-        imageData = image.data;
-
-        for ( let i = 0, j = 0, l = imageData.length; i < l; i += 4, j ++ ) {
-
-          vector3.x = data[ j - 2 ] - data[ j + 2 ];
-          vector3.y = 2;
-          vector3.z = data[ j - width * 2 ] - data[ j + width * 2 ];
-          vector3.normalize();
-
-          shade = vector3.dot( sun );
-
-          // R G & B values
-          imageData[ i ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
-          imageData[ i + 1 ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
-          imageData[ i + 2 ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
-
-        }
-
-          context.putImageData( image, 0, 0 );
-
-          // To multiply the scale of terrain, change the "*1" value
-
-          const canvasScaled = document.createElement( 'canvas' );
-          canvasScaled.width = width *5;
-          canvasScaled.height = height *5;
-
-          context = canvasScaled.getContext( '2d' );
-          context.scale( 4, 4 );
-          context.drawImage( canvas, 0, 0 );
-
-          image = context.getImageData( 0, 0, canvasScaled.width, canvasScaled.height );
-          imageData = image.data;
-
-          for ( let i = 0, l = imageData.length; i < l; i += 4 ) {
-
-            const v = ~ ~ ( Math.random() * 5);
-
-            imageData[ i ] += v;
-            imageData[ i + 1 ] += v;
-            imageData[ i + 2 ] += v;
-
-          }
-          context.putImageData( image, 0, 0 );
-
-          return canvasScaled;
-
-}
-
   function updateTerrain () {
     const terrain = scene.getObjectByName('Terrain')
     terrain.geometry.dispose()
@@ -446,31 +269,6 @@ function generateTexture( data, width, height ) {
       console.error(error)
     }
   }
-
-	/**
-	 * Events
-	 */
-
-  //  Add all events
-	function addEvents() {
-		if ('ontouchmove' in window) {
-			window.addEventListener('touchstart', handleMouseDown);
-			window.addEventListener('touchmove', handleMouseMove);
-			window.addEventListener('touchend', handleMouseUp);
-		} else {
-			window.addEventListener('mousedown', handleMouseDown);
-			window.addEventListener('mousemove', handleMouseMove);
-			window.addEventListener('mouseup', handleMouseUp);
-		}
-	}
-
-  // Mouse move
-	function handleWindowMouseMove(e) {
-    const { w } = getSizes()
-    // if the mouse is on the right, make the intensity higher.
-    const intensity = 1.6 + e.pageX / w
-		coords.set({ x: $coords.x + ((e.pageX) / 10) * intensity, y: e.clientY * intensity, z: $coords.z });
-	}
 
 
   /*
@@ -574,7 +372,6 @@ function generateTexture( data, width, height ) {
 <!-- Events -->
 <svelte:window
   on:scroll={onScroll}
-	on:mousemove={handleWindowMouseMove}
 	on:resize={handleResize}
 	on:orientationchange={handleResize}
 />
