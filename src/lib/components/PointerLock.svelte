@@ -1,4 +1,4 @@
-<svelte:options tag="far-near-pointerlock" />
+<svelte:options tag="far-near-pointer-lock" />
 
 <script>
   /**
@@ -65,6 +65,7 @@
   let moveLeft = false;
   let moveRight = false;
   let canJump = false;
+  let objects = []
 
   let prevTime = performance.now();
   const velocity = new THREE.Vector3();
@@ -109,11 +110,9 @@
 
     addControls()
 
-    sphere = sampleGeometryFunction()
-    sphere.name = 'Sphere'
-    scene.add(sphere)
+    addFloor()
 
-    console.log(scene)
+    addSphere()
 
     addPostProcessing()
 		addEvents()
@@ -139,8 +138,60 @@
 	 * The render animate loop
 	 */
 	function animate() {
-		requestAnimationFrame(animate);
 
+    requestAnimationFrame( animate );
+
+    const time = performance.now();
+
+    if (controls.isLocked) {
+      raycaster.ray.origin.copy( controls.getObject().position );
+      raycaster.ray.origin.y -= 10;
+  
+      const intersections = raycaster.intersectObjects( objects, false );
+  
+      const onObject = intersections.length > 0;
+  
+      const delta = ( time - prevTime ) / 1000;
+  
+      velocity.x -= velocity.x * 10.0 * delta;
+      velocity.z -= velocity.z * 10.0 * delta;
+  
+      
+      velocity.y -= 1.2 * 1.0 * delta; // 100.0 = mass
+      
+      direction.z = Number( moveForward ) - Number( moveBackward );
+      direction.x = Number( moveRight ) - Number( moveLeft );
+      direction.normalize(); // this ensures consistent movements in all directions
+  
+      if ( moveForward || moveBackward ) velocity.z -= direction.z * 4.0 * delta;
+      if ( moveLeft || moveRight ) velocity.x -= direction.x * 4.0 * delta;
+  
+      // if ( onObject === true ) {
+      //   velocity.y = Math.max( 0, velocity.y );
+      //   canJump = true;
+      // }
+  
+      controls.moveRight( - velocity.x * delta );
+      controls.moveForward( - velocity.z * delta );
+  
+      controls.getObject().position.y += ( velocity.y * delta ); // new behavior
+  
+      if ( controls.getObject().position.y < 10 ) {
+  
+        velocity.y = 0;
+        controls.getObject().position.y = 0;
+  
+        canJump = true;
+  
+      }
+  
+      prevTime = time
+
+      console.log(velocity.y)
+  
+      // requestAnimationFrame(animate);
+
+    }  
 		composer.render(scene, camera);
 	}
 
@@ -165,7 +216,59 @@
   function addControls () {
     controls = new PointerLockControls( camera, document.body );
 
+    raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 )
+
     scene.add( controls.getObject() )
+  }
+
+  /**
+   * Add sphere in the middle of the scene
+  */
+  function addSphere () {
+    sphere = sampleGeometryFunction()
+    sphere.name = 'Sphere'
+    scene.add(sphere)
+  }
+
+  /**
+   * Add a floor to walk on
+   */
+  function addFloor () {
+    let floorGeometry = new THREE.PlaneGeometry( 200, 200, 10, 10 );
+    floorGeometry.rotateX( - Math.PI / 2 );
+    floorGeometry.translate(0, -1, 0);
+
+  // vertex displacement
+    let position = floorGeometry.attributes.position;
+
+    for ( let i = 0, l = position.count; i < l; i ++ ) {
+      vertex.fromBufferAttribute( position, i );
+
+      vertex.x += Math.random() * .2 - .1;
+      vertex.y += Math.random() * .2;
+      vertex.z += Math.random() * .2 - .1;
+
+      position.setXYZ( i, vertex.x, vertex.y, vertex.z );
+    }
+
+    floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
+
+    position = floorGeometry.attributes.position;
+    const colorsFloor = [];
+
+    for ( let i = 0, l = position.count; i < l; i ++ ) {
+      color.setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+      colorsFloor.push( color.r, color.g, color.b );
+    }
+
+    floorGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colorsFloor, 3 ) );
+
+    const floorMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );
+
+    const floor = new THREE.Mesh( floorGeometry, floorMaterial );
+    floor.name = 'Floor'
+    // floor.position.x -= 1
+    scene.add( floor );
   }
 
   /**
@@ -193,7 +296,7 @@
     const mesh = track(new THREE.SphereGeometry(0.1, 20, 20));
     // https://threejs.org/docs/scenes/material-browser.html#MeshStandardMaterial
     const material = track(new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
+      color: 0x0000ff,
       transparent: true,
       opacity: 0.9
     }));
@@ -211,12 +314,17 @@
       const response = await fetch(apiUrl)
   
       data = await response.json()
-
-      console.log(data)
     } catch (error) {
       console.error(error)
     }
   }
+
+  /**
+   * Play the scene
+  */
+ function play () {
+    controls.lock()
+ }
 
 
 	/**
@@ -292,7 +400,10 @@
         break;
 
       case 'Space':
-        if ( canJump === true ) velocity.y += 350;
+        console.log(canJump)
+        if ( canJump === true ) {
+          velocity.y += 1000
+        }
         canJump = false;
         break;
     }
@@ -386,7 +497,36 @@
 	on:mousemove={handleWindowMouseMove}
 	on:resize={handleResize}
 	on:orientationchange={handleResize}
+  on:keydown={handleKeyDown}
+  on:keyup={handleKeyUp}
 />
+
+{#if controls}
+  {#if controls.isLocked === false}
+    <div class="instructions" on:click={play}>
+      ClllLick toO PlayyYAYyyy
+    </div>
+  {/if}
+{/if}
 
 <!-- Container -->
 <div bind:this={container} />
+
+<style lang="postcss">
+  .instructions {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    background: #0000ffcc;
+    color: #fff;
+    font-size: 48px ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: opacity 0.4s ease;
+  }
+</style>
