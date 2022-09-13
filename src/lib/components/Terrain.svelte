@@ -122,6 +122,8 @@
     const data  = generateHeight( worldWidth, worldDepth );
 
     const geometry = new THREE.PlaneGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
+
+    //we have to rotate otherwise the terrain is vertically oriented
     geometry.rotateX( - Math.PI / 2 );
     
 
@@ -143,6 +145,8 @@
 
     mesh = new THREE.Mesh( geometry, material);
 		scene.add( mesh );
+
+    //change the position of the terrain so it's under the camera Y pos
     mesh.position.y = -1000;
 
 
@@ -270,6 +274,7 @@
   }*/
 
 
+  // generate the heightmap using ImprovedNoise addon
   function generateHeight( width, height ) {
 
       let seed = Math.PI / 4;
@@ -283,18 +288,21 @@
       const size = width * height, data = new Uint8Array( size );
       const perlin = new ImprovedNoise(), z = Math.random() * 100;
 
-      let quality = 1;
+      // The highest quality is, the less there is different volumes. example : if quality = 3, terrain look like a lot of little pic while if quality = 100, the terrain look like dune
+      let quality = 20;
 
-      for ( let j = 0; j < 4; j ++ ) {
+      // j < 'maximum height value', change this to get higher or lower volumes
+      for ( let j = 0; j < 1; j ++ ) {
 
         for ( let i = 0; i < size; i ++ ) {
 
           const x = i % width, y = ~ ~ ( i / width );
-          data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
+          data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 2 );
 
         }
-
-        quality *= 5;
+        
+        //multiply the number of polygons
+        quality *= 2;
 
       }
 
@@ -309,6 +317,7 @@ function generateTexture( data, width, height ) {
 
         const vector3 = new THREE.Vector3( 0, 0, 0 );
 
+        //sun intensity
         const sun = new THREE.Vector3( 1, 1, 1 );
         sun.normalize();
 
@@ -332,6 +341,7 @@ function generateTexture( data, width, height ) {
 
           shade = vector3.dot( sun );
 
+          // R G & B values
           imageData[ i ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
           imageData[ i + 1 ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
           imageData[ i + 2 ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
@@ -340,7 +350,7 @@ function generateTexture( data, width, height ) {
 
           context.putImageData( image, 0, 0 );
 
-          // Scaled 4x
+          // To multiply the scale of terrain, change the "*1" value
 
           const canvasScaled = document.createElement( 'canvas' );
           canvasScaled.width = width *1;
@@ -355,7 +365,7 @@ function generateTexture( data, width, height ) {
 
           for ( let i = 0, l = imageData.length; i < l; i += 4 ) {
 
-            const v = ~ ~ ( Math.random() * 5 );
+            const v = ~ ~ ( Math.random() * 5);
 
             imageData[ i ] += v;
             imageData[ i + 1 ] += v;
