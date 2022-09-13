@@ -63,7 +63,6 @@
    * with a default
    */
   const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
-  let pointerDown = false
   
   /**
    * Controllable from the GUI
@@ -74,7 +73,7 @@
     far: 35000
   }
   let terrainOptions = {
-    width: 150,
+    width: 20, // inactive
     height: 150
   }
 	/**
@@ -286,30 +285,6 @@
 			window.addEventListener('mousemove', handleMouseMove);
 			window.addEventListener('mouseup', handleMouseUp);
 		}
-	}
-
-  // Mouse down
-	function handleMouseDown(e) {
-		pointerDown = true;
-		pointer.x = e.touches ? e.touches[0].clientX : e.clientX;
-	}
-
-  // Mouse up
-	function handleMouseUp() {
-		pointerDown = false;
-	}
-
-  // Mouse move on the scene
-	function handleMouseMove(e) {
-		if (!pointerDown) return;
-
-		const x = e.touches ? e.touches[0].clientX : e.clientX;
-
-    if (uniforms) {
-      uniforms.u_velocity += (x - pointer.x) * 0.001;
-    }
-
-		pointer.x = x;
 	}
 
   // Mouse move
