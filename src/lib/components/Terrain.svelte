@@ -7,6 +7,8 @@
    * 
   */
 
+
+
   /**
    * Imports
   */
@@ -20,8 +22,8 @@
   import { getSizes } from '$lib/threejs/utilities'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
   import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
-  import { generateHeight, generateTexture } from '$lib/threejs/terrain'
-
+  import { generateHeight } from '$lib/threejs/terrain';
+  import { generateTexture } from '$lib/threejs/terrain';
   // Developer things
   import { GUI } from 'dat.gui'
 
@@ -71,10 +73,8 @@
     far: 35000
   }
   let terrainOptions = {
-    width: 150, // inactive
-    height: 150,
-    seed: Math.PI / 4 // seed
-
+    width: 256, // inactive
+    height: 256
   }
 	/**
 	 * Pre-Init: 
@@ -165,7 +165,7 @@
 
 		scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff )
-    // scene.fog = new THREE.Fog( 0xffffff, 0, 5000 );
+    scene.fog = new THREE.Fog( 0xffffff, 0, 5000 );
 
 		camera = new THREE.PerspectiveCamera(35, w / h, cameraOptions.near, cameraOptions.far);
 		camera.position.z = 1.3;
@@ -188,7 +188,7 @@
    * Generate the terrain
   */
   function addTerrain () {
-    const data  = generateHeight( terrainOptions.width, terrainOptions.height, terrainOptions.seed );
+    const data  = generateHeight( terrainOptions.width, terrainOptions.height );
     
     const geometry = track(new THREE.PlaneGeometry( 7500, 7500, terrainOptions.width - 1, terrainOptions.height - 1 ));
     geometry.rotateX( - Math.PI / 2 );
@@ -203,12 +203,13 @@
     texture.wrapS = THREE.ClampToEdgeWrapping
     texture.wrapT = THREE.ClampToEdgeWrapping
 
-    var material = track(new THREE.MeshBasicMaterial({ map: texture, /*wireframe: true*/ }))
 
-    mesh = track(new THREE.Mesh( geometry, material))
+    var material = track(new THREE.MeshBasicMaterial({ map: texture}))
+
+    mesh = track(new THREE.Mesh(  geometry, material))
+    mesh.position.y = -1000
     mesh.name = 'Terrain'
     scene.add( mesh )
-    mesh.position.y = -2000
   }
 
   function updateTerrain () {
@@ -225,7 +226,7 @@
    * Add lights
   */
   function addLights () {
-    const light = track(new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 ));
+    const light = track(new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75));
 		light.position.set( 0.5, 1, 0.75 )
 
     scene.add(light)
@@ -335,24 +336,23 @@
     const terrainFolder = gui.addFolder('Terrain')
     // const terrainWidth = terrainFolder.add(terrainOptions, 'width', 2, 300)
     const terrainHeight = terrainFolder.add(terrainOptions, 'height', 2, 900)
-    const terrainSeed = terrainFolder.add(terrainOptions, 'seed', Math.PI / 4, Math.PI * 200)
     terrainFolder.open()
-    
+
+    // terrainWidth.onChange(updateTerrain)
+    terrainHeight.onChange(updateTerrain)
+
     /**
      * Update things
     */
-   nearController.onChange(e => {
-     camera.near = e
-     camera.updateProjectionMatrix()
+    nearController.onChange(e => {
+      camera.near = e
+      camera.updateProjectionMatrix()
     })
     farController.onChange(e => {
       camera.far = e
       camera.updateProjectionMatrix()
     })
     cameraFolder.open()
-
-    terrainHeight.onChange(updateTerrain)
-    terrainSeed.onChange(updateTerrain)
   }
 
 	/**

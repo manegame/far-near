@@ -8,7 +8,7 @@ import * as THREE from 'three'
  * @returns 
  */
 // generate the heightmap using ImprovedNoise addon
-export function generateHeight(width, height, seed = Math.PI / 4) {
+export function generateHeight(width, height, seed = Math.PI / 5) {
   window.Math.random = function () {
     const x = Math.sin(seed++) * 10000
     return x - Math.floor(x)
@@ -17,20 +17,20 @@ export function generateHeight(width, height, seed = Math.PI / 4) {
   const size = width * height,
     data = new Uint8Array(size)
     const perlin = new ImprovedNoise(),
-    z = Math.random() * 100
+    z = Math.random() * 10
 
   // The highest quality is, the less there is different volumes. example : if quality = 3, terrain look like a lot of little pic while if quality = 100, the terrain look like dune
-  let quality = 20
+  let quality = 80
 
   // j < 'maximum height value', change this to get higher or lower volumes
-  for (let j = 0; j < 4; j++) {
+  for (let j = 0; j < 1; j++) {
     for (let i = 0; i < size; i++) {
       const x = i % width,
         y = ~~(i / width)
-        data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 2)
+        data[ i ] += Math.abs( perlin.noise( x / quality, y / quality , z) * quality * 1.75)
     }
 
-    quality *= 2;
+    quality *= 5;
   }
 
   return data
@@ -75,8 +75,8 @@ export function generateTexture(data, width, height) {
   // To multiply the scale of terrain, change the "*1" value
 
   const canvasScaled = document.createElement("canvas")
-  canvasScaled.width = width * 1
-  canvasScaled.height = height * 1
+  canvasScaled.width = width * 4
+  canvasScaled.height = height * 4
 
   context = canvasScaled.getContext("2d")
   context.scale(4, 4)
