@@ -24,7 +24,9 @@
 	import { Noise } from '$lib/threejs/shaders/noise';
   import { getSizes } from '$lib/threejs/utilities'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+  import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js'
   // import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
 
   // Svelte
 	import { onMount, onDestroy } from 'svelte';
@@ -52,7 +54,9 @@
         clock,
         coords,
         controls,
-        raycaster
+        raycaster,
+        texture,
+        mesh
 
   /**
    * Variables 
@@ -74,6 +78,8 @@
   const vertex = new THREE.Vector3();
   const color = new THREE.Color();
   
+
+  const worldWidth = 150, worldDepth = 150;
 	/**
 	 * Pre-Init: 
    * Runs before mount, use this to preset variables needed in init
@@ -87,6 +93,7 @@
       y: 0
     }
 
+    
 	  clock = new THREE.Clock()
 
     coords = spring(
@@ -111,7 +118,38 @@
 
     addControls()
 
-    addFloor()
+    //addFloor()
+    const data  = generateHeight( worldWidth, worldDepth );
+
+    const geometry = new THREE.PlaneGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
+    geometry.rotateX( - Math.PI / 2 );
+    
+
+    const vertices = geometry.attributes.position.array;
+
+				for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
+
+					vertices[ j + 1 ] = data[ i ] * 10;
+
+				}
+    
+    texture = new THREE.CanvasTexture( generateTexture( data, worldWidth, worldDepth ) );
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+		texture.wrapT = THREE.ClampToEdgeWrapping;    
+
+
+    var material = new THREE.MeshBasicMaterial({map: texture, /*wireframe: true*/});
+
+
+    mesh = new THREE.Mesh( geometry, material);
+		scene.add( mesh );
+    mesh.position.y = -1000;
+
+
+  
+
+    
+
 
     addSphere()
 
@@ -154,9 +192,9 @@
 
 		scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff )
-    scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
+    //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
-		camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 1000);
+		camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 5000);
 		camera.position.z = 1.3;
 	}
 
@@ -193,7 +231,7 @@
   /**
    * Add a floor to walk on
    */
-  function addFloor () {
+  /*function addFloor () {
     let floorGeometry = new THREE.PlaneGeometry( 200, 200, 10, 10 );
     floorGeometry.rotateX( - Math.PI / 2 );
     floorGeometry.translate(0, -1, 0);
@@ -229,7 +267,108 @@
     floor.name = 'Floor'
     // floor.position.x -= 1
     scene.add( floor );
-  }
+  }*/
+
+
+  function generateHeight( width, height ) {
+
+      let seed = Math.PI / 4;
+      window.Math.random = function () {
+
+        const x = Math.sin( seed ++ ) * 10000;
+        return x - Math.floor( x );
+
+      };
+
+      const size = width * height, data = new Uint8Array( size );
+      const perlin = new ImprovedNoise(), z = Math.random() * 100;
+
+      let quality = 1;
+
+      for ( let j = 0; j < 4; j ++ ) {
+
+        for ( let i = 0; i < size; i ++ ) {
+
+          const x = i % width, y = ~ ~ ( i / width );
+          data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
+
+        }
+
+        quality *= 5;
+
+      }
+
+      return data;
+
+}
+
+
+function generateTexture( data, width, height ) {
+
+        let context, image, imageData, shade;
+
+        const vector3 = new THREE.Vector3( 0, 0, 0 );
+
+        const sun = new THREE.Vector3( 1, 1, 1 );
+        sun.normalize();
+
+        const canvas = document.createElement( 'canvas' );
+        canvas.width = width;
+        canvas.height = height;
+
+        context = canvas.getContext( '2d' );
+        context.fillStyle = '#000';
+        context.fillRect( 0, 0, width, height );
+
+        image = context.getImageData( 0, 0, canvas.width, canvas.height );
+        imageData = image.data;
+
+        for ( let i = 0, j = 0, l = imageData.length; i < l; i += 4, j ++ ) {
+
+          vector3.x = data[ j - 2 ] - data[ j + 2 ];
+          vector3.y = 2;
+          vector3.z = data[ j - width * 2 ] - data[ j + width * 2 ];
+          vector3.normalize();
+
+          shade = vector3.dot( sun );
+
+          imageData[ i ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
+          imageData[ i + 1 ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
+          imageData[ i + 2 ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
+
+        }
+
+          context.putImageData( image, 0, 0 );
+
+          // Scaled 4x
+
+          const canvasScaled = document.createElement( 'canvas' );
+          canvasScaled.width = width *1;
+          canvasScaled.height = height *1;
+
+          context = canvasScaled.getContext( '2d' );
+          context.scale( 4, 4 );
+          context.drawImage( canvas, 0, 0 );
+
+          image = context.getImageData( 0, 0, canvasScaled.width, canvasScaled.height );
+          imageData = image.data;
+
+          for ( let i = 0, l = imageData.length; i < l; i += 4 ) {
+
+            const v = ~ ~ ( Math.random() * 5 );
+
+            imageData[ i ] += v;
+            imageData[ i + 1 ] += v;
+            imageData[ i + 2 ] += v;
+
+          }
+          context.putImageData( image, 0, 0 );
+
+          return canvasScaled;
+
+}
+
+
 
   /**
    * Add lights
