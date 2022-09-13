@@ -64,7 +64,7 @@
    */
   const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
 
-  let player = true
+  let player = false
   let pointerDown = false
   let moveForward = false;
   let moveBackward = false;
@@ -129,9 +129,7 @@
     const vertices = geometry.attributes.position.array;
 
 				for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-
 					vertices[ j + 1 ] = data[ i ] * 10;
-
 				}
     
     texture = new THREE.CanvasTexture( generateTexture( data, worldWidth, worldDepth ) );
@@ -145,12 +143,6 @@
     mesh = new THREE.Mesh( geometry, material);
 		scene.add( mesh );
     mesh.position.y = -1000;
-
-
-  
-
-    
-
 
     addSphere()
 
@@ -532,6 +524,13 @@ function generateTexture( data, width, height ) {
     const z = window.scrollY
   }
 
+  /**
+   * Event
+  */
+  function togglePlayer () {
+    player = !player
+  }
+
 	/**
 	 * Lifecycles
 	 */
@@ -556,6 +555,13 @@ function generateTexture( data, width, height ) {
   on:keydown={handleKeyDown}
   on:keyup={handleKeyUp}
 />
+
+<!-- 
+<div class="controls">
+  <button on:click={togglePlayer}>
+    {player ? 'Editor' : 'Player'}
+  </button>
+</div> -->
 
 <!-- Container -->
 <div bind:this={container} />
