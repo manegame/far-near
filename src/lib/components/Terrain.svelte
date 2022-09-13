@@ -25,7 +25,7 @@
   import { getSizes } from '$lib/threejs/utilities'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
   import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js'
-  // import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+  import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
 
 
   // Svelte
@@ -64,7 +64,8 @@
    */
   const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
 
-  let pointerDown = false
+  let player = false;
+  let pointerDown = false;
   let moveForward = false;
   let moveBackward = false;
   let moveLeft = false;
@@ -130,30 +131,23 @@
     const vertices = geometry.attributes.position.array;
 
 				for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-
 					vertices[ j + 1 ] = data[ i ] * 10;
-
 				}
     
     texture = new THREE.CanvasTexture( generateTexture( data, worldWidth, worldDepth ) );
     texture.wrapS = THREE.ClampToEdgeWrapping;
-		texture.wrapT = THREE.ClampToEdgeWrapping;    
+		texture.wrapT = THREE.ClampToEdgeWrapping;
 
 
-    var material = new THREE.MeshBasicMaterial({map: texture, /*wireframe: true*/});
+    var material = new THREE.MeshPhongMaterial({map: texture /*wireframe: true*/});
+
 
 
     mesh = new THREE.Mesh( geometry, material);
 		scene.add( mesh );
 
     //change the position of the terrain so it's under the camera Y pos
-    mesh.position.y = -1000;
-
-
-  
-
-    
-
+    mesh.position.y = -200;
 
     addSphere()
 
@@ -184,6 +178,12 @@
 
     requestAnimationFrame( animate );
 
+    const delta = clock.getDelta()
+
+    if (player) {
+      controls.update(delta)
+    }
+
 		composer.render(scene, camera);
 	}
 
@@ -196,7 +196,7 @@
 
 		scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff )
-    //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
+    scene.fog = new THREE.Fog( 0xffffff, 0, 3000 );
 
 		camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 5000);
 		camera.position.z = 1.3;
@@ -206,18 +206,17 @@
    * Add controls
   */
   function addControls () {
-    controls = new OrbitControls( camera, renderer.domElement );
+    if (player === false) {
+      controls = new OrbitControls( camera, renderer.domElement );
+    } else {
+      controls = new FirstPersonControls( camera, renderer.domElement );
+      controls.movementSpeed = 150;
+      controls.lookSpeed = 0.1;
+    }
 
 
     // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     // controls.dampingFactor = 0.05;
-
-    controls.screenSpacePanning = false;
-
-    controls.minDistance = 0;
-    controls.maxDistance = 1000;
-
-    controls.maxPolarAngle = Math.PI / 2;
     // raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 )
 
     // scene.add( controls.getObject() )
@@ -285,6 +284,7 @@
 
       };
 
+
       const size = width * height, data = new Uint8Array( size );
       const perlin = new ImprovedNoise(), z = Math.random() * 100;
 
@@ -302,7 +302,7 @@
         }
         
         //multiply the number of polygons
-        quality *= 2;
+        quality *= 3;
 
       }
 
@@ -353,8 +353,8 @@ function generateTexture( data, width, height ) {
           // To multiply the scale of terrain, change the "*1" value
 
           const canvasScaled = document.createElement( 'canvas' );
-          canvasScaled.width = width *1;
-          canvasScaled.height = height *1;
+          canvasScaled.width = width *5;
+          canvasScaled.height = height *5;
 
           context = canvasScaled.getContext( '2d' );
           context.scale( 4, 4 );
@@ -427,14 +427,6 @@ function generateTexture( data, width, height ) {
       console.error(error)
     }
   }
-
-  /**
-   * Play the scene
-  */
- function play () {
-    controls.lock()
- }
-
 
 	/**
 	 * Events
@@ -563,8 +555,9 @@ function generateTexture( data, width, height ) {
     renderer.domElement.setAttribute('width', w);
     renderer.domElement.setAttribute('height', h);
 
-    console.log(w, h)
-    console.log(window.innerWidth, window.innerHeight)
+    if (player) {
+      controls.handleResize();
+    }
   }
 
 	/**
@@ -583,6 +576,13 @@ function generateTexture( data, width, height ) {
 	 */
   function onScroll (e) {
     const z = window.scrollY
+  }
+
+  /**
+   * Event
+  */
+  function togglePlayer () {
+    player = !player
   }
 
 	/**
@@ -610,13 +610,12 @@ function generateTexture( data, width, height ) {
   on:keyup={handleKeyUp}
 />
 
-{#if controls}
-  {#if controls.isLocked === false}
-    <div class="instructions" on:click={play}>
-      ClllLick toO PlayyYAYyyy
-    </div>
-  {/if}
-{/if}
+<!-- 
+<div class="controls">
+  <button on:click={togglePlayer}>
+    {player ? 'Editor' : 'Player'}
+  </button>
+</div> -->
 
 <!-- Container -->
 <div bind:this={container} />
