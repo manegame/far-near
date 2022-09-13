@@ -7,8 +7,8 @@ import * as THREE from 'three'
  * @param {*} height 
  * @returns 
  */
-export function generateHeight(width, height) {
-  let seed = Math.PI / 4
+// generate the heightmap using ImprovedNoise addon
+export function generateHeight(width, height, seed = Math.PI / 4) {
   window.Math.random = function () {
     const x = Math.sin(seed++) * 10000
     return x - Math.floor(x)
@@ -19,18 +19,18 @@ export function generateHeight(width, height) {
     const perlin = new ImprovedNoise(),
     z = Math.random() * 100
 
-  let quality = 1
+  // The highest quality is, the less there is different volumes. example : if quality = 3, terrain look like a lot of little pic while if quality = 100, the terrain look like dune
+  let quality = 20
 
+  // j < 'maximum height value', change this to get higher or lower volumes
   for (let j = 0; j < 4; j++) {
     for (let i = 0; i < size; i++) {
       const x = i % width,
         y = ~~(i / width)
-        data[i] += Math.abs(
-        perlin.noise(x / quality, y / quality, z) * quality * 1.75
-      )
+        data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 2)
     }
 
-    quality *= 5
+    quality *= 2;
   }
 
   return data
@@ -42,6 +42,7 @@ export function generateTexture(data, width, height) {
 
   const vector3 = new THREE.Vector3(0, 0, 0)
 
+  //sun intensity
   const sun = new THREE.Vector3(1, 1, 1)
   sun.normalize()
 
@@ -71,7 +72,7 @@ export function generateTexture(data, width, height) {
 
   context.putImageData(image, 0, 0)
 
-  // Scaled 4x
+  // To multiply the scale of terrain, change the "*1" value
 
   const canvasScaled = document.createElement("canvas")
   canvasScaled.width = width * 1
@@ -87,6 +88,7 @@ export function generateTexture(data, width, height) {
   for (let i = 0, l = imageData.length; i < l; i += 4) {
     const v = ~~(Math.random() * 5)
 
+    // R G & B values
     imageData[i] += v
     imageData[i + 1] += v
     imageData[i + 2] += v

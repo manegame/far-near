@@ -7,8 +7,6 @@
    * 
   */
 
-
-
   /**
    * Imports
   */
@@ -74,7 +72,9 @@
   }
   let terrainOptions = {
     width: 150, // inactive
-    height: 150
+    height: 150,
+    seed: Math.PI / 4 // seed
+
   }
 	/**
 	 * Pre-Init: 
@@ -165,7 +165,7 @@
 
 		scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff )
-    scene.fog = new THREE.Fog( 0xffffff, 0, 3000 );
+    // scene.fog = new THREE.Fog( 0xffffff, 0, 5000 );
 
 		camera = new THREE.PerspectiveCamera(35, w / h, cameraOptions.near, cameraOptions.far);
 		camera.position.z = 1.3;
@@ -188,7 +188,7 @@
    * Generate the terrain
   */
   function addTerrain () {
-    const data  = generateHeight( terrainOptions.width, terrainOptions.height );
+    const data  = generateHeight( terrainOptions.width, terrainOptions.height, terrainOptions.seed );
     
     const geometry = track(new THREE.PlaneGeometry( 7500, 7500, terrainOptions.width - 1, terrainOptions.height - 1 ));
     geometry.rotateX( - Math.PI / 2 );
@@ -206,9 +206,9 @@
     var material = track(new THREE.MeshBasicMaterial({ map: texture, /*wireframe: true*/ }))
 
     mesh = track(new THREE.Mesh( geometry, material))
-    mesh.position.y = -1000
     mesh.name = 'Terrain'
     scene.add( mesh )
+    mesh.position.y = -2000
   }
 
   function updateTerrain () {
@@ -335,23 +335,24 @@
     const terrainFolder = gui.addFolder('Terrain')
     // const terrainWidth = terrainFolder.add(terrainOptions, 'width', 2, 300)
     const terrainHeight = terrainFolder.add(terrainOptions, 'height', 2, 900)
+    const terrainSeed = terrainFolder.add(terrainOptions, 'seed', Math.PI / 4, Math.PI * 200)
     terrainFolder.open()
-
-    // terrainWidth.onChange(updateTerrain)
-    terrainHeight.onChange(updateTerrain)
-
+    
     /**
      * Update things
     */
-    nearController.onChange(e => {
-      camera.near = e
-      camera.updateProjectionMatrix()
+   nearController.onChange(e => {
+     camera.near = e
+     camera.updateProjectionMatrix()
     })
     farController.onChange(e => {
       camera.far = e
       camera.updateProjectionMatrix()
     })
     cameraFolder.open()
+
+    terrainHeight.onChange(updateTerrain)
+    terrainSeed.onChange(updateTerrain)
   }
 
 	/**
