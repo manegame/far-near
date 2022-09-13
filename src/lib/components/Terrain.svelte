@@ -4,9 +4,6 @@
   /**
    * FAR NEAR – navigate through a 3D world
    * 
-   * Notes to self:
-   * 
-   * https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
    * 
   */
 
@@ -24,8 +21,11 @@
 	import { Noise } from '$lib/threejs/shaders/noise';
   import { getSizes } from '$lib/threejs/utilities'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-  import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js'
   import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
+  import { generateHeight, generateTexture } from '$lib/threejs/terrain'
+
+  // Developer things
+  import { GUI } from 'dat.gui'
 
 
   // Svelte
@@ -78,9 +78,20 @@
   const direction = new THREE.Vector3();
   const vertex = new THREE.Vector3();
   const color = new THREE.Color();
+  let pointerDown = false
   
-
-  const worldWidth = 150, worldDepth = 150;
+  /**
+   * Controllable from the GUI
+   */
+  let player = { firstPerson: false }
+  let cameraOptions = {
+    near: 1,
+    far: 35000
+  }
+  let terrainOptions = {
+    width: 150,
+    height: 150
+  }
 	/**
 	 * Pre-Init: 
    * Runs before mount, use this to preset variables needed in init
@@ -94,7 +105,6 @@
       y: 0
     }
 
-    
 	  clock = new THREE.Clock()
 
     coords = spring(
@@ -148,6 +158,7 @@
 
     //change the position of the terrain so it's under the camera Y pos
     mesh.position.y = -200;
+    addTerrain()
 
     addSphere()
 
@@ -157,6 +168,11 @@
 		clock.start()
 
     handleResize ();
+
+    if (import.meta.env.DEV) {
+      addGUI()
+    }
+
 		animate();
 	}
 
@@ -175,12 +191,11 @@
 	 * The render animate loop
 	 */
 	function animate() {
-
     requestAnimationFrame( animate );
 
     const delta = clock.getDelta()
 
-    if (player) {
+    if (player.firstPerson) {
       controls.update(delta)
     }
 
@@ -198,7 +213,7 @@
     scene.background = new THREE.Color( 0xffffff )
     scene.fog = new THREE.Fog( 0xffffff, 0, 3000 );
 
-		camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 5000);
+		camera = new THREE.PerspectiveCamera(35, w / h, cameraOptions.near, cameraOptions.far);
 		camera.position.z = 1.3;
 	}
 
@@ -206,29 +221,40 @@
    * Add controls
   */
   function addControls () {
-    if (player === false) {
+    if (player.firstPerson === false) {
       controls = new OrbitControls( camera, renderer.domElement );
     } else {
       controls = new FirstPersonControls( camera, renderer.domElement );
       controls.movementSpeed = 150;
       controls.lookSpeed = 0.1;
     }
-
-
-    // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    // controls.dampingFactor = 0.05;
-    // raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 )
-
-    // scene.add( controls.getObject() )
   }
 
   /**
-   * Add sphere in the middle of the scene
+   * Generate the terrain
   */
-  function addSphere () {
-    sphere = sampleGeometryFunction()
-    sphere.name = 'Sphere'
-    scene.add(sphere)
+  function addTerrain () {
+    const data  = generateHeight( terrainOptions.width, terrainOptions.height );
+    
+    const geometry = track(new THREE.PlaneGeometry( 7500, 7500, terrainOptions.width - 1, terrainOptions.height - 1 ));
+    geometry.rotateX( - Math.PI / 2 );
+    
+    const vertices = geometry.attributes.position.array;
+
+    for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
+      vertices[j + 1] = data[ i ] * 10
+    }
+    
+    texture = track(new THREE.CanvasTexture( generateTexture( data, terrainOptions.width, terrainOptions.height ) ))
+    texture.wrapS = THREE.ClampToEdgeWrapping
+    texture.wrapT = THREE.ClampToEdgeWrapping
+
+    var material = track(new THREE.MeshBasicMaterial({ map: texture, /*wireframe: true*/ }))
+
+    mesh = track(new THREE.Mesh( geometry, material))
+    mesh.position.y = -1000
+    mesh.name = 'Terrain'
+    scene.add( mesh )
   }
 
   /**
@@ -378,6 +404,14 @@ function generateTexture( data, width, height ) {
 
 }
 
+  function updateTerrain () {
+    const terrain = scene.getObjectByName('Terrain')
+    terrain.geometry.dispose()
+    terrain.material.dispose()
+    scene.remove(terrain)
+    addTerrain()
+  }
+ 
 
 
   /**
@@ -401,7 +435,7 @@ function generateTexture( data, width, height ) {
   /**
    * Geometries
    */
-  function sampleGeometryFunction () {
+  function addSphere () {
     const mesh = track(new THREE.SphereGeometry(0.1, 20, 20));
     // https://threejs.org/docs/scenes/material-browser.html#MeshStandardMaterial
     const material = track(new THREE.MeshStandardMaterial({
@@ -411,8 +445,9 @@ function generateTexture( data, width, height ) {
     }));
     
     const geometry = track(new THREE.Mesh(mesh, material))
+    geometry.name = 'Sphere'
 
-    return geometry
+    scene.add(geometry)
   }
 
   /**
@@ -477,63 +512,6 @@ function generateTexture( data, width, height ) {
 		coords.set({ x: $coords.x + ((e.pageX) / 10) * intensity, y: e.clientY * intensity, z: $coords.z });
 	}
 
-  function handleKeyDown ({ code }) {
-    switch ( code ) {
-
-      case 'ArrowUp':
-      case 'KeyW':
-        moveForward = true;
-        break;
-
-      case 'ArrowLeft':
-      case 'KeyA':
-        moveLeft = true;
-        break;
-
-      case 'ArrowDown':
-      case 'KeyS':
-        moveBackward = true;
-        break;
-
-      case 'ArrowRight':
-      case 'KeyD':
-        moveRight = true;
-        break;
-
-      case 'Space':
-        console.log(canJump)
-        if ( canJump === true ) {
-          velocity.y += 1000
-        }
-        canJump = false;
-        break;
-    }
-  }
-
-  function handleKeyUp ({ code }) {
-    switch ( code ) {
-      case 'ArrowUp':
-      case 'KeyW':
-        moveForward = false;
-        break;
-
-      case 'ArrowLeft':
-      case 'KeyA':
-        moveLeft = false;
-        break;
-
-      case 'ArrowDown':
-      case 'KeyS':
-        moveBackward = false;
-        break;
-
-      case 'ArrowRight':
-      case 'KeyD':
-        moveRight = false;
-        break;
-    }
-  };
-
 
   /*
   * Resize
@@ -555,7 +533,7 @@ function generateTexture( data, width, height ) {
     renderer.domElement.setAttribute('width', w);
     renderer.domElement.setAttribute('height', h);
 
-    if (player) {
+    if (player.firstPerson) {
       controls.handleResize();
     }
   }
@@ -577,12 +555,45 @@ function generateTexture( data, width, height ) {
   function onScroll (e) {
     const z = window.scrollY
   }
-
+  
   /**
-   * Event
+   * GUI
   */
-  function togglePlayer () {
-    player = !player
+  function addGUI () {
+    const gui = new GUI()
+
+    // Player
+    const metaFolder = gui.addFolder('Player')
+    const playerControlsController = metaFolder.add(player, 'firstPerson')
+    playerControlsController.onChange(addControls)
+    metaFolder.open()
+
+    // Camera
+    const cameraFolder = gui.addFolder('Camera')
+    const nearController = cameraFolder.add(cameraOptions, 'near', 0.01, 1, 0.01)
+    const farController = cameraFolder.add(cameraOptions, 'far', 101, 100000)
+
+    // Terrain
+    const terrainFolder = gui.addFolder('Terrain')
+    // const terrainWidth = terrainFolder.add(terrainOptions, 'width', 2, 300)
+    const terrainHeight = terrainFolder.add(terrainOptions, 'height', 2, 900)
+    terrainFolder.open()
+
+    // terrainWidth.onChange(updateTerrain)
+    terrainHeight.onChange(updateTerrain)
+
+    /**
+     * Update things
+    */
+    nearController.onChange(e => {
+      camera.near = e
+      camera.updateProjectionMatrix()
+    })
+    farController.onChange(e => {
+      camera.far = e
+      camera.updateProjectionMatrix()
+    })
+    cameraFolder.open()
   }
 
 	/**
@@ -606,16 +617,7 @@ function generateTexture( data, width, height ) {
 	on:mousemove={handleWindowMouseMove}
 	on:resize={handleResize}
 	on:orientationchange={handleResize}
-  on:keydown={handleKeyDown}
-  on:keyup={handleKeyUp}
 />
-
-<!-- 
-<div class="controls">
-  <button on:click={togglePlayer}>
-    {player ? 'Editor' : 'Player'}
-  </button>
-</div> -->
 
 <!-- Container -->
 <div bind:this={container} />
