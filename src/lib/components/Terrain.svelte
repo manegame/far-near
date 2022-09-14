@@ -4,10 +4,7 @@
   /**
    * FAR NEAR – navigate through a 3D world
    * 
-   * 
   */
-
-
 
   /**
    * Imports
@@ -21,9 +18,8 @@
 	import { Noise } from '$lib/threejs/shaders/noise';
   import { getSizes } from '$lib/threejs/utilities'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-  import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
-  import { generateHeight } from '$lib/threejs/terrain';
-  import { generateTexture } from '$lib/threejs/terrain';
+  import { FirstPersonControls } from '$lib/threejs/controls/FirstPersonControls';
+  import { generateHeight, generateTexture } from '$lib/threejs/terrain';
   // Developer things
   import { GUI } from 'dat.gui'
 
@@ -67,7 +63,9 @@
   /**
    * Controllable from the GUI
    */
-  let player = { firstPerson: false }
+  let player = {
+    firstPerson: false
+  }
   let cameraOptions = {
     near: 1,
     far: 35000

@@ -60,12 +60,6 @@
    */
   const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
 
-  let pointerDown = false
-  let moveForward = false;
-  let moveBackward = false;
-  let moveLeft = false;
-  let moveRight = false;
-  let canJump = false;
   let objects = []
 
   let prevTime = performance.now();
@@ -160,7 +154,7 @@
     scene.background = new THREE.Color( 0xffffff )
     scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
-		camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 10);
+		camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 10000);
 		camera.position.z = 1.3;
 	}
 
@@ -168,7 +162,6 @@
    * Add controls
   */
   function addControls () {
-    console.log(renderer.domElement)
     controls = new FirstPersonControls( camera, renderer.domElement ); // 
 
     raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 )
@@ -246,7 +239,7 @@
    * Geometries
    */
   function sampleGeometryFunction () {
-    const mesh = track(new THREE.SphereGeometry(0.1, 20, 20));
+    const mesh = track(new THREE.SphereGeometry(10, 20, 20));
     // https://threejs.org/docs/scenes/material-browser.html#MeshStandardMaterial
     const material = track(new THREE.MeshStandardMaterial({
       color: 0x0000ff,
@@ -268,7 +261,7 @@
   
       data = await response.json()
     } catch (error) {
-      console.error(error)
+      
     }
   }
 
@@ -293,7 +286,7 @@
     renderer.domElement.setAttribute('width', w);
     renderer.domElement.setAttribute('height', h);
 
-    // controls.handleResize()
+    controls.handleResize()
   }
 
 	/**
