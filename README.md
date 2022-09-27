@@ -1,10 +1,10 @@
-# Far Near
-
-* ThreeJS
-* Svelte -> web component build
-* Easy installation on wordpress sites
-
 # Svelte + TS + Vite
+
+This project compiles web components as well as normal components!
+
+https://www.thisdot.co/blog/web-components-with-svelte
+
+
 
 This template should help get you started developing with Svelte and TypeScript in Vite.
 
