@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Canvas } from '@threlte/core'
-  import Physics from './physics/Index.svelte'
+  import Physics from './physics-terrain/Index.svelte'
 
   let width   = window.innerWidth
   let height  = window.innerHeight
