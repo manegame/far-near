@@ -13,7 +13,7 @@
 </script>
 
 <PerspectiveCamera position={{ y: 10, z: 10, x: 10 }}>
-	<OrbitControls enableZoom={false} />
+	<OrbitControls enableZoom={true} />
 	<!-- <AudioListener /> -->
 </PerspectiveCamera>
 
@@ -23,6 +23,6 @@
 
 <Terrain />
 
-<Debug />
+<!-- <Debug /> -->
 
 <Emitter />

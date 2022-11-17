@@ -2,7 +2,7 @@
 <svelte:options tag="far-near-entry" />
 
 <script lang="ts">
-  import Wrapper from "../components/Wrapper.svelte"
+  import Wrapper from "$lib/components/Wrapper.svelte"
 </script>
 
 <Wrapper />

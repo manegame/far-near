@@ -77,8 +77,6 @@
       const response = await fetch(apiUrl)
 
       data = await response.json()
-
-      console.log(data)
     } catch (error) {
       console.error(error)
     }

@@ -1,6 +1,6 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import { Canvas } from '@threlte/core'
-  import Physics from './physics-terrain/Index.svelte'
+  import Physics from './v3/Index.svelte'
 
   let width   = window.innerWidth
   let height  = window.innerHeight
@@ -8,4 +8,10 @@
 
 <Canvas size={{ width, height  }}>
   <Physics />
-</Canvas>
+</Canvas> -->
+
+<script>
+  import WalkScene from "./WalkScene.svelte"
+</script>
+
+<WalkScene />
