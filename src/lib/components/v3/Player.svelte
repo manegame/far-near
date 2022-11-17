@@ -29,7 +29,10 @@
     let grounded = false
     $: grounded ? dispatch('groundenter') : dispatch('groundexit')
   
-    const lockControls = () => lock()
+    const lockControls = () => {
+      console.log('lockit')
+      lock()
+    }
   
     const { renderer } = useThrelte()
     if (!renderer) throw new Error()

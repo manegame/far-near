@@ -50,11 +50,10 @@
      * @param {MouseEvent} event
      */
     function onMouseMove(event) {
-      if (!isLocked) return
+      // if (!isLocked) return
   
       const { movementX, movementY } = event
 
-      console.log(movementX, movementY)
   
       _euler.setFromQuaternion($camera.quaternion)
   
