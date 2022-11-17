@@ -68,22 +68,27 @@
     svelte-hmr "^0.15.1"
     vitefu "^0.2.1"
 
-"@threlte/core@^4.3.2":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@threlte/core/-/core-4.3.3.tgz#7316549704b350bbac0180faaf17c7c342d163f6"
-  integrity sha512-mi2snHUFgi5TKD+Zv9zAUMrvvAD3EGVFjfG+fW7z+pN2HgNOqXvsdxkfTxtqjC8NP75lDn/RiDynXvqoBJsKZA==
+"@threlte/core@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@threlte/core/-/core-5.0.1.tgz#d4ad3242a85383605f0513d911dd931e36ce4ec1"
+  integrity sha512-o6/K+QCA+SHEZVB6M6V98B5sJRgnw0gxU255UPPAARRSq4stYVXOAnX1qxSa/2L2bPGvoP9EHLAbeNc9NIcv9A==
 
-"@threlte/extras@^4.3.0":
+"@threlte/extras@^4.7.0":
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/@threlte/extras/-/extras-4.7.0.tgz#4833b9f504076eac6aa8c3e8ee5c141ef72ff745"
   integrity sha512-TKSE6g7wTTjiHreWWcWZkKUbZ0tcDfq6nfceJDPcqvRIWpRPWc4ArSYvzHDh7Of7sTr8z3PiU3uZFBWJLkzmUA==
   dependencies:
     troika-three-text "^0.46.4"
 
-"@threlte/rapier@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@threlte/rapier/-/rapier-0.3.2.tgz#e4800b67291d604b185a24725e79905662f98ac5"
-  integrity sha512-2pQKpzUxW/K8S6qX0fLeO/ik+yVq2mRVSvu4MuEIkizAKSwGdWxDBA4NzajGMrOBTrhtl0KLfKM1fkZqW1R7yA==
+"@threlte/preprocess@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@threlte/preprocess/-/preprocess-0.0.2.tgz#5cadde9242df175ac78c98a3191b432ee7ff656a"
+  integrity sha512-Eb3u3nAEBSFpadQvCdeZKy0xE4kgnlmxeTxnzTsmvUJt5ZEadbMg1+/LXn0oAYgFO72YQ62CJ7WI4hmoQSpOeA==
+
+"@threlte/rapier@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@threlte/rapier/-/rapier-0.5.0.tgz#004767425f44ec329d3d8e82bbdc7598fe2d9f06"
+  integrity sha512-+lZ24lPdKLyXZA4iQvRl8prpQF9ARRaETm1EtkRCZSZm8NjSNKcpD6Gk5hCsI0PQbzCavY2FOrSvCPUbBuQgTA==
 
 "@tsconfig/svelte@^3.0.0":
   version "3.0.0"
@@ -916,7 +921,15 @@ svelte-preprocess@^4.0.0, svelte-preprocess@^4.10.7:
     sorcery "^0.10.0"
     strip-indent "^3.0.0"
 
-svelte@^3.49.0:
+svelte-sequential-preprocessor@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/svelte-sequential-preprocessor/-/svelte-sequential-preprocessor-0.0.7.tgz#c4dcbe6935a36f5770f7c6f36e00e785333b8aed"
+  integrity sha512-xk974Ny77eiC8xpFPCVNopCfCW4ElWWlvWIv+c7psbjjb4UVRyhR8IJfwOuwnY5S3nduBOYoalY4eigB9YyqHA==
+  dependencies:
+    svelte "^3.42.6"
+    tslib "~2.3.1"
+
+svelte@^3.42.6, svelte@^3.49.0:
   version "3.53.1"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.53.1.tgz#db9d7df7a8f570e8e22547444c149208b1914442"
   integrity sha512-Q4/hHkktZogGhN5iqxqSi9sjEVoe/NbIxX4hXEHoasTxj+TxEQVAq66LnDMdAZxjmsodkoI5F3slqsS68U7FNw==
@@ -986,6 +999,11 @@ tslib@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
   integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
+
+tslib@~2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
+  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 typescript@*, typescript@^4.6.4:
   version "4.9.3"
