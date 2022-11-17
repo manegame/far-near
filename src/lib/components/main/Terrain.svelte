@@ -103,12 +103,12 @@
     rotation={{ x: - Math.PI / 2 }}
     receiveShadow
     castShadow
-    geometry={new PlaneGeometry(100, 100, 100, 100)}
+    geometry={new PlaneGeometry(200, 200, 200, 200)}
     material={new MeshStandardMaterial({
       side: DoubleSide,
       wireframe: true,
       displacementMap: tex,
-      displacementScale: -displacementScale
+      displacementScale: displacementScale
     })}
   />
 </AutoColliders>

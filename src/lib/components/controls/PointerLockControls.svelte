@@ -67,10 +67,10 @@
   
     function onPointerlockChange() {
       if (document.pointerLockElement === domElement) {
-        // dispatch('lock')
+        dispatch('lock')
         isLocked = true
       } else {
-        // dispatch('unlock')
+        dispatch('unlock')
         isLocked = false
       }
     }

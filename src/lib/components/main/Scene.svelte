@@ -2,9 +2,7 @@
 	import {
 		// AudioListener,
 		DirectionalLight,
-		Object3DInstance,
-		OrbitControls,
-		PerspectiveCamera
+		Object3DInstance
 	} from '@threlte/core'
   import { epochs } from "$lib/store"
 
@@ -12,7 +10,7 @@
 	import { Debug } from '@threlte/rapier'
 	import { GridHelper } from 'three'
 	import Emitter from './Emitter.svelte'
-	import Terrain from './Terrain.svelte'
+	import Terrain from './TerrainFile.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
 

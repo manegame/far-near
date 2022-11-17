@@ -3,19 +3,26 @@
   import { useTexture, Mesh, useLoader } from "@threlte/core"
 
   export let image
+  export let position
+  export let rotation
+  export let base = 5
 
-  const loader = useLoader(TextureLoader, () => new TextureLoader())
-  loader.crossOrigin = ''
-  loader.load(image, (object) => {
-    console.log(object)
+  const src = image.replace(/.*\//, '/workaround/')
+  let ratio = 0
+  let geometry
+  let material
+  let ready = false
+
+  const tex = useTexture(src, {
+    onLoad: (texture) => {
+      ratio = texture.source.data.width / texture.source.data.height
+      geometry = new BoxGeometry(base, base * ratio, 0.1)
+      material = new MeshStandardMaterial({ map: tex })
+      ready = true
+    }
   })
-
-  // const tex = useTexture(image)
-
-  // console.log(tex)
-
-  const geometry = new BoxGeometry(1, 1, 1)
-  const material = new MeshStandardMaterial()
 </script>
 
-<Mesh {geometry} {material} />
+{#if ready}
+  <Mesh {geometry} {material} {position} {rotation}/>
+{/if}

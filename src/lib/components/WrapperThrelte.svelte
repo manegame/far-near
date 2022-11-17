@@ -7,7 +7,7 @@
   import GUI from "./GUI/index.svelte"
 
   // const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
-  const apiUrl = "https://far-near.media/wp-json/wp/v2/articles?per_page=100"
+  const apiUrl = "https://far-near.media/wp-json/wp/v2/articles?per_page=5"
 
   let insetContainer = `
     position: fixed;

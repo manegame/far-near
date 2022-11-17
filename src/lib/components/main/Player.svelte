@@ -31,8 +31,7 @@
     $: grounded ? dispatch('groundenter') : dispatch('groundexit')
   
     const lockControls = () => {
-      console.log('lockit')
-      // lock()
+      lock()
     }
 
     const { scene, renderer } = useThrelte()

@@ -8,7 +8,6 @@
 
 <div style="position: fixed; background: ##fff; z-index: 99">
   {#each images as image (image)}
-    <!-- <img src={image} alt="alt" /> -->
     <ImageCanvas {image} />
   {/each}
 </div>  
