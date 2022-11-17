@@ -1,7 +1,7 @@
 <script>
     import { Vector3 } from 'three'
-    import { useFrame, useThrelte, PerspectiveCamera } from '@threlte/core'
-    import { RigidBody, CollisionGroups, Collider } from '@threlte/rapier'
+    import { useFrame, useThrelte, PerspectiveCamera, OrbitControls } from '@threlte/core'
+    import { RigidBody, CollisionGroups, Collider, Debug } from '@threlte/rapier'
     import { createEventDispatcher, onDestroy } from 'svelte'
     import PointerLockControls from '$lib/components/controls/PointerLockControls.svelte'
   
@@ -74,23 +74,6 @@
         camera.updateProjectionMatrix()
       }
 
-      // for ( let ii = 0; ii < views.length; ii++ ) {
-      //   const view = views[ ii ];
-      //   const camera = cameras[ii];
-
-      //   console.log(camera.id)
-
-      //   const left = Math.floor( window.innerWidth * view.left );
-      //   const bottom = Math.floor( window.innerHeight * view.bottom );
-      //   const width = Math.floor( window.innerWidth * view.width );
-      //   const height = Math.floor( window.innerHeight * view.height );
-
-      //   renderer.setViewport( left, bottom, width, height );
-      //   renderer.setScissor( left, bottom, width, height );
-      //   renderer.setScissorTest( true );
-      //   renderer.setClearColor( view.background );
-      // }
-
       makeView(playerCamera, 0xffffff, {
         left: 0,
         bottom: 0,
@@ -150,12 +133,11 @@
           break
       }
     }
-
-    $: console.log(playerCamera, topViewCamera)
 </script>
 
 <svelte:window on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
 
+<!-- FPS camera -->
 <PerspectiveCamera bind:camera={playerCamera} bind:position  fov={90}>
   <PointerLockControls pointerSpeed={2.0} bind:lock />
 </PerspectiveCamera>
@@ -180,3 +162,5 @@
   />
 </CollisionGroups>
 </RigidBody>
+
+<Debug />
