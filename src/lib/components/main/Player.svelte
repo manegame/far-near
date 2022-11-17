@@ -1,9 +1,11 @@
 <script>
-    import { Vector3 } from 'three'
-    import { useFrame, useThrelte, PerspectiveCamera, OrbitControls } from '@threlte/core'
+    import { Vector3, Raycaster, Vector2 } from 'three'
+    import { useFrame, useThrelte, PerspectiveCamera, OrthographicCamera, OrbitControls } from '@threlte/core'
     import { RigidBody, CollisionGroups, Collider, Debug } from '@threlte/rapier'
     import { createEventDispatcher, onDestroy } from 'svelte'
     import PointerLockControls from '$lib/components/controls/PointerLockControls.svelte'
+    import { onTop } from "$lib/store"
+    import { onMount } from "svelte"
   
     export let position = undefined
     export let playerCollisionGroups = [0]
@@ -24,9 +26,16 @@
     let left = 0
     let right = 0
     let grounded = false
-  
-    const t = new Vector3()
+    let pointerdown = false
+    
     const dispatch = createEventDispatcher()
+    
+    const { scene, renderer } = useThrelte()
+
+    const pointer = new Vector2();
+    const raycaster = new Raycaster()
+    
+    const t = new Vector3()
   
     $: grounded ? dispatch('groundenter') : dispatch('groundexit')
   
@@ -34,7 +43,6 @@
       lock()
     }
 
-    const { scene, renderer } = useThrelte()
   
     if (!renderer) throw new Error()
   
@@ -45,6 +53,16 @@
     })
   
     useFrame(() => {
+      raycaster.setFromCamera( pointer, playerCamera)
+      const intersects = raycaster.intersectObjects(scene.children)
+
+      for ( let i = 0; i < intersects.length; i ++ ) {
+        if (pointerdown) {
+          console.log(intersects[i])
+        }
+        // intersects[i].object.material.color.set( 0xff0000 );
+      }
+
       if (!rigidBody) return
       // get direction
       const velVec = t.fromArray([right - left, 0, backward - forward])
@@ -81,7 +99,7 @@
         height: 1.0
       })
 
-      makeView(topViewCamera, 0xaaaaaa, {
+      makeView(topViewCamera, 0xffffff, {
         left: 0.7,
         bottom: 0.7,
         width: 0.28,
@@ -133,6 +151,25 @@
           break
       }
     }
+
+    function onPointerMove (e) {
+      pointer.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+	    pointer.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+    }
+
+    function onPointerDown () {
+      pointerdown = true
+    }
+
+    function onPointerUp () {
+      pointerdown = false
+    }
+
+    onMount(() => {
+      window.addEventListener('pointermove', onPointerMove)
+      window.addEventListener('pointerdown', onPointerDown)
+      window.addEventListener('pointerup', onPointerUp)
+    })
 </script>
 
 <svelte:window on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
@@ -143,10 +180,15 @@
 </PerspectiveCamera>
 
 <!-- Top view camera -->
-<PerspectiveCamera position={{ y: 10, x: position.x, z: position.z }} rotation={{ x: - Math.PI / 2 }} bind:camera={topViewCamera} fov={90}>
-</PerspectiveCamera>
+<!-- <PerspectiveCamera position={{ y: 10, x: position.x, z: position.z }} rotation={{ x: - Math.PI / 2 }} bind:camera={topViewCamera} fov={90}>
+</PerspectiveCamera> -->
+<OrthographicCamera position={{ y: 10, x: position.x, z: position.z }} rotation={{ x: - Math.PI / 2 }} bind:camera={topViewCamera}>
+</OrthographicCamera>
 
+<!-- What is this? -->
 <RigidBody bind:rigidBody {position} enabledRotations={[false, false, false]}>
+
+<!-- Player -->
 <CollisionGroups groups={playerCollisionGroups}>
   <Collider shape={'capsule'} args={[height / 2 - radius, radius]} />
 </CollisionGroups>
@@ -162,5 +204,3 @@
   />
 </CollisionGroups>
 </RigidBody>
-
-<Debug />

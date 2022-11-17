@@ -6,8 +6,6 @@
   const images = epoch.map(i => i.acf.preview_image?.url).filter(i => !!i)
 </script>
 
-<div style="position: fixed; background: ##fff; z-index: 99">
-  {#each images as image (image)}
-    <ImageCanvas {image} />
-  {/each}
-</div>  
+{#each images as image, i (image)}
+  <ImageCanvas {image} {i} />
+{/each}
