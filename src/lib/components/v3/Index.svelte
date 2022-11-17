@@ -4,7 +4,6 @@
 	import Scene from './Scene.svelte'
 </script>
 
-
 <World>
   <Scene />
 

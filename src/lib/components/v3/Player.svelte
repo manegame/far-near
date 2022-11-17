@@ -31,7 +31,7 @@
   
     const lockControls = () => {
       console.log('lockit')
-      lock()
+      // lock()
     }
   
     const { renderer } = useThrelte()
