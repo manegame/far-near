@@ -182,7 +182,6 @@
     } else {
       const pos = Math.sin(progress * Math.PI) / 2 - 0.5
       const rangedPos = range(-0.5, 0, -0.5, -0.3, pos)
-      console.log(rangedPos)
       innerGeometry.position.x = rangedPos
     }
 

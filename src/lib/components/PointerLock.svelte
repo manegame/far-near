@@ -186,8 +186,6 @@
       }
   
       prevTime = time
-
-      console.log(velocity.y)
   
       // requestAnimationFrame(animate);
 
@@ -400,7 +398,6 @@
         break;
 
       case 'Space':
-        console.log(canJump)
         if ( canJump === true ) {
           velocity.y += 1000
         }
@@ -453,9 +450,6 @@
 
     renderer.domElement.setAttribute('width', w);
     renderer.domElement.setAttribute('height', h);
-
-    console.log(w, h)
-    console.log(window.innerWidth, window.innerHeight)
   }
 
 	/**

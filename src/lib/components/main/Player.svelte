@@ -1,5 +1,5 @@
 <script>
-  import { Vector3 } from 'three'
+    import { Vector3 } from 'three'
     import { useFrame, useThrelte, PerspectiveCamera } from '@threlte/core'
     import { RigidBody, CollisionGroups, Collider } from '@threlte/rapier'
     import { createEventDispatcher, onDestroy } from 'svelte'
@@ -15,26 +15,28 @@
   
     let rigidBody
     let lock
-    let cam
+
+    let playerCamera
+    let topViewCamera
   
     let forward = 0
     let backward = 0
     let left = 0
     let right = 0
+    let grounded = false
   
     const t = new Vector3()
-  
     const dispatch = createEventDispatcher()
   
-    let grounded = false
     $: grounded ? dispatch('groundenter') : dispatch('groundexit')
   
     const lockControls = () => {
       console.log('lockit')
       // lock()
     }
+
+    const { scene, renderer } = useThrelte()
   
-    const { renderer } = useThrelte()
     if (!renderer) throw new Error()
   
     renderer.domElement.addEventListener('click', lockControls)
@@ -48,7 +50,7 @@
       // get direction
       const velVec = t.fromArray([right - left, 0, backward - forward])
       // sort rotate and multiply by speed
-      velVec.applyEuler(cam.rotation).multiplyScalar(speed)
+      velVec.applyEuler(playerCamera.rotation).multiplyScalar(speed)
       // don't override falling velocity
       const linVel = rigidBody.linvel()
       t.y = linVel.y
@@ -58,6 +60,52 @@
       // when body position changes update position prop for camera
       const pos = rigidBody.translation()
       position = { x: pos.x, y: pos.y, z: pos.z }
+
+      const makeView = (camera, background, { left, bottom, width, height }) => {
+        left = Math.floor( window.innerWidth * left );
+        bottom = Math.floor( window.innerHeight * bottom );
+        width = Math.floor( window.innerWidth * width );
+        height = Math.floor( window.innerHeight * height );
+
+        renderer.setViewport(left, bottom, width, height);
+        renderer.setScissor(left, bottom, width, height);
+        renderer.setScissorTest(true);
+        renderer.setClearColor(background);
+        renderer.render(scene, camera);
+        camera.updateProjectionMatrix()
+      }
+
+      // for ( let ii = 0; ii < views.length; ii++ ) {
+      //   const view = views[ ii ];
+      //   const camera = cameras[ii];
+
+      //   console.log(camera.id)
+
+      //   const left = Math.floor( window.innerWidth * view.left );
+      //   const bottom = Math.floor( window.innerHeight * view.bottom );
+      //   const width = Math.floor( window.innerWidth * view.width );
+      //   const height = Math.floor( window.innerHeight * view.height );
+
+      //   renderer.setViewport( left, bottom, width, height );
+      //   renderer.setScissor( left, bottom, width, height );
+      //   renderer.setScissorTest( true );
+      //   renderer.setClearColor( view.background );
+      // }
+
+      makeView(playerCamera, 0xffffff, {
+        left: 0,
+        bottom: 0,
+        width: 1.0,
+        height: 1.0
+      })
+
+      makeView(topViewCamera, 0xaaaaaa, {
+        left: 0.7,
+        bottom: 0.7,
+        width: 0.28,
+        height: 0.28
+      })
+
     })
   
     /** @param {KeyboardEvent} e */
@@ -103,12 +151,18 @@
           break
       }
     }
+
+    $: console.log(playerCamera, topViewCamera)
 </script>
 
 <svelte:window on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
 
-<PerspectiveCamera bind:camera={cam} bind:position fov={90}>
-  <PointerLockControls bind:lock />
+<PerspectiveCamera bind:camera={playerCamera} bind:position  fov={90}>
+  <PointerLockControls pointerSpeed={2.0} bind:lock />
+</PerspectiveCamera>
+
+<!-- Top view camera -->
+<PerspectiveCamera position={{ y: 10, x: position.x, z: position.z }} rotation={{ x: - Math.PI / 2 }} bind:camera={topViewCamera} fov={90}>
 </PerspectiveCamera>
 
 <RigidBody bind:rigidBody {position} enabledRotations={[false, false, false]}>

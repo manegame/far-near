@@ -33,8 +33,6 @@
   
     export const lock = () => domElement.requestPointerLock()
     export const unlock = () => document.exitPointerLock()
-
-    console.log(domElement)
   
     domElement.addEventListener('mousemove', onMouseMove)
     domElement.ownerDocument.addEventListener('pointerlockchange', onPointerlockChange)

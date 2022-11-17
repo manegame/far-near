@@ -25,8 +25,12 @@
 
 <Player position={{ z: 2 }} />
 
+{#each Object.keys($epochs) as year (year)}
+  <Epoch epoch={$epochs[year]} {year} />
+{/each}
+
 <Terrain />
 
 <Debug />
 
-<Emitter />
+<!-- <Emitter /> -->

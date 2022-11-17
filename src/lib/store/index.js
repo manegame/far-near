@@ -8,7 +8,11 @@ export const epochs = derived(data, ($data) => {
   let years = $data.map(d => new Date(d.date).getFullYear())
   years = [...new Set([...years])]
 
-  const epochs = years.map(y => $data.filter(item => new Date(item.date).getFullYear() === y))
+  const eps = {}
 
-  return epochs
+  years.forEach(y => {
+    eps[y] = $data.filter(item => new Date(item.date).getFullYear() === y)
+  })
+
+  return eps
 })

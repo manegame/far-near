@@ -2,7 +2,7 @@
   import { data, onTop } from "$lib/store"
   import { onMount } from "svelte"
   import { Canvas } from '@threlte/core'
-  import Physics from './v3/Index.svelte'
+  import Physics from './main/Index.svelte'
   
   import GUI from "./GUI/index.svelte"
 
@@ -26,7 +26,6 @@
       const response = await fetch(apiUrl)
   
       $data = await response.json()
-      console.log($data)
     } catch (error) {
       console.error(error)
     }
