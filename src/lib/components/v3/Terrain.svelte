@@ -97,72 +97,6 @@
   <input type="range" name="displacementScale" id="displacementScale" bind:value={displacementScale} step={0.1} min={-1000} max={1000}>
 </div>
 
-<!-- <RigidBody
-  bind:this={rigid}
-  type={'fixed'} position={{ y: -0.5 }}
->
-  {#if heights.length > 0}
-    <Collider
-      bind:this={collider}
-      shape={'cuboid'}
-      args={[subdivisions, subdivisions, heights, scale]}
-    />
-  {/if}
-  <Mesh
-    bind:mesh={mesh}
-    rotation={{ x: - Math.PI / 2 }}
-    receiveShadow
-    castShadow
-    {geometry}
-    material={new MeshStandardMaterial({
-      // color: 0xff0000,
-      side: DoubleSide,
-      wireframe: false,
-      map,
-      normalMap,
-      aoMap,
-      roughnessMap
-      // displacementMap: tex,
-      // displacementScale
-      // widthSegments: 200,
-      // heightSegments: 200
-    })}
-  />
-</RigidBody> -->
-
-<!-- <RigidBody
-  bind:this={rigid}
-  type={'fixed'} position={{ y: -0.5 }}
->
-  {#if heights.length > 0}
-    <Collider
-      bind:this={collider}
-      shape={'cuboid'}
-      args={[subdivisions, subdivisions]}
-    />
-  {/if}
-  <Mesh
-    bind:mesh={mesh}
-    rotation={{ x: - Math.PI / 2 }}
-    receiveShadow
-    castShadow
-    {geometry}
-    material={new MeshStandardMaterial({
-      // color: 0xff0000,
-      side: DoubleSide,
-      wireframe: false,
-      map,
-      normalMap,
-      aoMap,
-      roughnessMap
-      // displacementMap: tex,
-      // displacementScale
-      // widthSegments: 200,
-      // heightSegments: 200
-    })}
-  />
-</RigidBody> -->
-
 <AutoColliders shape={"convexHull"} position={{ y: -0.5 }}>
   <Mesh
     bind:mesh
@@ -171,17 +105,10 @@
     castShadow
     geometry={new PlaneGeometry(100, 100, 100, 100)}
     material={new MeshStandardMaterial({
-      // color: 0xff0000,
       side: DoubleSide,
       wireframe: true,
-      // map,
-      // normalMap,
-      // aoMap,
-      // roughnessMap,
       displacementMap: tex,
       displacementScale: -displacementScale
-      // widthSegments: 200,
-      // heightSegments: 200
     })}
   />
 </AutoColliders>

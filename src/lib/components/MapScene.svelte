@@ -85,9 +85,6 @@
     addLights()
 
     createRenderer()
-    // createRenderTargets()
-
-    // addControls()
 
     // Here we start adding the scene's geometries
     sphere = sampleGeometryFunction()
@@ -185,7 +182,7 @@
     const mesh = track(new THREE.SphereGeometry(0.1, 20, 20));
     // https://threejs.org/docs/scenes/material-browser.html#MeshStandardMaterial
     const material = track(new THREE.MeshStandardMaterial({
-      color: 0xf0f000,
+      color: 0x0ff,
       transparent: true,
       opacity: 0.9
     }));
