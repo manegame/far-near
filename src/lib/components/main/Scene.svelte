@@ -4,12 +4,14 @@
 		DirectionalLight,
     OrbitControls,
     PerspectiveCamera,
-    Fog
+    Pass,
+    Fog,
+    useThrelte
 	} from '@threlte/core'
+  import { Vector2 } from "three"
+  import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs } from "$lib/store"
-	import { Debug } from '@threlte/rapier'
-	import { GridHelper } from 'three'
-	import Emitter from './Emitter.svelte'
+
 	import Terrain from './TerrainFile.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
@@ -21,15 +23,13 @@
         break
      }
   }
+
+  const { scene, camera } = useThrelte()
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <DirectionalLight intensity={.5} scale={{ x: 20, y: 20, z: 20 }} shadow position={{ y: 20, x: 8, z: -5 }} />
-
-<!-- <PerspectiveCamera position={{ x: 10, y: 10, z: 10 }}>
-  <OrbitControls />
-</PerspectiveCamera> -->
 
 <Terrain />
 
@@ -42,6 +42,14 @@
 <Fog color="0xdddddd" />
 
 <Terrain />
+
+<Pass
+  pass={new BokehPass(scene, $camera, {
+    focus: 3.0,
+    aperture: 0.0015,
+    maxblur: 0.005
+  })}
+  />
 
 <!-- <Debug /> -->
 

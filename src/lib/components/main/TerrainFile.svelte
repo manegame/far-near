@@ -13,10 +13,6 @@
     DoubleSide
   } from "three"
 
-  const flyToMe = (e) => {
-    console.log(e)
-  }
-
   let mesh
 
   const { gltf } = useGltf('/terrains/v6.glb')
@@ -29,7 +25,6 @@
 {#if $gltf}
   <AutoColliders shape={"trimesh"} position={{ y: -0.5 }}>
     <Mesh
-      on:click={flyToMe}
       bind:mesh
       receiveShadow
       castShadow
