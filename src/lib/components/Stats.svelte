@@ -7,7 +7,6 @@
 
   const init = () => {
     document.body.appendChild(stats.dom)
-    console.log(stats)
   }
 
   useFrame(() => {
