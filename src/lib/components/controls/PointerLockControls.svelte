@@ -13,11 +13,12 @@
     export let grounded = false
     export let position
     export let rigidBody
+    export let fly = false
   
     // T?
     const t = new Vector3()
     let isLocked = false
-  
+    
     const { scene, renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
     const camera = useParent()
@@ -26,11 +27,20 @@
     const _euler = new Euler(0, 0, 0, 'YXZ')
     const _PI_2 = Math.PI / 2
 
-    // Keyboard things
-    let forward = 0
-    let backward = 0
-    let left = 0
-    let right = 0
+    const moveState = {
+      up: 0,
+      down: 0,
+      left: 0,
+      right: 0,
+      forward: 0,
+      backward: 0
+      // pitchUp: 0,
+      // pitchDown: 0,
+      // yawLeft: 0,
+      // yawRight: 0,
+      // rollLeft: 0,
+      // rollRight: 0
+    };
   
     if (!renderer) {
       throw new Error('Threlte Context missing: Is <PointerLockControls> a child of <Canvas>?')
@@ -62,6 +72,10 @@
      */
     function onMouseMove(event) {
       const { movementX, movementY } = event
+
+      moveState.up = Math.sign($camera.rotation.z) * -1
+      moveState.down = Math.sign($camera.rotation.z)
+      // console.log($camera.rotation.z)
   
       _euler.setFromQuaternion($camera.quaternion)
   
@@ -93,16 +107,16 @@
     function onKeyDown(e) {
       switch (e.key) {
         case 's':
-          backward = 1
+          moveState.backward = 1
           break
         case 'w':
-          forward = 1
+          moveState.forward = 1
           break
         case 'a':
-          left = 1
+          moveState.left = 1
           break
         case 'd':
-          right = 1
+          moveState.right = 1
           break
         case ' ':
           if (!rigidBody || !grounded) break
@@ -117,37 +131,57 @@
     function onKeyUp(e) {
       switch (e.key) {
         case 's':
-          backward = 0
+          moveState.backward = 0
           break
         case 'w':
-          forward = 0
+          moveState.forward = 0
           break
         case 'a':
-          left = 0
+          moveState.left = 0
           break
         case 'd':
-          right = 0
+          moveState.right = 0
           break
         default:
           break
       }
     }
 
-    useFrame(() => {
-      if (!rigidBody) return
+    function defaultMove () {
+      const upOrDown = (+ (moveState.forward || moveState.backward ))
+      
       // get direction
-      const velocityVector = t.fromArray([right - left, 0, backward - forward])
-      // sort rotate and multiply by speed
+      const velocityVector = t.fromArray([
+        moveState.right - moveState.left,
+        fly ? upOrDown : 0,
+        moveState.backward - moveState.forward
+      ])
+
       velocityVector.applyEuler($camera.rotation).multiplyScalar(cameraSpeed)
+
       // don't override falling velocity
-      const linVel = rigidBody.linvel()
-      t.y = linVel.y
+      if (!fly) {
+        const linVel = rigidBody.linvel()
+        t.y = linVel.y
+      }
+
       // finally set the velocities and wake up the body
       rigidBody.setLinvel(t, true)
   
       // when body position changes update position prop for camera
       const pos = rigidBody.translation()
-      position = { x: pos.x, y: pos.y, z: pos.z }
+      position = {
+        x: pos.x,
+        y: pos.y,
+        z: pos.z
+      }
+
+      // console.log(pos.y)
+    }
+
+    useFrame(() => {
+      if (!rigidBody) return
+      defaultMove()
     })
 
     $: grounded ? dispatch("groundenter") : dispatch("groundexit")

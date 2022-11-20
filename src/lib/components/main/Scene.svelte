@@ -16,6 +16,8 @@
   import Player from './Player.svelte'
   import Sky from './Sky.svelte'
 
+  $: console.log($epochs)
+
   function onKeyDown (e) {
 		 switch(e.keyCode) {
       case(81):

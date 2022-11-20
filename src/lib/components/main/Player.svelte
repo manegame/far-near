@@ -9,6 +9,7 @@
   } from "@threlte/core"
   import { RigidBody, CollisionGroups, Collider, Debug } from "@threlte/rapier"
   import { createEventDispatcher, onDestroy } from "svelte"
+  // import FlyControls from "$lib/components/controls/FlyControls.svelte"
   import PointerLockControls from "$lib/components/controls/PointerLockControls.svelte"
   import { onTop } from "$lib/store"
   import { onMount } from "svelte"
@@ -54,7 +55,7 @@
     for (let i = 0; i < intersects.length; i++) {
       if (pointerdown) {
         // Do something with the intersection
-        // console.log(intersects[i])
+        console.log(intersects[i])
       }
     }
 
@@ -120,8 +121,9 @@
     bind:position={position}
     bind:rigidBody={rigidBody}
     bind:grounded={grounded}
-    pointerSpeed={2.0}
     bind:lock
+    fly
+    pointerSpeed={2.0}
   />
 </PerspectiveCamera>
 

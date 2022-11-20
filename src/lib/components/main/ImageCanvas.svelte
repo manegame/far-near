@@ -17,12 +17,15 @@
   let ready = false
   const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
   const { scene } = useThrelte()
-  let intersects
+  let intersects = undefined
 
 
   useFrame(() => {
     if (!intersects) {
-      intersects = raycaster.intersectObjects(scene.children)
+      const is = raycaster.intersectObjects(scene.children)
+      if (is.length > 0) {
+        intersects = is
+      }
     }
   })
 

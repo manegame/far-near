@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { HTML } from '@threlte/extras'
+  import { Vector3 } from 'three'
 	import { World } from '@threlte/rapier'
 	import Scene from './Scene.svelte'
 </script>
 
-<World>
+<World gravity={new Vector3(0, 0, 0)}>
   <Scene />
 
   <HTML slot="fallback" transform>
