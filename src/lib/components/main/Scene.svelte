@@ -8,13 +8,13 @@
     Fog,
     useThrelte
 	} from '@threlte/core'
-  import { Vector2 } from "three"
   import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs } from "$lib/store"
 
 	import Terrain from './TerrainFile.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
+  import Sky from './Sky.svelte'
 
   function onKeyDown (e) {
 		 switch(e.keyCode) {
@@ -41,15 +41,15 @@
 
 <Fog color="0xdddddd" />
 
-<Terrain />
-
 <Pass
   pass={new BokehPass(scene, $camera, {
     focus: 3.0,
     aperture: 0.0015,
     maxblur: 0.005
   })}
-  />
+/>
+
+<!-- <Sky /> -->
 
 <!-- <Debug /> -->
 

@@ -27,7 +27,7 @@
   })
 
   $: {
-    if (intersects) {
+    if (intersects && intersects[0]) {
       position.y -= intersects[0].distance + base
     }
   }

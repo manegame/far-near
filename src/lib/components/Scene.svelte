@@ -28,7 +28,7 @@
   $: zoom = $size.width / 50
 </script>
 
-<OrthographicCamera position={{ x: 50, y: 50, z: 50 }} {zoom} lookAt={{}} />
+<OrthographicCamera position={{ x: 50, y: 50, z: 50 }} {zoom} lookAt={{}} near={1} far={10000} />
 
 <InstancedMesh {geometry} {material} interactive position={{ x: -rows / 2, z: -rows / 2 }}>
   {#each positions as position}

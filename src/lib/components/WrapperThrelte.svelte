@@ -3,6 +3,7 @@
   import { onMount } from "svelte"
   import { Canvas } from '@threlte/core'
   import Physics from './main/Index.svelte'
+  import Stats from "./Stats.svelte"
   
   import GUI from "./GUI/index.svelte"
 
@@ -36,4 +37,7 @@
 
 <Canvas size={{ width, height  }}>
   <Physics />
+  {#if import.meta.env.DEV}
+    <Stats />
+  {/if}
 </Canvas>
