@@ -14,9 +14,9 @@
 	import Terrain from './TerrainFile.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
-  import Sky from './Sky.svelte'
+  // import Sky from './Sky.svelte'
 
-  $: console.log($epochs)
+  let terrainReady = false
 
   function onKeyDown (e) {
 		 switch(e.keyCode) {
@@ -33,13 +33,19 @@
 
 <DirectionalLight intensity={.5} scale={{ x: 20, y: 20, z: 20 }} shadow position={{ y: 20, x: 8, z: -5 }} />
 
-<Terrain />
+<Terrain on:ready={(e) => { terrainReady = true }} />
 
 <Player position={{ y: 10 }} />
 
-{#each Object.keys($epochs) as year (year)}
-  <Epoch epoch={$epochs[year]} {year} />
-{/each}
+{#if terrainReady}
+  {#each Object.keys($epochs) as year (year)}
+    <Epoch
+      epoch={$epochs[year]}
+      x={0}
+      z={0}
+    />
+  {/each}
+{/if}
 
 <Fog color="0xdddddd" />
 

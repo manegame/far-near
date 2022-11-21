@@ -55,7 +55,7 @@
     for (let i = 0; i < intersects.length; i++) {
       if (pointerdown) {
         // Do something with the intersection
-        console.log(intersects[i])
+        // console.log(intersects[i])
       }
     }
 
@@ -106,6 +106,7 @@
     window.addEventListener("pointerdown", onPointerDown)
     window.addEventListener("pointerup", onPointerUp)
   })
+
 </script>
 <!-- Top view camera -->
 <!-- <PerspectiveCamera position={{ y: 10, x: position.x, z: position.z }} rotation={{ x: - Math.PI / 2 }} bind:camera={topViewCamera} fov={90}>

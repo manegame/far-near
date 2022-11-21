@@ -1,6 +1,7 @@
 <svelte:options accessors={true} />
 
 <script lang="ts">
+  import { writable } from "svelte/store"
   import { Mesh } from "@threlte/core"
   import { useGltf } from "@threlte/extras"
   import Water from "$lib/components/main/Water.svelte"
@@ -12,10 +13,20 @@
     MeshStandardMaterial,
     DoubleSide
   } from "three"
-
-  let mesh
-
+  import { createEventDispatcher } from "svelte"
+  
+  const dispatch = createEventDispatcher()
   const { gltf } = useGltf('/terrains/v6.glb')
+  let mesh
+  let waterReady = false
+
+  $: {
+    console.log($gltf && waterReady)
+    if ($gltf && waterReady) {
+      dispatch('ready')
+    }
+  }
+
 </script>
 
 <!-- https://codeworkshop.dev/blog/2020-11-05-displacement-maps-normal-maps-and-textures-in-react-three-fiber/ -->
@@ -31,14 +42,13 @@
       geometry={$gltf.nodes.Plane.geometry}
       scale={{ x: 800, y: 400, z: 800 }}
       position={{ y: -8 }}
-      material={new MeshStandardMaterial({
-        // side: DoubleSide
-        // wireframe: true
-      })}
+      material={new MeshStandardMaterial()}
     />
   </AutoColliders>
 {/if}
 
-<Water />
+<Water
+  bind:ready={waterReady}
+/>
 
 <!-- https://threejs.org/examples/webgl_water.html -->

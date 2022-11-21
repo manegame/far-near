@@ -1,24 +1,29 @@
 <script>
-  import { BoxGeometry, MeshBasicMaterial, TextureLoader, Raycaster, Vector3 } from 'three'
+  import {
+    BoxGeometry,
+    MeshBasicMaterial,
+    TextureLoader,
+    Raycaster,
+    Vector3,
+    Euler
+  } from 'three'
   import { useTexture, Mesh, useLoader, useFrame, useThrelte } from "@threlte/core"
 
   export let image
   export let i
-  export let rotation
-  export let base = 2
+  export let base = 10
+  export let rotation = new Euler(0, 1 - Math.random() * 2, 0)
   export let position = new Vector3(i * base, 100, i * base)
 
-
   const src = image.replace(/.*\//, '/workaround/')
+  const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
   let ratio = 0
-  let geometry
-  let imageMaterial
   let colorMaterial = new MeshBasicMaterial({ color: 0xffffff })
   let ready = false
-  const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
+  let geometry
+  let imageMaterial
   const { scene } = useThrelte()
   let intersects = undefined
-
 
   useFrame(() => {
     if (!intersects) {
@@ -31,14 +36,17 @@
 
   $: {
     if (intersects && intersects[0]) {
-      position.y -= intersects[0].distance + base
+      const distances = intersects.map(i => i.distance)
+      const offset = Math.max(...[distances])
+      console.log(distances)
+      position.y -= intersects[0].distance - (base / 2)
     }
   }
 
   const tex = useTexture(src, {
     onLoad: (texture) => {
       ratio = texture.source.data.height / texture.source.data.width
-      geometry = new BoxGeometry(base, base * ratio, 0.05)
+      geometry = new BoxGeometry(base, base * ratio, base / 40)
       imageMaterial = new MeshBasicMaterial({ map: tex })
       ready = true
     }
@@ -48,6 +56,8 @@
 {#if ready}
   <Mesh
     {geometry}
+    receiveShadow
+    castShadow
     material={[
       colorMaterial,
       colorMaterial,
