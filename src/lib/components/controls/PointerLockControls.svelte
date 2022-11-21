@@ -9,7 +9,7 @@
     export let maxPolarAngle = Math.PI // radians
     export let pointerSpeed = 1.0
     export let jumpStrength = 4
-    export let cameraSpeed = 6
+    export let cameraSpeed = 60
     export let grounded = false
     export let position
     export let rigidBody

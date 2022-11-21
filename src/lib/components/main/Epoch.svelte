@@ -25,7 +25,6 @@
   const randomPoints = images.map(() => getRandomPoint(radius, x, z))
 </script>
 
-
 <Group
   position={new Vector3(x, 0, z)}
 >

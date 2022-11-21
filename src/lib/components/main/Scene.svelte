@@ -31,7 +31,7 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-<DirectionalLight intensity={.5} scale={{ x: 20, y: 20, z: 20 }} shadow position={{ y: 20, x: 8, z: -5 }} />
+<DirectionalLight intensity={.2} scale={{ x: 20, y: 20, z: 20 }} shadow position={{ y: 20, x: 8, z: -5 }} />
 
 <Terrain on:ready={(e) => { terrainReady = true }} />
 
