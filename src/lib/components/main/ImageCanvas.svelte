@@ -14,12 +14,15 @@
   export let base = 10
   export let rotation = new Euler(0, 1 - i / 10, 0)
   export let position = new Vector3(i * base, 100, i * base)
+  export let opacity = 0.4
 
   const src = image.replace(/.*\//, '/workaround/')
   const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
   let ratio = 0
   let colorMaterial = new MeshBasicMaterial({
-    color: 0xffffff
+    transparent: true,
+    color: 0xffffff,
+    opacity
   })
   let ready = false
   let geometry
@@ -39,8 +42,9 @@
   $: {
     if (intersects && intersects[0]) {
       const distances = intersects.map(i => i.distance)
-      const offset = Math.max(...[distances])
-      position.y -= intersects[0].distance - (base / 2)
+      const offset = Math.min(...distances)
+      console.log(offset)
+      position.y -= (offset - base * 1.4)
     }
   }
 
@@ -48,7 +52,11 @@
     onLoad: (texture) => {
       ratio = texture.source.data.height / texture.source.data.width
       geometry = new BoxGeometry(base, base * ratio, base / 10)
-      const imageMaterial = new MeshBasicMaterial({ map: tex })
+      const imageMaterial = new MeshBasicMaterial({
+        map: tex,
+        transparent: true,
+        opacity
+      })
       material = [
         colorMaterial,
         colorMaterial,

@@ -27,6 +27,8 @@
      }
   }
 
+  $: console.log(Object.keys($epochs).length)
+
   const color = 0x20342f
 </script>
 
@@ -50,11 +52,12 @@
 <Player position={{ y: 5 }} />
 
 {#if terrainReady}
-  {#each Object.keys($epochs) as year (year)}
+  {#each Object.keys($epochs) as year, i (year)}
     <Epoch
       epoch={$epochs[year]}
-      x={0}
-      z={0}
+      radius={40}
+      x={10 + i * 20}
+      z={10 + i * 50}
     />
   {/each}
 {/if}

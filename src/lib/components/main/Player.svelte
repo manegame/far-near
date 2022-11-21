@@ -23,6 +23,8 @@
 
   let rigidBody
   let lock
+  let hit = undefined
+  let oldHit = undefined
 
   let playerCamera
   let topViewCamera
@@ -44,18 +46,20 @@
 
   renderer.domElement.addEventListener("click", lockControls)
 
+  $: if (hit) processHit()
+
   onDestroy(() => {
     renderer.domElement.removeEventListener("click", lockControls)
   })
 
   useFrame(() => {
     raycaster.setFromCamera(pointer, playerCamera)
-    const intersects = raycaster.intersectObjects(scene.children.filter(c => c instanceof DirectionalLight || c instanceof DirectionalLightHelper))
+    const intersects = raycaster.intersectObjects(scene.children.filter(c => !(c instanceof DirectionalLight) && !(c instanceof DirectionalLightHelper)))
 
     for (let i = 0; i < intersects.length; i++) {
       if (pointerdown) {
         // Do something with the intersection
-        // console.log(intersects[i])
+        hit = intersects[0]
       }
     }
 
@@ -101,6 +105,23 @@
     pointerdown = false
   }
 
+  function changeOpacity (h, opacity = 1.0) {
+    if (h.object.material && h.object.material.length === 6) {
+      h.object.material.forEach(mat => {
+        mat.opacity = opacity
+      })
+    }
+  }
+
+  function processHit () {
+    changeOpacity(hit, 1.0)
+    // if (oldHit) {
+    //   changeOpacity(oldHit, 0.4)
+    // }
+
+    oldHit = hit
+  }
+
   onMount(() => {
     window.addEventListener("pointermove", onPointerMove)
     window.addEventListener("pointerdown", onPointerDown)
@@ -108,9 +129,6 @@
   })
 
 </script>
-<!-- Top view camera -->
-<!-- <PerspectiveCamera position={{ y: 10, x: position.x, z: position.z }} rotation={{ x: - Math.PI / 2 }} bind:camera={topViewCamera} fov={90}>
-</PerspectiveCamera> -->
 
 <!-- FPS camera -->
 <PerspectiveCamera
@@ -129,6 +147,7 @@
   />
 </PerspectiveCamera>
 
+<!-- Top view camera -->
 <OrthographicCamera
   position={{ y: 10, x: position.x, z: position.z }}
   rotation={{ x: -Math.PI / 2 }}
