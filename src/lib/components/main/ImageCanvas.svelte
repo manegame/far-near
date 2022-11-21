@@ -14,7 +14,7 @@
   export let base = 10
   export let rotation = new Euler(0, 1 - i / 10, 0)
   export let position = new Vector3(i * base, 100, i * base)
-  export let opacity = 0.4
+  export let opacity = 0.7
 
   const src = image.replace(/.*\//, '/workaround/')
   const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
@@ -51,7 +51,7 @@
   const tex = useTexture(src, {
     onLoad: (texture) => {
       ratio = texture.source.data.height / texture.source.data.width
-      geometry = new BoxGeometry(base, base * ratio, base / 10)
+      geometry = new BoxGeometry(base, base * ratio, base / 30)
       const imageMaterial = new MeshBasicMaterial({
         map: tex,
         transparent: true,

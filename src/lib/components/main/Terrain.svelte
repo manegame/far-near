@@ -2,7 +2,7 @@
 
 <script lang="ts">
   import { writable } from "svelte/store"
-  import { Mesh } from "@threlte/core"
+  import { Mesh, useTexture } from "@threlte/core"
   import { useGltf } from "@threlte/extras"
   import Water from "$lib/components/main/Water.svelte"
   import {
@@ -13,12 +13,18 @@
     // MeshStandardMaterial,
     ShadowMaterial,
     MeshBasicMaterial,
-    DoubleSide
+    DoubleSide,
+    RepeatWrapping
   } from "three"
   import { createEventDispatcher } from "svelte"
+  export let color
   
   const dispatch = createEventDispatcher()
   const { gltf } = useGltf('/terrains/v6.glb')
+  const tex = useTexture('/textures/grass/Grass_005_BaseColor.png')
+  tex.wrapS = RepeatWrapping
+  tex.wrapT = RepeatWrapping
+  tex.repeat.set( 22, 22 );
   let mesh
   let waterReady = false
 
@@ -41,10 +47,11 @@
       receiveShadow
       castShadow
       geometry={$gltf.nodes.Plane.geometry}
-      scale={{ x: 800, y: 400, z: 800 }}
+      scale={{ x: 800, y: 300, z: 800 }}
       position={{ y: -8 }}
       material={new MeshBasicMaterial({
-        color: 0x333333,
+        color,
+        map: tex,
         side: DoubleSide
       })}
     />

@@ -29,7 +29,7 @@
 
   $: console.log(Object.keys($epochs).length)
 
-  const color = 0x20342f
+  const color = 0xa1a1a1
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -47,7 +47,7 @@
   {/if}
 </DirectionalLight>
 
-<!-- <AmbientLight intensity={0.2} /> -->
+<AmbientLight intensity={0.2} />
 
 <Player position={{ y: 5 }} />
 
@@ -63,6 +63,7 @@
 {/if}
 
 <Terrain
+  {color}
   on:ready={(e) => { terrainReady = true }}
 />
 
