@@ -3,7 +3,6 @@
 
   const toggle = () => {
     const nextValue = $onTop === 'walk' ? 'map' : 'walk'
-    console.log(nextValue)
     onTop.set(nextValue)
   }
 </script>

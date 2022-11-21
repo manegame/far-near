@@ -9,7 +9,7 @@
     export let maxPolarAngle = Math.PI // radians
     export let pointerSpeed = 1.0
     export let jumpStrength = 4
-    export let cameraSpeed = 60
+    export let cameraSpeed = 9
     export let grounded = false
     export let position
     export let rigidBody
@@ -19,7 +19,7 @@
     const t = new Vector3()
     let isLocked = false
     
-    const { scene, renderer, invalidate } = useThrelte()
+    const { renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
     const camera = useParent()
     const dispatch = createEventDispatcher()

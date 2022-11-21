@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {
-		// AudioListener,
 		DirectionalLight,
     OrbitControls,
+    AmbientLight,
     PerspectiveCamera,
     Pass,
     Fog,
@@ -11,10 +11,11 @@
   import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs } from "$lib/store"
 
-	import Terrain from './TerrainFile.svelte'
+	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
-  // import Sky from './Sky.svelte'
+  import DirectionalLightHelper from '$lib/components/lighting/DirectionalLightHelper.svelte'
+  import Sky from './Sky.svelte'
 
   let terrainReady = false
 
@@ -26,16 +27,27 @@
      }
   }
 
-  const { scene, camera } = useThrelte()
+  const color = 0x20342f
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
-<DirectionalLight intensity={.2} scale={{ x: 20, y: 20, z: 20 }} shadow position={{ y: 20, x: 8, z: -5 }} />
 
-<Terrain on:ready={(e) => { terrainReady = true }} />
+<DirectionalLight
+  intensity={10}
+  color={0xff0000}
+  shadow
+  visible
+  position={{ y: 100 }}
+  target={{ x: 100, z: 100 }}>
+  {#if import.meta.env.DEV}
+    <DirectionalLightHelper />
+  {/if}
+</DirectionalLight>
 
-<Player position={{ y: 10 }} />
+<!-- <AmbientLight intensity={0.2} /> -->
+
+<Player position={{ y: 5 }} />
 
 {#if terrainReady}
   {#each Object.keys($epochs) as year (year)}
@@ -47,17 +59,21 @@
   {/each}
 {/if}
 
-<Fog color="0xdddddd" />
+<Terrain
+  on:ready={(e) => { terrainReady = true }}
+/>
 
-<Pass
+<Fog {color} />
+<Sky {color} />
+
+<!-- <Pass
   pass={new BokehPass(scene, $camera, {
     focus: 3.0,
     aperture: 0.0015,
     maxblur: 0.005
   })}
-/>
+/> -->
 
-<!-- <Sky /> -->
 
 <!-- <Debug /> -->
 

@@ -3,7 +3,7 @@
   import { onMount } from "svelte"
   import { Canvas } from '@threlte/core'
   import Physics from './main/Index.svelte'
-  import Stats from "./Stats.svelte"
+  import Stats from "./GUI/Stats.svelte"
   
   import GUI from "./GUI/index.svelte"
 

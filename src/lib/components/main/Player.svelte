@@ -1,5 +1,5 @@
 <script>
-  import { Vector3, Raycaster, Vector2 } from "three"
+  import { Vector3, Raycaster, Vector2, DirectionalLight, DirectionalLightHelper } from "three"
   import {
     useFrame,
     useThrelte,
@@ -50,7 +50,7 @@
 
   useFrame(() => {
     raycaster.setFromCamera(pointer, playerCamera)
-    const intersects = raycaster.intersectObjects(scene.children)
+    const intersects = raycaster.intersectObjects(scene.children.filter(c => c instanceof DirectionalLight || c instanceof DirectionalLightHelper))
 
     for (let i = 0; i < intersects.length; i++) {
       if (pointerdown) {
@@ -116,7 +116,8 @@
 <PerspectiveCamera
   bind:camera={playerCamera}
   bind:position
-  fov={90}
+  fov={70}
+  far={11000}
 >
   <PointerLockControls
     bind:position={position}
