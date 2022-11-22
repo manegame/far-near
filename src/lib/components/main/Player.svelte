@@ -1,11 +1,18 @@
 <script>
-  import { Vector3, Raycaster, Vector2, DirectionalLight, DirectionalLightHelper } from "three"
+  import {
+    Vector3,
+    Raycaster,
+    Vector2,
+    DirectionalLight,
+    DirectionalLightHelper,
+    CameraHelper
+  } from "three"
   import {
     useFrame,
     useThrelte,
     PerspectiveCamera,
     OrthographicCamera,
-    OrbitControls,
+    Three
   } from "@threlte/core"
   import { RigidBody, CollisionGroups, Collider, Debug } from "@threlte/rapier"
   import { createEventDispatcher, onDestroy } from "svelte"
@@ -28,6 +35,7 @@
 
   let playerCamera
   let topViewCamera
+  let cameraRotation
 
   let pointerdown = false
 
@@ -115,9 +123,6 @@
 
   function processHit () {
     changeOpacity(hit, 1.0)
-    // if (oldHit) {
-    //   changeOpacity(oldHit, 0.4)
-    // }
 
     oldHit = hit
   }
@@ -134,6 +139,7 @@
 <PerspectiveCamera
   bind:camera={playerCamera}
   bind:position
+  bind:rotation={cameraRotation}
   fov={70}
   far={11000}
 >
@@ -142,8 +148,8 @@
     bind:rigidBody={rigidBody}
     bind:grounded={grounded}
     bind:lock
-    fly
     pointerSpeed={2.0}
+    fly
   />
 </PerspectiveCamera>
 
@@ -159,7 +165,7 @@
   bind:rigidBody
   {position}
   enabledRotations={[false, false, false]}
->
+  >
   <CollisionGroups groups={playerCollisionGroups}>
     <Collider shape={"capsule"} args={[height / 2 - radius, radius]} />
   </CollisionGroups>

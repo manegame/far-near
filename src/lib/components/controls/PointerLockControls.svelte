@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher, onDestroy } from 'svelte'
-    import { Euler, Camera, Vector3 } from 'three'
+    import { Euler, Camera, Vector3, MathUtils } from 'three'
     import { useThrelte, useParent, useFrame } from '@threlte/core'
   
     // Set to constrain the pitch of the camera
@@ -14,6 +14,8 @@
     export let position
     export let rigidBody
     export let fly = false
+    export const lock = () => domElement.requestPointerLock()
+    export const unlock = () => document.exitPointerLock()
   
     // T?
     const t = new Vector3()
@@ -54,9 +56,6 @@
       dispatch('change')
     }
   
-    export const lock = () => domElement.requestPointerLock()
-    export const unlock = () => document.exitPointerLock()
-  
     domElement.addEventListener('mousemove', onMouseMove)
     domElement.ownerDocument.addEventListener('pointerlockchange', onPointerlockChange)
     domElement.ownerDocument.addEventListener('pointerlockerror', onPointerlockError)
@@ -72,10 +71,6 @@
      */
     function onMouseMove(event) {
       const { movementX, movementY } = event
-
-      moveState.up = Math.sign($camera.rotation.z) * -1
-      moveState.down = Math.sign($camera.rotation.z)
-      // console.log($camera.rotation.z)
   
       _euler.setFromQuaternion($camera.quaternion)
   
@@ -119,6 +114,11 @@
           moveState.right = 1
           break
         case ' ':
+          if (fly) {
+            cameraSpeed = 20
+            if (!rigidBody || !grounded) break
+            rigidBody.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true)
+          }
           if (!rigidBody || !grounded) break
           rigidBody.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true)
           break
@@ -129,6 +129,9 @@
   
     /** @param {KeyboardEvent} e */
     function onKeyUp(e) {
+      moveState.up = 0
+      moveState.down = 0
+
       switch (e.key) {
         case 's':
           moveState.backward = 0
@@ -142,22 +145,38 @@
         case 'd':
           moveState.right = 0
           break
+        case ' ':
+          if (fly) {
+            cameraSpeed = 9
+          }
+          break
         default:
           break
       }
     }
 
+    /**
+     * The thing that actually moves the player
+     */
     function defaultMove () {
-      const upOrDown = (+ (moveState.forward || moveState.backward ))
-      
+      console.log(moveState)
+
       // get direction
       const velocityVector = t.fromArray([
         moveState.right - moveState.left,
-        fly ? upOrDown : 0,
+        0,
         moveState.backward - moveState.forward
       ])
 
-      velocityVector.applyEuler($camera.rotation).multiplyScalar(cameraSpeed)
+      const adjustedRotation = new Euler()
+
+      adjustedRotation.copy($camera.rotation)
+
+      velocityVector
+        .applyEuler(adjustedRotation)
+    
+      velocityVector
+        .multiplyScalar(cameraSpeed)
 
       // don't override falling velocity
       if (!fly) {
@@ -167,16 +186,13 @@
 
       // finally set the velocities and wake up the body
       rigidBody.setLinvel(t, true)
-  
-      // when body position changes update position prop for camera
       const pos = rigidBody.translation()
+
       position = {
         x: pos.x,
         y: pos.y,
         z: pos.z
       }
-
-      // console.log(pos.y)
     }
 
     useFrame(() => {

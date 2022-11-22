@@ -3,7 +3,7 @@
   import { Vector3 } from "three"
   import ImageCanvas from "./ImageCanvas.svelte"
   export let epoch
-  export let radius = 100
+  export let radius = 200
   export let x = 0
   export let z = 0
 

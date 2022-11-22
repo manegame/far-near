@@ -1,12 +1,8 @@
 <script lang="ts">
 	import {
 		DirectionalLight,
-    OrbitControls,
     AmbientLight,
-    PerspectiveCamera,
-    Pass,
-    Fog,
-    useThrelte
+    Fog
 	} from '@threlte/core'
   import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs } from "$lib/store"
@@ -27,13 +23,10 @@
      }
   }
 
-  $: console.log(Object.keys($epochs).length)
-
   const color = 0xa1a1a1
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
-
 
 <DirectionalLight
   intensity={10}
