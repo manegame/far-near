@@ -6,6 +6,7 @@
     Fog,
     useThrelte
 	} from '@threlte/core'
+  import { Debug } from "@threlte/rapier"
   import { Vector3 } from "three"
   import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs } from "$lib/store"
@@ -48,19 +49,15 @@
     shadow
     position={{ y: 50, x: position.x, z: position.z }}
     target={{ x: position.x, z: position.z - 50 }}
-  >
-    {#if import.meta.env.DEV}
-      <DirectionalLightHelper />
-    {/if}
-  </DirectionalLight>
+  />
 {/if}
 
 {#if terrainReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
-      position={new Vector3(0, 0, -50 - 50 * i )}
+      position={new Vector3(i * 30 + 20, 5, -50 - 80 * i )}
       epoch={$epochs[year]}
-      radius={40}
+      radius={30}
     />
   {/each}
 {/if}

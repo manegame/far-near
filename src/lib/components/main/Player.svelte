@@ -146,13 +146,6 @@
   />
 </PerspectiveCamera>
 
-<!-- Top view camera -->
-<OrthographicCamera
-  position={{ y: 10, x: position.x, z: position.z }}
-  rotation={{ x: -Math.PI / 2 }}
-  bind:camera={cameras[1]}
-/>
-
 <!-- Player -->
 <RigidBody
   bind:rigidBody
@@ -164,14 +157,6 @@
     <Collider shape={"capsule"} args={[height / 2 - radius, radius]} />
   </CollisionGroups>
 
-  <!-- <CollisionGroups groups={groundCollisionGroups}>
-    <Collider
-      sensor
-      on:sensorenter={() => (grounded = true)}
-      on:sensorexit={() => (grounded = false)}
-      shape={"ball"}
-      args={[radius * 1.2]}
-      position={{ y: -height / 2 + radius }}
-    />
-  </CollisionGroups> -->
+
 </RigidBody>
+<!-- <Debug /> -->

@@ -8,7 +8,7 @@
   import GUI from "./GUI/index.svelte"
 
   let page = 1
-  let apiUrl = `https://far-near.media/wp-json/wp/v2/articles?per_page=5&page=${page}`
+  let apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=12&page=${page}`
 
   let insetContainer = `
     position: fixed;
@@ -20,7 +20,7 @@
   let height  = window.innerHeight
 
   $: {
-    apiUrl = `https://far-near.media/wp-json/wp/v2/articles?per_page=5&page=${page}`
+    apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=12&page=${page}`
     getData()
   }
 
@@ -37,9 +37,6 @@
       if (page < total) {
         page++
       }
-
-      console.log($data)
-
     } catch (error) {
       console.error(error)
     }

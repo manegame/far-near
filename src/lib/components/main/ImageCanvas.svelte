@@ -7,6 +7,7 @@
     Vector3,
     Euler
   } from 'three'
+  import { AutoColliders } from '@threlte/rapier'
   import { useTexture, Mesh, useLoader, useFrame, useThrelte } from "@threlte/core"
 
   export let uuid
@@ -49,8 +50,6 @@
 
         const index = distances.indexOf(offset)
 
-        console.log(is[index].object.type)
-
         position.y -= (offset - boxHeight)
         placed = true
       }
@@ -58,6 +57,7 @@
 
     if (mesh && placed) {
       position.y += Math.sin(d) * 0.01
+      rotation.y += Math.sin(d) * 0.005
     }
   })
 
@@ -67,9 +67,7 @@
       boxHeight = base * ratio
       geometry = new BoxGeometry(base, boxHeight, 0.1)
       const imageMaterial = new MeshLambertMaterial({
-        map: tex,
-        transparent: true,
-        opacity
+        map: tex
       })
       material = [
         colorMaterial,
@@ -86,13 +84,15 @@
 </script>
 
 {#if ready}
-  <Mesh
-    bind:mesh
-    {geometry}
-    {position}
-    receiveShadow
-    castShadow
-    {material}
-    {rotation}
-  />
+  <AutoColliders shape={'cuboid'}>
+    <Mesh
+      bind:mesh
+      {geometry}
+      {position}
+      receiveShadow
+      castShadow
+      {material}
+      {rotation}
+    />
+  </AutoColliders>
 {/if}

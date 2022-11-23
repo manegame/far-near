@@ -5,15 +5,9 @@
 
   export let position = new Vector3(0, 0, -50)
   export let epoch
-  export let radius = 200
+  export let radius
 
-  const images = epoch.map(i => ({
-    uuid: i.slug,
-    src: i.acf.preview_image?.url
-  }))
-    .filter(i => !!i.src)
-
-  const getRandomPoint = (radius) => {
+  const getRandomPoint = () => {
     let ang = Math.random() * 2 * Math.PI
     let hyp = Math.sqrt(Math.random()) * radius
     let adj = Math.cos(ang) * hyp
@@ -26,14 +20,20 @@
     )
   }
 
-  const randomPoints = images.map(() => getRandomPoint(radius))
+  const images = epoch.map(i => ({
+    uuid: i.slug,
+    src: i.acf.preview_image?.url,
+    pos: getRandomPoint()
+  }))
+    .filter(i => !!i.src)
+
 </script>
 
 <Group {position}>
-  {#each images as { uuid, src }, i (uuid)}
+  {#each images as { uuid, src, pos }, i (uuid)}
     <ImageCanvas
       {uuid}
-      position={randomPoints[i]}
+      position={pos}
       {src}
       {i}
     />
