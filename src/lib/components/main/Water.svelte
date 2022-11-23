@@ -3,6 +3,7 @@
     PlaneGeometry,
     Vector2
   } from 'three'
+  import { DoubleSide } from "three"
   import { Water } from "three/examples/jsm/objects/Water2"
   import { useThrelte } from "@threlte/core"
 
@@ -13,11 +14,13 @@
 
   const water = new Water(geometry, {
     color: 0xdf4fdfd,
-    scale: 3, // 1 to 10
+    scale: 10, // 1 to 10
+    // color: 0xcccccc,
     flowDirection: new Vector2(-0.1, -0.2), // -1 to 1
-    textureWidth: 512,
-    textureHeight: 512
+    textureWidth: 256,
+    textureHeight: 256
   })
+  water.material.side = DoubleSide
   water.rotation.x = - Math.PI / 2
   water.position.y = -5
   scene.add(water)

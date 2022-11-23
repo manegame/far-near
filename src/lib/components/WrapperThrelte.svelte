@@ -7,8 +7,8 @@
   
   import GUI from "./GUI/index.svelte"
 
-  // const apiUrl = "https://far-near.media/wp-json/wp/v2/shop"
-  const apiUrl = "https://far-near.media/wp-json/wp/v2/articles?per_page=15"
+  let page = 1
+  let apiUrl = `https://far-near.media/wp-json/wp/v2/articles?per_page=5&page=${page}`
 
   let insetContainer = `
     position: fixed;
@@ -19,6 +19,11 @@
   let width   = window.innerWidth
   let height  = window.innerHeight
 
+  $: {
+    apiUrl = `https://far-near.media/wp-json/wp/v2/articles?per_page=5&page=${page}`
+    getData()
+  }
+
   /**
    * Get data
    */
@@ -26,7 +31,15 @@
     try {
       const response = await fetch(apiUrl)
   
-      $data = await response.json()
+      $data = [...$data, ...await response.json()]
+      const total = Number(response.headers.get('x-wp-totalpages'))
+      
+      if (page < total) {
+        page++
+      }
+
+      console.log($data)
+
     } catch (error) {
       console.error(error)
     }
@@ -37,6 +50,7 @@
 
 <Canvas size={{ width, height  }}>
   <Physics />
+
   {#if import.meta.env.DEV}
     <Stats />
   {/if}

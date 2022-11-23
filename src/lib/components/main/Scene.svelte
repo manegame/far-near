@@ -2,8 +2,11 @@
 	import {
 		DirectionalLight,
     AmbientLight,
-    Fog
+    HemisphereLight,
+    Fog,
+    useThrelte
 	} from '@threlte/core'
+  import { Vector3 } from "three"
   import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs } from "$lib/store"
 
@@ -12,8 +15,11 @@
   import Player from './Player.svelte'
   import DirectionalLightHelper from '$lib/components/lighting/DirectionalLightHelper.svelte'
   import Sky from './Sky.svelte'
-
+  
   let terrainReady = false
+  let position = new Vector3(0, 5, 0)
+
+  const { camera } = useThrelte()
 
   function onKeyDown (e) {
 		 switch(e.keyCode) {
@@ -23,34 +29,38 @@
      }
   }
 
-  const color = 0xa1a1a1
+  const color = 0xccbbbb
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
-<DirectionalLight
-  intensity={10}
-  color={0xff0000}
-  shadow
-  visible
-  position={{ y: 100 }}
-  target={{ x: 100, z: 100 }}>
-  {#if import.meta.env.DEV}
-    <DirectionalLightHelper />
-  {/if}
-</DirectionalLight>
 
-<AmbientLight intensity={0.2} />
+<AmbientLight intensity={1} color={0xffd1d1} />
 
-<Player position={{ y: 5 }} />
+{#if $camera}
+  <Player
+    bind:position={position}
+  />
+
+  <DirectionalLight
+    intensity={1}
+    color={0xffffff}
+    shadow
+    position={{ y: 50, x: position.x, z: position.z }}
+    target={{ x: position.x, z: position.z - 50 }}
+  >
+    {#if import.meta.env.DEV}
+      <DirectionalLightHelper />
+    {/if}
+  </DirectionalLight>
+{/if}
 
 {#if terrainReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
+      position={new Vector3(0, 0, -50 - 50 * i )}
       epoch={$epochs[year]}
       radius={40}
-      x={10 + i * 20}
-      z={10 + i * 50}
     />
   {/each}
 {/if}
@@ -63,13 +73,15 @@
 <Fog {color} />
 <Sky {color} />
 
-<!-- <Pass
-  pass={new BokehPass(scene, $camera, {
-    focus: 3.0,
-    aperture: 0.0015,
-    maxblur: 0.005
-  })}
-/> -->
+<!-- {#if position.y < -5}
+  <Pass
+    pass={new BokehPass(scene, $camera, {
+      focus: 3.0,
+      aperture: 0.0015,
+      maxblur: 0.005
+    })}
+  />
+{/if} -->
 
 
 <!-- <Debug /> -->

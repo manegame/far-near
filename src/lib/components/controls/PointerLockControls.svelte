@@ -9,7 +9,7 @@
     export let maxPolarAngle = Math.PI // radians
     export let pointerSpeed = 1.0
     export let jumpStrength = 4
-    export let cameraSpeed = 9
+    export let cameraSpeed = 20
     export let grounded = false
     export let position
     export let rigidBody
@@ -115,7 +115,7 @@
           break
         case ' ':
           if (fly) {
-            cameraSpeed = 20
+            cameraSpeed = 40
             if (!rigidBody || !grounded) break
             rigidBody.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true)
           }
@@ -129,9 +129,6 @@
   
     /** @param {KeyboardEvent} e */
     function onKeyUp(e) {
-      moveState.up = 0
-      moveState.down = 0
-
       switch (e.key) {
         case 's':
           moveState.backward = 0
@@ -147,7 +144,7 @@
           break
         case ' ':
           if (fly) {
-            cameraSpeed = 9
+            cameraSpeed = 20
           }
           break
         default:
@@ -159,8 +156,6 @@
      * The thing that actually moves the player
      */
     function defaultMove () {
-      console.log(moveState)
-
       // get direction
       const velocityVector = t.fromArray([
         moveState.right - moveState.left,

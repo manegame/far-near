@@ -14,5 +14,7 @@ export const epochs = derived(data, ($data) => {
     eps[y] = $data.filter(item => new Date(item.date).getFullYear() === y)
   })
 
+  console.log('derived too')
+
   return eps
 })

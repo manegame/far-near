@@ -4,32 +4,39 @@
   import { writable } from "svelte/store"
   import { Mesh, useTexture } from "@threlte/core"
   import { useGltf } from "@threlte/extras"
-  import Water from "$lib/components/main/Water.svelte"
   import {
     Debug,
     AutoColliders
   } from "@threlte/rapier"
+  import Water from "$lib/components/main/Water.svelte"
   import {
     // MeshStandardMaterial,
     ShadowMaterial,
     MeshBasicMaterial,
     DoubleSide,
+    MeshNormalMaterial,
+    MeshLambertMaterial,
     RepeatWrapping
   } from "three"
   import { createEventDispatcher } from "svelte"
   export let color
+  let geometry
   
   const dispatch = createEventDispatcher()
-  const { gltf } = useGltf('/terrains/v6.glb')
-  const tex = useTexture('/textures/grass/Grass_005_BaseColor.png')
-  tex.wrapS = RepeatWrapping
-  tex.wrapT = RepeatWrapping
-  tex.repeat.set( 22, 22 );
+  const { gltf } = useGltf('/terrains/v7-compressed.glb', {
+    useDraco: true
+  })
+  const map = useTexture('/textures/grass/Grass_005_BaseColor.png')
+  map.wrapS = RepeatWrapping
+  map.wrapT = RepeatWrapping
+  map.repeat.set(16, 16);
   let mesh
   let waterReady = false
 
   $: {
     if ($gltf && waterReady) {
+      geometry = $gltf.nodes.Plane.geometry
+      geometry.computeVertexNormals() 
       dispatch('ready')
     }
   }
@@ -41,17 +48,17 @@
 <!-- <Debug /> -->
 
 {#if $gltf}
-  <AutoColliders shape={"trimesh"} position={{ y: -0.5 }}>
+  <AutoColliders shape={"trimesh"}>
     <Mesh
       bind:mesh
       receiveShadow
       castShadow
-      geometry={$gltf.nodes.Plane.geometry}
+      {geometry}
       scale={{ x: 800, y: 300, z: 800 }}
-      position={{ y: -8 }}
-      material={new MeshBasicMaterial({
+      position={{ y: 50 }}
+      material={new MeshLambertMaterial({
         color,
-        map: tex,
+        map,
         side: DoubleSide
       })}
     />

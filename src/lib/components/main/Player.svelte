@@ -27,15 +27,17 @@
   export let radius = 0.3
   export let height = 1.7
   export let grounded = false
+  
+  const cameras = []
+  const views = [
+    { left: 0, bottom: 0, width: 1.0, height: 1.0 },
+    { left: 0.7, bottom: 0.7, width: 0.3, height: 0.3 }
+  ]
 
   let rigidBody
   let lock
   let hit = undefined
   let oldHit = undefined
-
-  let playerCamera
-  let topViewCamera
-  let cameraRotation
 
   let pointerdown = false
 
@@ -60,8 +62,22 @@
     renderer.domElement.removeEventListener("click", lockControls)
   })
 
+  const makeView = (camera, background, { left, bottom, width, height }) => {
+    left = Math.floor(window.innerWidth * left)
+    bottom = Math.floor(window.innerHeight * bottom)
+    width = Math.floor(window.innerWidth * width)
+    height = Math.floor(window.innerHeight * height)
+
+    renderer.setViewport(left, bottom, width, height)
+    renderer.setScissor(left, bottom, width, height)
+    renderer.setScissorTest(true)
+    renderer.setClearColor(background)
+    renderer.render(scene, camera)
+    camera.updateProjectionMatrix()
+  }
+
   useFrame(() => {
-    raycaster.setFromCamera(pointer, playerCamera)
+    raycaster.setFromCamera(pointer, cameras[0])
     const intersects = raycaster.intersectObjects(scene.children.filter(c => !(c instanceof DirectionalLight) && !(c instanceof DirectionalLightHelper)))
 
     for (let i = 0; i < intersects.length; i++) {
@@ -71,33 +87,11 @@
       }
     }
 
-    const makeView = (camera, background, { left, bottom, width, height }) => {
-      left = Math.floor(window.innerWidth * left)
-      bottom = Math.floor(window.innerHeight * bottom)
-      width = Math.floor(window.innerWidth * width)
-      height = Math.floor(window.innerHeight * height)
-
-      renderer.setViewport(left, bottom, width, height)
-      renderer.setScissor(left, bottom, width, height)
-      renderer.setScissorTest(true)
-      renderer.setClearColor(background)
-      renderer.render(scene, camera)
-      camera.updateProjectionMatrix()
+    if (cameras.length > 0) {
+      for (let i = 0; i < cameras.length; i++) {
+        makeView(cameras[i], 0xfffff, views[i])
+      }
     }
-
-    makeView(playerCamera, 0xffffff, {
-      left: 0,
-      bottom: 0,
-      width: 1.0,
-      height: 1.0,
-    })
-
-    makeView(topViewCamera, 0xffffff, {
-      left: 0.7,
-      bottom: 0.7,
-      width: 0.28,
-      height: 0.28,
-    })
   })
 
   function onPointerMove(e) {
@@ -137,9 +131,8 @@
 
 <!-- FPS camera -->
 <PerspectiveCamera
-  bind:camera={playerCamera}
+  bind:camera={cameras[0]}
   bind:position
-  bind:rotation={cameraRotation}
   fov={70}
   far={11000}
 >
@@ -157,7 +150,7 @@
 <OrthographicCamera
   position={{ y: 10, x: position.x, z: position.z }}
   rotation={{ x: -Math.PI / 2 }}
-  bind:camera={topViewCamera}
+  bind:camera={cameras[1]}
 />
 
 <!-- Player -->
@@ -166,11 +159,12 @@
   {position}
   enabledRotations={[false, false, false]}
   >
-  <CollisionGroups groups={playerCollisionGroups}>
+  <CollisionGroups
+    groups={playerCollisionGroups}>
     <Collider shape={"capsule"} args={[height / 2 - radius, radius]} />
   </CollisionGroups>
 
-  <CollisionGroups groups={groundCollisionGroups}>
+  <!-- <CollisionGroups groups={groundCollisionGroups}>
     <Collider
       sensor
       on:sensorenter={() => (grounded = true)}
@@ -179,5 +173,5 @@
       args={[radius * 1.2]}
       position={{ y: -height / 2 + radius }}
     />
-  </CollisionGroups>
+  </CollisionGroups> -->
 </RigidBody>
