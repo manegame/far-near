@@ -1,5 +1,5 @@
 <script>
-  import { onTop } from "$lib/store"
+  import { onTop } from "$lib/stores"
 
   const toggle = () => {
     const nextValue = $onTop === 'walk' ? 'map' : 'walk'

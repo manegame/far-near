@@ -8,16 +8,20 @@
   export let radius
 
   const getRandomPoint = () => {
-    let ang = Math.random() * 2 * Math.PI
-    let hyp = Math.sqrt(Math.random()) * radius
-    let adj = Math.cos(ang) * hyp
-    let opp = Math.sin(ang) * hyp
+    function makeRandom () {
+      let ang = Math.random() * 2 * Math.PI
+      let hyp = Math.sqrt(Math.random()) * radius
+      let adj = Math.cos(ang) * hyp
+      let opp = Math.sin(ang) * hyp
 
-    return new Vector3(
-      position.x + adj,
-      100,
-      position.z + opp
-    )
+      return new Vector3(
+        position.x + adj,
+        100,
+        position.z + opp
+      )
+    }
+
+    return makeRandom()
   }
 
   const images = epoch.map(i => ({

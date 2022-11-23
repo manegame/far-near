@@ -5,20 +5,21 @@
     Vector2,
     DirectionalLight,
     DirectionalLightHelper,
-    CameraHelper
+    SpotLight,
+    CameraHelper,
+    Color
   } from "three"
   import {
     useFrame,
     useThrelte,
     PerspectiveCamera,
-    OrthographicCamera,
     Three
   } from "@threlte/core"
   import { RigidBody, CollisionGroups, Collider, Debug } from "@threlte/rapier"
   import { createEventDispatcher, onDestroy } from "svelte"
   // import FlyControls from "$lib/components/controls/FlyControls.svelte"
   import PointerLockControls from "$lib/components/controls/PointerLockControls.svelte"
-  import { onTop } from "$lib/store"
+  import { lighting, activeCanvas } from "$lib/stores"
   import { onMount } from "svelte"
 
   export let position = undefined
@@ -33,15 +34,15 @@
     { left: 0, bottom: 0, width: 1.0, height: 1.0 },
     { left: 0.7, bottom: 0.7, width: 0.3, height: 0.3 }
   ]
+  
+  let hit = undefined
+  let previousHit = undefined
 
   let rigidBody
   let lock
-  let hit = undefined
-  let oldHit = undefined
-
-  let pointerdown = false
-
-  const dispatch = createEventDispatcher()
+  let light
+  let pointerdown
+  let rotation
 
   const { scene, renderer } = useThrelte()
 
@@ -80,11 +81,22 @@
     raycaster.setFromCamera(pointer, cameras[0])
     const intersects = raycaster.intersectObjects(scene.children.filter(c => !(c instanceof DirectionalLight) && !(c instanceof DirectionalLightHelper)))
 
-    for (let i = 0; i < intersects.length; i++) {
-      if (pointerdown) {
-        // Do something with the intersection
-        hit = intersects[0]
+    if (intersects.length > 0) {
+      const distances = intersects.map(i => i.distance)
+      const hit = intersects[distances.indexOf(Math.min(...distances))]
+
+      if (previousHit?.object === hit?.object) return
+
+      if (hit?.object.userData.isImageCanvas) {
+        lightsOff()
       }
+
+      $activeCanvas = hit?.object.userData?.uuid
+
+      if (previousHit?.object.userData.isImageCanvas && !hit?.object.userData.isImageCanvas) {
+        lightsOn()
+      }
+      previousHit = hit
     }
 
     if (cameras.length > 0) {
@@ -106,20 +118,22 @@
   function onPointerUp() {
     pointerdown = false
   }
-
-  function changeOpacity (h, opacity = 1.0) {
-    if (h.object.material && h.object.material.length === 6) {
-      h.object.material.forEach(mat => {
-        mat.opacity = opacity
-      })
-    }
+  
+  function lightsOff () {
+    lighting.set({
+      ambient: 0.2,
+      color: { r: 0.2, g: 0.2, b: 0.2 }
+  })
+  }
+  
+  function lightsOn () {
+    lighting.set({
+      ambient: 1,
+      color: { r: 1, g: 1, b: 1 }
+    })
   }
 
-  function processHit () {
-    changeOpacity(hit, 1.0)
-
-    oldHit = hit
-  }
+  $: console.log(rotation)
 
   onMount(() => {
     window.addEventListener("pointermove", onPointerMove)
@@ -133,6 +147,7 @@
 <PerspectiveCamera
   bind:camera={cameras[0]}
   bind:position
+  bind:rotation={rotation}
   fov={70}
   far={11000}
 >
@@ -143,6 +158,20 @@
     bind:lock
     pointerSpeed={2.0}
     fly
+  />
+  <!--
+    color : Integer,
+    intensity : Float,
+    distance : Float,
+    angle : Radians,
+    penumbra : Float,
+    decay : Float -->
+    <Three
+    bind:ref={light}
+    position={position}
+    rotation={rotation}
+    type={SpotLight}
+    args={[0xffffff, 100, 1000, ]}
   />
 </PerspectiveCamera>
 

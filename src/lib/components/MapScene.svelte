@@ -23,7 +23,7 @@
 	import { spring } from 'svelte/motion';
 
   // Stores
-  import { data } from "$lib/store"
+  import { data } from "$lib/stores"
 
   /**
    * Props

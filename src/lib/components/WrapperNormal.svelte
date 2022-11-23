@@ -11,7 +11,7 @@
 </Canvas> -->
 
 <script>
-  import { data, onTop } from "$lib/store"
+  import { data, onTop } from "$lib/stores"
   import { onMount } from "svelte"
   
   import "../../app.css"

@@ -2,15 +2,14 @@
 	import {
 		DirectionalLight,
     AmbientLight,
-    HemisphereLight,
     Fog,
-    useThrelte
+    useThrelte,
+    Three
 	} from '@threlte/core'
   import { Debug } from "@threlte/rapier"
-  import { Vector3 } from "three"
+  import { Vector3, Color } from "three"
   import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
-  import { onTop, epochs } from "$lib/store"
-
+  import { onTop, epochs, lighting } from "$lib/stores"
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
@@ -19,8 +18,12 @@
   
   let terrainReady = false
   let position = new Vector3(0, 5, 0)
-
+  let combinedColor
+  let light
+  
   const { camera } = useThrelte()
+
+  $: combinedColor = new Color($lighting.color.r, $lighting.color.g, $lighting.color.b)
 
   function onKeyDown (e) {
 		 switch(e.keyCode) {
@@ -35,8 +38,7 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-
-<AmbientLight intensity={1} color={0xffd1d1} />
+<AmbientLight intensity={$lighting.ambient} color={combinedColor} />
 
 {#if $camera}
   <Player
@@ -44,8 +46,8 @@
   />
 
   <DirectionalLight
-    intensity={1}
-    color={0xffffff}
+    intensity={$lighting.ambient}
+    color={combinedColor}
     shadow
     position={{ y: 50, x: position.x, z: position.z }}
     target={{ x: position.x, z: position.z - 50 }}
@@ -63,12 +65,12 @@
 {/if}
 
 <Terrain
-  {color}
+  color={combinedColor}
   on:ready={(e) => { terrainReady = true }}
 />
 
-<Fog {color} />
-<Sky {color} />
+<Fog color={combinedColor} />
+<Sky color={combinedColor} />
 
 <!-- {#if position.y < -5}
   <Pass

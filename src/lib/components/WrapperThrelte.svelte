@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { data, onTop } from "$lib/store"
+  import { data, onTop } from "$lib/stores"
   import { onMount } from "svelte"
   import { Canvas } from '@threlte/core'
   import Physics from './main/Index.svelte'

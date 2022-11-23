@@ -5,10 +5,13 @@
     TextureLoader,
     Raycaster,
     Vector3,
-    Euler
+    Euler,
+    Color,
+    SpotLight
   } from 'three'
   import { AutoColliders } from '@threlte/rapier'
-  import { useTexture, Mesh, useLoader, useFrame, useThrelte } from "@threlte/core"
+  import { useTexture, Mesh, useLoader, useFrame, useThrelte, Three, Group } from "@threlte/core"
+  import { activeCanvas } from "$lib/stores"
 
   export let uuid
   export let src
@@ -16,25 +19,24 @@
   export let base = 10
   export let rotation = new Euler(0, 1 - i / 10, 0)
   export let position = new Vector3(i * base, 100, i * base)
-  export let opacity = 0.7
 
   // TODO: Remove workaround
   src = src.replace(/.*\//, '/workaround/')
 
   const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
   let colorMaterial = new MeshLambertMaterial({
-    transparent: true,
-    color: 0xffffff,
-    opacity
+    color: 0xffffff
   })
   let ready = false
   let placed = false
-  let geometry
-  let material
   let ratio = 0
   let boxHeight = base
-  let mesh
   let d = Math.random() * 10
+  let geometry
+  let material
+  let mesh
+  let light
+
   const { scene } = useThrelte()
 
   useFrame(() => {
@@ -57,7 +59,7 @@
 
     if (mesh && placed) {
       position.y += Math.sin(d) * 0.01
-      rotation.y += Math.sin(d) * 0.005
+      // rotation.y += Math.sin(d) * 0.005
     }
   })
 
@@ -81,18 +83,42 @@
     }
   })
 
+  $: if (uuid === $activeCanvas) {
+    mesh.material.emissive = new Color(0xffffff)
+  }
+
+  // $: if (light && mesh) {
+  //   light.position.y += 10
+  //   light.position.x += 10
+  //   light.target = mesh
+  //   console.log(light)
+  // }
+
 </script>
 
-{#if ready}
-  <AutoColliders shape={'cuboid'}>
-    <Mesh
-      bind:mesh
-      {geometry}
-      {position}
-      receiveShadow
-      castShadow
-      {material}
-      {rotation}
-    />
-  </AutoColliders>
-{/if}
+<Group>
+  {#if ready}
+    <AutoColliders shape={'cuboid'}>
+      <Mesh
+        userData={{
+          isImageCanvas: true,
+          uuid
+        }}
+        bind:mesh
+        {geometry}
+        {position}
+        receiveShadow
+        castShadow
+        {material}
+        {rotation}
+      />
+    </AutoColliders>
+  {/if}
+
+</Group>
+<!-- <Three
+  bind:ref={light}
+  position={position}
+  type={SpotLight}
+  args={[0xffffff, 1]}
+/> -->

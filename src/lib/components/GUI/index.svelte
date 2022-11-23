@@ -1,7 +1,7 @@
 <script>
   import Navigation from "./navigation.svelte"
   import Toggle from "./toggle.svelte"
-  import { onTop } from "$lib/store"
+  import { onTop } from "$lib/stores"
 </script>
 
 <div
