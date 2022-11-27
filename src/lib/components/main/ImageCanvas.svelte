@@ -36,6 +36,7 @@
   let d = Math.random() * 10
   let geometry
   let material
+  let imageMaterial
   let mesh
   let light
 
@@ -58,7 +59,6 @@
 
     if (mesh && placed) {
       position.y += Math.sin(d) * 0.01
-      // rotation.y += Math.sin(d) * 0.005
     }
   })
 
@@ -67,8 +67,10 @@
       ratio = texture.source.data.height / texture.source.data.width
       boxHeight = base * ratio
       geometry = new BoxGeometry(base, boxHeight, 0.1)
-      const imageMaterial = new MeshLambertMaterial({
-        map: tex
+      imageMaterial = new MeshLambertMaterial({
+        map: tex,
+        lightMap: tex,
+        lightMapIntensity: 2
       })
       material = [
         colorMaterial,
@@ -82,16 +84,15 @@
     }
   })
 
-  $: if (uuid === $activeCanvas) {
-    mesh.material.emissive = new Color(0xffffff)
+  $: {
+    if (mesh) {
+      if (uuid === $activeCanvas) {
+        mesh.material.emissive = new Color(0x000000)
+      } else {
+        mesh.material.emissive = new Color(0x000000)
+      }
+    }
   }
-
-  // $: if (light && mesh) {
-  //   light.position.y += 10
-  //   light.position.x += 10
-  //   light.target = mesh
-  //   console.log(light)
-  // }
 
 </script>
 
@@ -108,12 +109,11 @@
         {position}
         receiveShadow
         castShadow
-        {material}
+        material={imageMaterial}
         {rotation}
       />
     </AutoColliders>
   {/if}
-
 </Group>
 <!-- <Three
   bind:ref={light}

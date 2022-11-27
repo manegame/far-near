@@ -56,8 +56,8 @@
       scale={{ x: 800, y: 400, z: 800 }}
       position={{ y: 50 }}
       material={new MeshLambertMaterial({
-        transparent: true,
-        opacity: 0.5,
+        // transparent: true,
+        // opacity: 0.5,
         color,
         map,
         side: DoubleSide
