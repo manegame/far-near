@@ -1,10 +1,10 @@
+import { Vector3 } from "three"
 import { writable, derived, get } from "svelte/store"
 import { spring } from "svelte/motion"
 import { Color } from "three"
 
 export const data = writable([])
 export const onTop = writable('map')
-
 
 export const epochs = derived(data, ($data) => {
   // Split the data per year
@@ -31,3 +31,6 @@ export const lighting = spring({
   stiffness: 0.03,
   damping: 0.95
 })
+
+export const hitPosition = writable(new Vector3())
+export const hitLookAt = writable(new Vector3())

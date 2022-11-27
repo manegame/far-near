@@ -16,10 +16,10 @@
     Three
   } from "@threlte/core"
   import { RigidBody, CollisionGroups, Collider, Debug } from "@threlte/rapier"
-  import { createEventDispatcher, onDestroy } from "svelte"
+  import { onDestroy } from "svelte"
   // import FlyControls from "$lib/components/controls/FlyControls.svelte"
   import PointerLockControls from "$lib/components/controls/PointerLockControls.svelte"
-  import { lighting, activeCanvas } from "$lib/stores"
+  import { lighting, activeCanvas, hitPosition, hitLookAt } from "$lib/stores"
   import { onMount } from "svelte"
 
   export let position = undefined
@@ -79,12 +79,21 @@
 
   useFrame(() => {
     raycaster.setFromCamera(pointer, cameras[0])
-    const intersects = raycaster.intersectObjects(scene.children.filter(c => !(c instanceof DirectionalLight) && !(c instanceof DirectionalLightHelper)))
+    const test = scene.children.filter(c => {
+      return  !(c instanceof DirectionalLight)
+              && !(c instanceof DirectionalLightHelper)
+              && !c.userData.ignoteRaycaster
+      }
+    )
+    const intersects = raycaster.intersectObjects(test)
 
     if (intersects.length > 0) {
       const distances = intersects.map(i => i.distance)
-      const hit = intersects[distances.indexOf(Math.min(...distances))]
+      const hit = intersects[distances.indexOf(Math.min(...distances))] // closest hit
 
+      hitPosition.set(hit.point)
+      hitLookAt.set(hit.face.normal)
+      
       if (previousHit?.object === hit?.object) return
 
       if (hit?.object.userData.isImageCanvas) {

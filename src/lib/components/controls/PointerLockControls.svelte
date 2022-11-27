@@ -113,6 +113,12 @@
         case 'd':
           moveState.right = 1
           break
+        case 'e':
+          moveState.up = 1
+          break
+        case 'q':
+          moveState.down = 1
+          break
         case ' ':
           if (fly) {
             cameraSpeed = 40
@@ -142,6 +148,12 @@
         case 'd':
           moveState.right = 0
           break
+        case 'e':
+          moveState.up = 0
+          break
+        case 'q':
+          moveState.down = 0
+          break
         case ' ':
           if (fly) {
             cameraSpeed = 20
@@ -159,7 +171,7 @@
       // get direction
       const velocityVector = t.fromArray([
         moveState.right - moveState.left,
-        0,
+        moveState.up - moveState.down,
         moveState.backward - moveState.forward
       ])
 

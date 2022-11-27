@@ -46,8 +46,6 @@
       if (is.length > 0) {
         const distances = is.map(i => i.distance)
 
-        console.log(distances)
-
         let offset = Math.min(...distances)
 
         const index = distances.indexOf(offset)

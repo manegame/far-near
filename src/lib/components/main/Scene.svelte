@@ -13,6 +13,7 @@
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
+  import HitIndicator from './HitIndicator.svelte'
   import DirectionalLightHelper from '$lib/components/lighting/DirectionalLightHelper.svelte'
   import Sky from './Sky.svelte'
   
@@ -71,6 +72,8 @@
 
 <Fog color={combinedColor} />
 <Sky color={combinedColor} />
+
+<HitIndicator />
 
 <!-- {#if position.y < -5}
   <Pass
