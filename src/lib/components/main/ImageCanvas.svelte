@@ -9,7 +9,9 @@
     Color,
     SpotLight
   } from 'three'
+  import { terrainReady } from "$lib/stores"
   import { AutoColliders } from '@threlte/rapier'
+  import { getChildren, closestObject } from "$lib/functionality/raycaster"
   import { useTexture, Mesh, useLoader, useFrame, useThrelte, Three, Group } from "@threlte/core"
   import { activeCanvas } from "$lib/stores"
 
@@ -23,7 +25,7 @@
   // TODO: Remove workaround
   src = src.replace(/.*\//, '/workaround/')
 
-  const raycaster = new Raycaster(position, new Vector3( 0, - 1, 0 ))
+  const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
   let colorMaterial = new MeshLambertMaterial({
     color: 0xffffff
   })
@@ -41,16 +43,15 @@
 
   useFrame(() => {
     d+= 0.01
-    if (!placed && ready) {
-      const is = raycaster.intersectObjects(scene.children.filter(c => c.type === 'Mesh' || c.type === 'Water'))
-      if (is.length > 0) {
-        const distances = is.map(i => i.distance)
+    if (!placed && ready && $terrainReady) {
+      const intersects = raycaster.intersectObjects(getChildren(scene))
 
-        let offset = Math.min(...distances)
+      if (intersects.length > 0) {
+        const hit = closestObject(intersects)
 
-        const index = distances.indexOf(offset)
+        const offset = hit.distance
 
-        position.y -= (offset - boxHeight)
+        position.y -= offset - 10
         placed = true
       }
     }

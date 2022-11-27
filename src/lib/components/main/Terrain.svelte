@@ -1,14 +1,13 @@
 <svelte:options accessors={true} />
 
 <script lang="ts">
-  import { writable } from "svelte/store"
   import { Mesh, useTexture } from "@threlte/core"
   import { useGltf } from "@threlte/extras"
   import {
-    Debug,
     AutoColliders
   } from "@threlte/rapier"
   import Water from "$lib/components/main/Water.svelte"
+  import { waterReady } from "$lib/stores"
   import {
     // MeshStandardMaterial,
     ShadowMaterial,
@@ -31,10 +30,9 @@
   map.wrapT = RepeatWrapping
   map.repeat.set(16, 16);
   let mesh
-  let waterReady = false
 
   $: {
-    if ($gltf && waterReady) {
+    if ($gltf && $waterReady) {
       console.log($gltf.nodes)
       geometry = $gltf.nodes.Plane.geometry
       geometry.computeVertexNormals() 
@@ -55,9 +53,11 @@
       receiveShadow
       castShadow
       {geometry}
-      scale={{ x: 800, y: 300, z: 800 }}
+      scale={{ x: 800, y: 400, z: 800 }}
       position={{ y: 50 }}
       material={new MeshLambertMaterial({
+        transparent: true,
+        opacity: 0.5,
         color,
         map,
         side: DoubleSide
@@ -67,7 +67,7 @@
 {/if}
 
 <Water
-  bind:ready={waterReady}
+  bind:ready={$waterReady}
 />
 
 <!-- https://threejs.org/examples/webgl_water.html -->

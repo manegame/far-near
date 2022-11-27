@@ -8,16 +8,16 @@
 	} from '@threlte/core'
   import { Debug } from "@threlte/rapier"
   import { Vector3, Color } from "three"
-  import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass'
   import { onTop, epochs, lighting } from "$lib/stores"
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
   import HitIndicator from './HitIndicator.svelte'
   import DirectionalLightHelper from '$lib/components/lighting/DirectionalLightHelper.svelte'
-  import Sky from './Sky.svelte'
+import Sky from './Sky.svelte'
+
+  import { terrainReady } from "$lib/stores"
   
-  let terrainReady = false
   let position = new Vector3(0, 5, 0)
   let combinedColor
   let light
@@ -55,19 +55,19 @@
   />
 {/if}
 
-{#if terrainReady}
+{#if $terrainReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
       position={new Vector3(i * 30 + 20, 5, -50 - 80 * i )}
       epoch={$epochs[year]}
-      radius={30}
+      radius={400}
     />
   {/each}
 {/if}
 
 <Terrain
   color={combinedColor}
-  on:ready={(e) => { terrainReady = true }}
+  on:ready={(e) => { $terrainReady = true }}
 />
 
 <Fog color={combinedColor} />

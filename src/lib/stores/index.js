@@ -1,7 +1,5 @@
-import { Vector3 } from "three"
-import { writable, derived, get } from "svelte/store"
+import { writable, derived } from "svelte/store"
 import { spring } from "svelte/motion"
-import { Color } from "three"
 
 export const data = writable([])
 export const onTop = writable('map')
@@ -17,8 +15,6 @@ export const epochs = derived(data, ($data) => {
     eps[y] = $data.filter(item => new Date(item.date).getFullYear() === y)
   })
   
-  console.log('derived too')
-  
   return eps
 })
 
@@ -32,5 +28,5 @@ export const lighting = spring({
   damping: 0.95
 })
 
-export const hitPosition = writable(new Vector3())
-export const hitLookAt = writable(new Vector3())
+export let waterReady = writable(false)
+export let terrainReady = writable(false)

@@ -1,5 +1,4 @@
 <script>
-  import { Group } from "@threlte/core"
   import { Vector3 } from "three"
   import ImageCanvas from "./ImageCanvas.svelte"
 
@@ -16,7 +15,7 @@
 
       return new Vector3(
         position.x + adj,
-        100,
+        1000,
         position.z + opp
       )
     }
@@ -33,13 +32,13 @@
 
 </script>
 
-<Group {position}>
-  {#each images as { uuid, src, pos }, i (uuid)}
-    <ImageCanvas
-      {uuid}
-      position={pos}
-      {src}
-      {i}
-    />
-  {/each}
-</Group>
+{#each images as { uuid, src, pos }, i (uuid)}
+  <ImageCanvas
+    {uuid}
+    position={pos}
+    {src}
+    {i}
+  />
+{/each}
+<!-- <Group {position}>
+</Group> -->
