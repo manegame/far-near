@@ -58,9 +58,13 @@ import Sky from './Sky.svelte'
 {#if $terrainReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
-      position={new Vector3(i * 30 + 20, 5, -50 - 80 * i )}
+      position={new Vector3(
+        i * 30 + 20,
+        5,
+        -50 - 80 * i
+      )}
       epoch={$epochs[year]}
-      radius={400}
+      radius={50}
     />
   {/each}
 {/if}

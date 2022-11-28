@@ -53,7 +53,7 @@
       receiveShadow
       castShadow
       {geometry}
-      scale={{ x: 800, y: 400, z: 800 }}
+      scale={{ x: 800, y: 300, z: 800 }}
       position={{ y: 50 }}
       material={new MeshLambertMaterial({
         // transparent: true,

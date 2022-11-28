@@ -4,7 +4,7 @@
   import { hitPosition, hitLookAt } from "$lib/functionality/raycaster"
 </script>
 
-{#if import.meta.env.DEV}
+<!-- {#if import.meta.env.DEV} -->
   <Mesh
     userData={{ ignoreRaycaster: true }}
     position={$hitPosition}
@@ -12,4 +12,4 @@
     geometry={new ConeGeometry(1, 4, 15)}
     material={new MeshStandardMaterial({ color: 0xff0000 })}
   />
-{/if}
+<!-- {/if} -->
