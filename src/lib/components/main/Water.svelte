@@ -18,7 +18,7 @@
   const water = new Water(geometry, {
     color: 0xdf4fdfd,
     scale: 10, // 1 to 10
-    flowDirection: new Vector2(-0.1, -0.2), // -1 to 1
+    flowDirection: new Vector2(-1, 0), // -1 to 1
     textureWidth: 256,
     textureHeight: 256
   })

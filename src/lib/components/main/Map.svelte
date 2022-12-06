@@ -19,7 +19,7 @@
   })
 
   const mapStyle = `
-    background: rgb(2,0,36);
+    background: rgb(36,36,36);
     background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%); 
     position: fixed;
     top: 0;
@@ -74,9 +74,9 @@
   `
 
   function translate (pos) {
-    const unit = 900
+    const unit = 1200
     const min = 0
-    const max = Math.max(w, h)
+    const max = Math.min(w, h)
 
     return `translate(${range(-unit, unit, min, max, pos.x)}px, ${range(-unit, unit, min, max, pos.z)}px)`
   }

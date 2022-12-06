@@ -14,6 +14,14 @@
   import Sky from './Sky.svelte'
   
   let position = new Vector3(0, 5, 0)
+
+  let positions = [
+    new Vector3(-50, 100, -50),
+    new Vector3(-125, 100, 0),
+    new Vector3(-250, 100, 0),
+    new Vector3(-500, 100, 50),
+    new Vector3(-700, 100, 150)
+  ]
   let combinedColor
   
   const { camera } = useThrelte()
@@ -53,13 +61,9 @@
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
       {year}
-      position={new Vector3(
-        i * 30 + 20,
-        5,
-        -50 - 80 * i
-      )}
+      position={positions[i]}
       epoch={$epochs[year]}
-      radius={100}
+      radius={80}
     />
   {/each}
 {/if}
@@ -72,7 +76,9 @@
 <Fog near={50} far={500} color={combinedColor} />
 <Sky color={combinedColor} />
 
-<HitIndicator />
+{#if import.meta.env.DEV}
+  <HitIndicator />
+{/if}
 
 <!-- <Debug /> -->
 

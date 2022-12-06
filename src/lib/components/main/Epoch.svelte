@@ -16,9 +16,9 @@
       let opp = Math.sin(ang) * hyp
 
       return new Vector3(
-        position.x + adj,
+        position.x - (radius / 2) + adj,
         1000,
-        position.z + opp
+        position.z - (radius / 2) + opp
       )
     }
 

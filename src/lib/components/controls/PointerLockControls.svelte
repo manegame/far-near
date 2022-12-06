@@ -95,7 +95,6 @@
 
     /** @param {KeyboardEvent} e */
     function onKeyDown(e) {
-      console.log(e.key)
       switch (e.key) {
         case 's':
         case 'ArrowDown':
@@ -121,6 +120,7 @@
           break
         case 'm':
           $onTop = $onTop === 'map' ? 'walk' : 'map'
+          lock()
           break
         case 'Shift':
           if (fly) {
@@ -161,6 +161,8 @@
         case 'q':
           moveState.down = 0
           break
+        case 'm':
+          unlock()
         case 'Shift':
           if (fly) {
             cameraSpeed = 20
