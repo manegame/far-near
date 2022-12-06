@@ -25,12 +25,19 @@
     return makeRandom()
   }
 
-  const images = epoch.map(i => ({
-    uuid: i.slug,
-    src: i.acf.preview_image?.url,
-    acf: i.acf,
-    pos: getRandomPoint()
-  }))
+  const images = epoch.map(i => {
+    const point = getRandomPoint()
+    return {
+      uuid: i.slug,
+      src: i.acf.preview_image?.url,
+      acf: i.acf,
+      pos: new Vector3(
+        point.x + position.x,
+        point.y,
+        point.z + position.z
+      )
+    }
+  })
     .filter(i => !!i.src)
 
   $placedEpochs[year] = images
@@ -40,11 +47,7 @@
 {#each images as { uuid, src, pos }, i (uuid)}
   <ImageCanvas
     {uuid}
-    position={new Vector3(
-      pos.x + position.x,
-      pos.y,
-      pos.z + position.z
-    )}
+    position={pos}
     {src}
     {i}
   />

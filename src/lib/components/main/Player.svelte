@@ -104,8 +104,6 @@
         makeView(cameras[i], 0xfffff, views[i])
       }
     }
-
-    playerPosition.set(position)
   })
 
   function onPointerMove(e) {
@@ -133,6 +131,12 @@
       ambient: 0.9,
       color: { r: 0.9, g: 0.9, b: 0.9 }
     })
+  }
+
+  $: {
+    if (position) {
+      playerPosition.set(position)
+    }
   }
 
   onMount(() => {
