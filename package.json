@@ -31,6 +31,7 @@
     "@threlte/extras": "^4.7.0",
     "@threlte/preprocess": "^0.0.2",
     "@threlte/rapier": "^0.5.0",
+    "panzoom": "^9.4.3",
     "svelte-sequential-preprocessor": "^0.0.7",
     "three": "^0.144.0"
   }

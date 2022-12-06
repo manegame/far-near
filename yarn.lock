@@ -143,6 +143,13 @@ acorn@^7.0.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+amator@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/amator/-/amator-1.1.0.tgz#08c6b60bc93aec2b61bbfc0c4d677d30323cc0f1"
+  integrity sha512-V5+aH8pe+Z3u/UG3L3pG3BaFQGXAyXHVQDroRwjPHdh08bcUEchAVsU1MCuJSCaU5o60wTK6KaE6te5memzgYw==
+  dependencies:
+    bezier-easing "^2.0.3"
+
 anymatch@~3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-3.1.2.tgz#c0557c096af32f106198f4f4e2a383537e378716"
@@ -172,6 +179,11 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
+
+bezier-easing@^2.0.3:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/bezier-easing/-/bezier-easing-2.1.0.tgz#c04dfe8b926d6ecaca1813d69ff179b7c2025d86"
+  integrity sha512-gbIqZ/eslnUFC1tjEvtz0sgx+xTK20wDnYMIA27VA04R7w6xxXQPZDbibjA9DTWZRA2CXtwHykkVzlCaAJAZig==
 
 bidi-js@^1.0.2:
   version "1.0.2"
@@ -660,6 +672,11 @@ nanoid@^3.3.4:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
 
+ngraph.events@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/ngraph.events/-/ngraph.events-1.2.2.tgz#3ceb92d676a04a4e7ce60a09fa8e17a4f0346d7f"
+  integrity sha512-JsUbEOzANskax+WSYiAPETemLWYXmixuPAlmZmhIbIj6FH/WDgEGCGnRwUQBK0GjOnVm8Ui+e5IJ+5VZ4e32eQ==
+
 node-releases@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.6.tgz#8a7088c63a55e493845683ebf3c828d8c51c5503"
@@ -686,6 +703,15 @@ once@^1.3.0:
   integrity sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==
   dependencies:
     wrappy "1"
+
+panzoom@^9.4.3:
+  version "9.4.3"
+  resolved "https://registry.yarnpkg.com/panzoom/-/panzoom-9.4.3.tgz#195c4031bb643f2e6c42f1de0ca87cc10e224042"
+  integrity sha512-xaxCpElcRbQsUtIdwlrZA90P90+BHip4Vda2BC8MEb4tkI05PmR6cKECdqUCZ85ZvBHjpI9htJrZBxV5Gp/q/w==
+  dependencies:
+    amator "^1.1.0"
+    ngraph.events "^1.2.2"
+    wheel "^1.0.0"
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -1044,6 +1070,11 @@ webgl-sdf-generator@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/webgl-sdf-generator/-/webgl-sdf-generator-1.1.1.tgz#3e1b422b3d87cd3cc77f2602c9db63bc0f6accbd"
   integrity sha512-9Z0JcMTFxeE+b2x1LJTdnaT8rT8aEp7MVxkNwoycNmJWwPdzoXzMh0BjJSh/AEFP+KPYZUli814h8bJZFIZ2jA==
+
+wheel@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/wheel/-/wheel-1.0.0.tgz#6cf46e06a854181adb8649228077f8b0d5c574ce"
+  integrity sha512-XiCMHibOiqalCQ+BaNSwRoZ9FDTAvOsXxGHXChBugewDj7HC8VBIER71dEOiRH1fSdLbRCQzngKTSiZ06ZQzeA==
 
 wrappy@1:
   version "1.0.2"

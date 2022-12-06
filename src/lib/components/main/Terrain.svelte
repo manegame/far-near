@@ -33,7 +33,6 @@
 
   $: {
     if ($gltf && $waterReady) {
-      console.log($gltf.nodes)
       geometry = $gltf.nodes.Plane.geometry
       geometry.computeVertexNormals() 
       dispatch('ready')

@@ -126,7 +126,6 @@ export class FirstPersonControls {
     const ray = new THREE.Ray(this.translation, dir);
     for (let i = 0; i < this.objects.length; ++i) {
       if (ray.intersectBox(this.objects[i] || ray.intersectSphere(this.objects[i]), result)) {
-        console.log('intersecting!!!!!')
         if (result.distanceTo(ray.origin) < closest.distanceTo(ray.origin)) {
           closest = result.clone();
         }
@@ -155,8 +154,6 @@ export class FirstPersonControls {
 
     const qx = new THREE.Quaternion()
     qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi)
-
-    console.log(forwardVelocity, strafeVelocity)
 
     const forward = new THREE.Vector3(0, 0, -1)
     forward.applyQuaternion(qx)

@@ -6,7 +6,7 @@
 
 <!-- {#if import.meta.env.DEV} -->
   <Mesh
-    userData={{ ignoreRaycaster: true }}
+    userData={{ raycasterIgnore: true }}
     position={$hitPosition}
     lookAt={$hitLookAt}
     geometry={new ConeGeometry(1, 4, 15)}

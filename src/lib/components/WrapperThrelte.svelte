@@ -3,6 +3,7 @@
   import { onMount } from "svelte"
   import { Canvas } from '@threlte/core'
   import Physics from './main/Index.svelte'
+  import Map from './main/Map.svelte'
   import Stats from "./GUI/Stats.svelte"
   
   import GUI from "./GUI/index.svelte"
@@ -44,6 +45,8 @@
 
   onMount(getData)
 </script>
+
+<Map />
 
 <Canvas size={{ width, height  }}>
   <Physics />

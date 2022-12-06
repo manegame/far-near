@@ -9,8 +9,6 @@
   tex.repeat.set( 22, 22 );
   tex.repeat.set(4, 1)
 
-  console.log(tex)
-
   export let color
 </script>
 

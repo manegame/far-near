@@ -3,24 +3,18 @@
 		DirectionalLight,
     AmbientLight,
     Fog,
-    useThrelte,
-    Three
+    useThrelte
 	} from '@threlte/core'
-  import { Debug } from "@threlte/rapier"
   import { Vector3, Color } from "three"
-  import { onTop, epochs, lighting } from "$lib/stores"
+  import { onTop, epochs, lighting, terrainReady } from "$lib/stores"
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
   import HitIndicator from './HitIndicator.svelte'
-  import DirectionalLightHelper from '$lib/components/lighting/DirectionalLightHelper.svelte'
-import Sky from './Sky.svelte'
-
-  import { terrainReady } from "$lib/stores"
+  import Sky from './Sky.svelte'
   
   let position = new Vector3(0, 5, 0)
   let combinedColor
-  let light
   
   const { camera } = useThrelte()
 
@@ -74,21 +68,10 @@ import Sky from './Sky.svelte'
   on:ready={(e) => { $terrainReady = true }}
 />
 
-<Fog color={combinedColor} />
+<Fog near={50} far={500} color={combinedColor} />
 <Sky color={combinedColor} />
 
 <HitIndicator />
-
-<!-- {#if position.y < -5}
-  <Pass
-    pass={new BokehPass(scene, $camera, {
-      focus: 3.0,
-      aperture: 0.0015,
-      maxblur: 0.005
-    })}
-  />
-{/if} -->
-
 
 <!-- <Debug /> -->
 

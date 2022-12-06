@@ -6,11 +6,9 @@ import {
   DirectionalLightHelper,
 } from 'three'
 
-export const getChildren = (scene) => scene.children.filter(c => (
-  !(c instanceof DirectionalLight)
-  && !(c instanceof DirectionalLightHelper)
-  && !c.userData.ignoreRaycaster)
-)
+export const getChildren = (scene) => scene.children.filter(c => {
+  return !(c instanceof DirectionalLight) && !(c instanceof DirectionalLightHelper) && !c.userData.raycasterIgnore
+})
 
 export const closestObject = (intersects) => {
   const distances = intersects.map(i => i.distance)

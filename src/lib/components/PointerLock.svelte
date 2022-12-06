@@ -397,7 +397,7 @@
         moveRight = true;
         break;
 
-      case 'Space':
+      case 'Shift':
         if ( canJump === true ) {
           velocity.y += 1000
         }

@@ -37,7 +37,6 @@ export function generateHeight(width, height, seed = Math.PI / 5) {
 }
 
 export function generateTexture(data, width, height) {
-  console.log(width, height)
   let context, image, imageData, shade
 
   const vector3 = new THREE.Vector3(0, 0, 0)

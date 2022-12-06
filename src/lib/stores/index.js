@@ -21,8 +21,8 @@ export const epochs = derived(data, ($data) => {
 export const activeCanvas = writable('')
 
 export const lighting = spring({
-  ambient: 1,
-  color: { r: 1, g: 1, b: 1 }
+  ambient: 0.9,
+  color: { r: 0.9, g: 0.9, b: 0.9 }
 }, {
   stiffness: 0.03,
   damping: 0.95

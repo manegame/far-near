@@ -1,11 +1,8 @@
 <script>
   import {
-    Vector3,
     Raycaster,
     Vector2,
-    SpotLight,
-    CameraHelper,
-    Color
+    SpotLight
   } from "three"
   import {
     useFrame,
@@ -24,7 +21,7 @@
 
   export let position = undefined
   export let playerCollisionGroups = [0]
-  export let groundCollisionGroups = [15]
+  export const groundCollisionGroups = [15]
   export let radius = 0.3
   export let height = 1.7
   export let grounded = false
@@ -79,7 +76,8 @@
 
   useFrame(() => {
     raycaster.setFromCamera(pointer, cameras[0])
-    const intersects = raycaster.intersectObjects(getChildren(scene))
+    const children = getChildren(scene)
+    const intersects = raycaster.intersectObjects(children)
 
     if (intersects.length > 0) {
       const hit = closestObject(intersects)
@@ -130,12 +128,10 @@
   
   function lightsOn () {
     lighting.set({
-      ambient: 1,
-      color: { r: 1, g: 1, b: 1 }
+      ambient: 0.9,
+      color: { r: 0.9, g: 0.9, b: 0.9 }
     })
   }
-
-  $: console.log(rotation)
 
   onMount(() => {
     window.addEventListener("pointermove", onPointerMove)
@@ -161,13 +157,6 @@
     pointerSpeed={2.0}
     fly
   />
-  <!--
-    color : Integer,
-    intensity : Float,
-    distance : Float,
-    angle : Radians,
-    penumbra : Float,
-    decay : Float -->
     <Three
     bind:ref={light}
     position={position}
@@ -187,7 +176,5 @@
     groups={playerCollisionGroups}>
     <Collider shape={"capsule"} args={[height / 2 - radius, radius]} />
   </CollisionGroups>
-
-
 </RigidBody>
 <!-- <Debug /> -->

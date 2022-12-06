@@ -283,7 +283,7 @@
         moveRight = true;
         break;
 
-      case 'Space':
+      case 'Shift':
         if ( canJump === true ) velocity.y += 350;
         canJump = false;
         break;

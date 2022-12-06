@@ -36,12 +36,6 @@
       right: 0,
       forward: 0,
       backward: 0
-      // pitchUp: 0,
-      // pitchDown: 0,
-      // yawLeft: 0,
-      // yawRight: 0,
-      // rollLeft: 0,
-      // rollRight: 0
     };
   
     if (!renderer) {
@@ -100,17 +94,22 @@
 
     /** @param {KeyboardEvent} e */
     function onKeyDown(e) {
+      console.log(e.key)
       switch (e.key) {
         case 's':
+        case 'ArrowDown':
           moveState.backward = 1
           break
         case 'w':
+        case 'ArrowUp':
           moveState.forward = 1
           break
         case 'a':
+        case 'ArrowLeft':
           moveState.left = 1
           break
         case 'd':
+        case 'ArrowRight':
           moveState.right = 1
           break
         case 'e':
@@ -119,7 +118,7 @@
         case 'q':
           moveState.down = 1
           break
-        case ' ':
+        case 'Shift':
           if (fly) {
             cameraSpeed = 40
             if (!rigidBody || !grounded) break
@@ -137,15 +136,19 @@
     function onKeyUp(e) {
       switch (e.key) {
         case 's':
+        case 'ArrowDown':
           moveState.backward = 0
           break
         case 'w':
+        case 'ArrowUp':
           moveState.forward = 0
           break
         case 'a':
+        case 'ArrowLeft':
           moveState.left = 0
           break
         case 'd':
+        case 'ArrowRight':
           moveState.right = 0
           break
         case 'e':
@@ -154,7 +157,7 @@
         case 'q':
           moveState.down = 0
           break
-        case ' ':
+        case 'Shift':
           if (fly) {
             cameraSpeed = 20
           }
