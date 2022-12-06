@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher, onDestroy } from 'svelte'
     import { Euler, Camera, Vector3, MathUtils } from 'three'
+    import { onTop } from "$lib/stores"
     import { useThrelte, useParent, useFrame } from '@threlte/core'
   
     // Set to constrain the pitch of the camera
@@ -117,6 +118,9 @@
           break
         case 'q':
           moveState.down = 1
+          break
+        case 'm':
+          $onTop = $onTop === 'map' ? 'walk' : 'map'
           break
         case 'Shift':
           if (fly) {

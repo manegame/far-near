@@ -6,3 +6,9 @@
 </script>
 
 <Wrapper />
+
+<style global>
+  .map {
+    background: red !important;
+  }
+</style>

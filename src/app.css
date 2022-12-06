@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-.hello {
-  background: red;
+
+html {
+  background: black;
+  color: white;
+}
+
+html .map {
+  
+}
+
+
+
+.map {
+}
+
+:global(.map) {
+  background: green !important;
 }

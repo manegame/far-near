@@ -5,6 +5,7 @@
   import Physics from './main/Index.svelte'
   import Map from './main/Map.svelte'
   import Stats from "./GUI/Stats.svelte"
+  import "../../assets/styles.css"
   
   import GUI from "./GUI/index.svelte"
 
@@ -52,6 +53,6 @@
   <Physics />
 
   {#if import.meta.env.DEV}
-    <Stats />
+    <!-- <Stats /> -->
   {/if}
 </Canvas>

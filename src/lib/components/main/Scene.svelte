@@ -52,6 +52,7 @@
 {#if $terrainReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
+      {year}
       position={new Vector3(
         i * 30 + 20,
         5,

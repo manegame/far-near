@@ -15,7 +15,7 @@
   import { onDestroy } from "svelte"
   // import FlyControls from "$lib/components/controls/FlyControls.svelte"
   import PointerLockControls from "$lib/components/controls/PointerLockControls.svelte"
-  import { lighting, activeCanvas } from "$lib/stores"
+  import { lighting, playerPosition, activeCanvas } from "$lib/stores"
   import { hitPosition, hitLookAt, closestObject } from "$lib/functionality/raycaster"
   import { onMount } from "svelte"
 
@@ -104,6 +104,8 @@
         makeView(cameras[i], 0xfffff, views[i])
       }
     }
+
+    playerPosition.set(position)
   })
 
   function onPointerMove(e) {

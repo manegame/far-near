@@ -1,9 +1,13 @@
 import { writable, derived } from "svelte/store"
 import { spring } from "svelte/motion"
+import { Vector3 } from "three"
 
 export const data = writable([])
-export const onTop = writable('map')
+export const onTop = writable('walk')
 
+/**
+ * Derived from data
+ */
 export const epochs = derived(data, ($data) => {
   // Split the data per year
   let years = $data.map(d => new Date(d.date).getFullYear())
@@ -18,6 +22,11 @@ export const epochs = derived(data, ($data) => {
   return eps
 })
 
+/**
+ * Set by the Epoch component
+ */
+export const placedEpochs = writable({})
+
 export const activeCanvas = writable('')
 
 export const lighting = spring({
@@ -30,3 +39,4 @@ export const lighting = spring({
 
 export let waterReady = writable(false)
 export let terrainReady = writable(false)
+export let playerPosition = writable(new Vector3())

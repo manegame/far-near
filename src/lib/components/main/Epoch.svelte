@@ -1,8 +1,9 @@
 <script>
   import { Vector3 } from "three"
-  import { Group } from "@threlte/core"
+  import { placedEpochs } from "$lib/stores"
   import ImageCanvas from "./ImageCanvas.svelte"
 
+  export let year
   export let position = new Vector3(0, 0, -50)
   export let epoch
   export let radius
@@ -27,9 +28,12 @@
   const images = epoch.map(i => ({
     uuid: i.slug,
     src: i.acf.preview_image?.url,
+    acf: i.acf,
     pos: getRandomPoint()
   }))
     .filter(i => !!i.src)
+
+  $placedEpochs[year] = images
 
 </script>
 
