@@ -29,6 +29,7 @@
     const point = getRandomPoint()
     return {
       uuid: i.slug,
+      title: i.title.rendered || '',
       src: i.acf.preview_image?.url,
       acf: i.acf,
       pos: new Vector3(

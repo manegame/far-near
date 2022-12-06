@@ -6,15 +6,21 @@
 
   export let data = {}
 
+  export const DEB = false
+
   let element
+  let instance
+  let activeUuid = ''
   let w, h
 
   onMount(() => {
-    panzoom(element)
+    instance = panzoom(element, { initialZoom: 2 })
+    instance.moveTo(-w / 2, -h / 2)
   })
 
   const mapStyle = `
-    background-color: black;
+    background: rgb(2,0,36);
+    background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%); 
     position: fixed;
     top: 0;
     left: 0;
@@ -24,21 +30,35 @@
     height: ${h}px;
   `
 
-  const imageStyle = `
-    width: 10px;
-    height: 10px;
-    object-fit: contain;
+  const imageContainerStyle = `
+    width: 30px;
     position: absolute;
+    transition: all 0.3s ease;
   `
 
-  const innerMapStyle = `
+  const imageStyle = `
+    object-fit: contain;
+    object-position: center bottom;
+    width: 100%;
+    transition: all 0.3s ease;
+  `
+
+  let innerMapStyle = `
     position: absolute;
-    background-color: red;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
   `
+  let captionStyles = `
+    font-size: 1.8px;
+    line-height: 1.5;
+    text-align: center;
+  `
+
+  if (import.meta.env.DEV && DEB) {
+    innerMapStyle += 'background-color: red;'
+  }
 
   let playerStyle = ``
 
@@ -47,9 +67,10 @@
     top: 0;
     left: 0;
     transform: ${translate($playerPosition)};
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     background-color: blue;
+    border-radius: 100%;
   `
 
   function translate (pos) {
@@ -59,6 +80,33 @@
 
     return `translate(${range(-unit, unit, min, max, pos.x)}px, ${range(-unit, unit, min, max, pos.z)}px)`
   }
+
+  function scale (uuid) {
+    if (uuid === activeUuid) {
+      return 'scale(1.2'
+    }
+
+    return 'scale(1)'
+  }
+
+  function highlight (uuid) {
+    if (uuid) {
+      activeUuid = uuid
+    } else {
+      activeUuid = ''
+    }
+  }
+
+  let eppies = Object.entries($placedEpochs)
+
+  $: eppies = Object.entries($placedEpochs).map(([year, epoch]) => {
+    return [year, epoch.map((entry) => {
+      if (entry.uuid === activeUuid) {
+        return {...entry, active: true }
+      }
+      return { ...entry, active: false }
+    })]
+  })
 </script>
 
 <svelte:window bind:innerHeight={h} bind:innerWidth={w} />
@@ -72,15 +120,32 @@
       style={innerMapStyle}
       bind:this={element}
     >
-      {#each Object.entries($placedEpochs) as [year, epoch] (year)}
+      {#each eppies as [year, epoch] (year)}
         <!-- {year} -->
-        {#each epoch as { uuid, src, pos }, i (uuid)}
-          <img
-            style="{imageStyle}"
-            style:transform={translate(pos)}
-            {src}
-            alt=""
+        {#each epoch as { uuid, src, pos, active, title }, i (uuid)}
+          <figure
+            style="{imageContainerStyle};"
+            style:transform="{translate(pos)} {active ? 'scale(2)' : 'scale(1)'}"
+            style:z-index={+active}
+            on:mouseenter={() => highlight(uuid) }
+            on:mouseleave={() => highlight('') }
           >
+            <div class="position: relative">
+              <img
+                style:opacity={activeUuid !== '' ? active ? 1 : 0.2 : 1}
+                style={imageStyle}
+                {src}
+                alt=""
+              >
+              <figcaption
+                style={captionStyles}
+                style:width="100%"
+                style:opacity={+active}
+                >
+                {@html title}
+              </figcaption>
+            </div>
+          </figure>
         {/each}
       {/each}
 

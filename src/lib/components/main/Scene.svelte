@@ -59,7 +59,7 @@
         -50 - 80 * i
       )}
       epoch={$epochs[year]}
-      radius={50}
+      radius={100}
     />
   {/each}
 {/if}
