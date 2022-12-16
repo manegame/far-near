@@ -10,7 +10,7 @@
     // Range is 0 to Math.PI radians
     export let minPolarAngle = 0 // radians
     export let maxPolarAngle = Math.PI // radians
-    export let pointerSpeed = 1.0
+    export let pointerSpeed = 2.0
     export let jumpStrength = 4
     export let cameraSpeed = tweened(20, { easing: cubicOut })
     export let grounded = false
@@ -24,6 +24,8 @@
     const t = new Vector3()
     let isLocked = false
     let timeout
+    let movementX, movementY
+    let w, wRatio
     
     const { renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
@@ -68,18 +70,15 @@
      * @param {MouseEvent} event
      */
     function onMouseMove(event) {
-      const { movementX, movementY } = event
-  
-      _euler.setFromQuaternion($camera.quaternion)
-  
-      _euler.y -= movementX * 0.002 * pointerSpeed
-      _euler.x -= movementY * 0.002 * pointerSpeed
-  
-      _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
-  
-      $camera.quaternion.setFromEuler(_euler)
-  
-      onChange()
+      movementX = event.movementX
+      movementY = event.movementY
+
+      const FIFTH = w / 5
+      if (event.clientX <  FIFTH || event.clientX > 4 * FIFTH ) {
+        wRatio = (event.clientX / w - 0.5)
+      } else {
+        wRatio = 0
+      }
     }
   
     function onPointerlockChange() {
@@ -232,11 +231,26 @@
 
     useFrame(() => {
       if (!rigidBody) return
+
+      if (!isNaN(wRatio)) {
+        _euler.setFromQuaternion($camera.quaternion)
+        _euler.y -= movementX * 0.004 * pointerSpeed + (wRatio / 100)
+        _euler.x -= movementY * 0.004 * pointerSpeed
+    
+        _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
+        _euler.x = Math.min(0.8, _euler.x)
+        _euler.x = Math.max(-0.8, _euler.x)
+    
+        $camera.quaternion.setFromEuler(_euler)
+    
+        onChange()
+      }
+
       defaultMove()
     })
 
     $: grounded ? dispatch("groundenter") : dispatch("groundexit")
 </script>
 
-<svelte:window on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
+<svelte:window bind:innerWidth={w} on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
 
