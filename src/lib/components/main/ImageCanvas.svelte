@@ -211,7 +211,7 @@
   {/if}
   <Text
     position={{ y: offsetY - 0.7 }}
-    font="/fonts/NeueHaasUnica-Bold.ttf"
+    font="/fonts/NeueHaasUnica-ExtraBold.ttf"
     fontSize={1}
     maxWidth={20}
     whiteSpace="normal"

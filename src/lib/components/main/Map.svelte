@@ -5,7 +5,6 @@
   import { onTop, placedEpochs, playerPosition } from "$lib/stores"
   import { range } from "$lib/functionality/maths"
 
-  export let data = {}
   export const DEB = false
 
   let oldPosition = new Vector3()
@@ -25,6 +24,14 @@
   let captionStyles = ``
 
   onMount(() => {
+    eppies = Object.entries($placedEpochs).map(([year, epoch]) => {
+      return [year, epoch.map((entry) => {
+        if (entry.uuid === activeUuid) {
+          return {...entry, active: true }
+        }
+        return { ...entry, active: false }
+      })]
+    })
     const max = getMax()
     instance = panzoom(element, {
       initialZoom: 2,
@@ -130,14 +137,16 @@
 
   let eppies = Object.entries($placedEpochs)
 
-  $: eppies = Object.entries($placedEpochs).map(([year, epoch]) => {
-    return [year, epoch.map((entry) => {
-      if (entry.uuid === activeUuid) {
-        return {...entry, active: true }
-      }
-      return { ...entry, active: false }
-    })]
-  })
+  $: {
+    eppies = Object.entries($placedEpochs).map(([year, epoch]) => {
+      return [year, epoch.map((entry) => {
+        if (entry.uuid === activeUuid) {
+          return {...entry, active: true }
+        }
+        return { ...entry, active: false }
+      })]
+    })
+  }
 </script>
 
 <svelte:window bind:innerHeight={h} bind:innerWidth={w} />

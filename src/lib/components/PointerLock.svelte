@@ -493,7 +493,7 @@
 {#if controls}
   {#if controls.isLocked === false}
     <div class="instructions" on:click={play}>
-      ClllLick toO PlayyYAYyyy
+      <!-- ClllLick toO PlayyYAYyyy -->
     </div>
   {/if}
 {/if}

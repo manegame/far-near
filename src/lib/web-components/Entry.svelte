@@ -5,10 +5,6 @@
   import Wrapper from "$lib/components/WrapperThrelte.svelte"
 </script>
 
-<Wrapper />
-
-<style global>
-  .map {
-    background: red !important;
-  }
-</style>
+<Wrapper>
+  <slot></slot>
+</Wrapper>

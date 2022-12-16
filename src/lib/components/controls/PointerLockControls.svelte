@@ -100,59 +100,29 @@
       switch (e.key) {
         case 's':
         case 'ArrowDown':
-          moveState.up = 0 
-          moveState.down = 0 
-          moveState.left = 0 
-          moveState.right = 0 
-          moveState.forward = 0 
           moveState.backward = 1
           break
         case 'w':
-        case 'ArrowUp':
-          moveState.up = 0 
-          moveState.down = 0 
-          moveState.left = 0 
-          moveState.right = 0 
-          moveState.backward = 0 
+        case 'ArrowUp':     
           moveState.forward = 1
           break
         case 'a':
-        case 'ArrowLeft':
-          moveState.up = 0 
-          moveState.down = 0 
-          moveState.right = 0 
-          moveState.forward = 0 
-          moveState.backward = 0 
+        case 'ArrowLeft':     
           moveState.left = 1
           break
         case 'd':
-        case 'ArrowRight':
-          moveState.up = 0 
-          moveState.down = 0 
-          moveState.left = 0 
-          moveState.forward = 0 
-          moveState.backward = 0 
+        case 'ArrowRight':     
           moveState.right = 1
           break
-        case 'e':
-          moveState.down = 0 
-          moveState.left = 0 
-          moveState.right = 0 
-          moveState.forward = 0 
-          moveState.backward = 0 
+        case 'e':     
           moveState.up = 1
           break
-        case 'q':
-          moveState.up = 0 
-          moveState.left = 0 
-          moveState.right = 0 
-          moveState.forward = 0 
-          moveState.backward = 0 
-          moveState.down = 1
-          break
+        // case 'q':
+        //   moveState.down = 1
+        //   break
         case 'm':
           $onTop = $onTop === 'map' ? 'walk' : 'map'
-          lock()
+          // lock()
           break
         case 'Shift':
           if (fly) {
@@ -194,7 +164,7 @@
           moveState.down = 0
           break
         case 'm':
-          unlock()
+          // unlock()
         case 'Shift':
           if (fly) {
             cameraSpeed.set(20)

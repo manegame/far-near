@@ -48,7 +48,7 @@
   const raycaster = new Raycaster()
 
   const lockControls = () => {
-    lock()
+    // lock()
   }
 
   if (!renderer) throw new Error()

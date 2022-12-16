@@ -4,6 +4,7 @@
   import { Canvas } from '@threlte/core'
   import Physics from './main/Index.svelte'
   import Map from './main/Map.svelte'
+  import Overlay from './Overlay.svelte'
   import Stats from "./GUI/Stats.svelte"
   import "../../assets/styles.css"
   
@@ -47,7 +48,14 @@
   onMount(getData)
 </script>
 
-<Map />
+
+<slot></slot>
+
+<Overlay />  
+
+{#if $onTop === 'map'}
+  <Map />
+{/if}
 
 <Canvas size={{ width, height  }}>
   <Physics />
