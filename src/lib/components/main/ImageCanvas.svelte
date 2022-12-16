@@ -69,6 +69,7 @@
   let imageMaterial
   let material
   let mesh
+  let group
   let boundingBox
   let offsetY = 0
   let lineHeight = 1
@@ -156,10 +157,10 @@
   // Emit the position and url for opening the article
   $: if (imageClose) {
     lightsOff()
-    // const newDir = new Vector3(1, 1, 1);
-    // const pos = new Vector3()
-    // pos.addVectors(newDir, $playerPosition);
-    // mesh.lookAt(pos);
+    const newDir = new Vector3(1, 1, 1);
+    const pos = new Vector3()
+    pos.addVectors(newDir, $playerPosition);
+    group.lookAt(pos);
   } else {
     lightsOn()
   }
@@ -195,7 +196,7 @@
 	args={[90]}
 />
 
-<Group {position} rotation={$rotation}>
+<Group bind:group {position} rotation={$rotation}>
   {#if ready}
     <AutoColliders shape={'cuboid'}>
       <Mesh
@@ -213,7 +214,7 @@
   {/if}
   <Text
     position={{ y: offsetY - 0.7 }}
-    font="/fonts/NeueHaasUnica-ExtraBold.ttf"
+    font="https://far-near.netlify.app/fonts/NeueHaasUnica-ExtraBold.ttf"
     fontSize={1}
     maxWidth={20}
     whiteSpace="normal"
@@ -224,7 +225,7 @@
   />
   <Text
     position={{ y: (offsetY - (lines * lineHeight)) - 2 }}
-    font="/fonts/NeueHaasUnica-Bold.ttf"
+    font="https://far-near.netlify.app/fonts/NeueHaasUnica-Bold.ttf"
     fontSize={0.66}
     maxWidth={12}
     whiteSpace="normal"
