@@ -26,6 +26,7 @@
     let timeout
     let movementX, movementY
     let w, wRatio
+    let h, hRatio
     
     const { renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
@@ -73,11 +74,18 @@
       movementX = event.movementX
       movementY = event.movementY
 
-      const FIFTH = w / 5
-      if (event.clientX <  FIFTH || event.clientX > 4 * FIFTH ) {
+      const FRACTION = 8
+      const FIFTH_W = w / FRACTION
+      const FIFTH_H = h / FRACTION
+      if (event.clientX < FIFTH_W || event.clientX > (FRACTION - 1) * FIFTH_W) {
         wRatio = (event.clientX / w - 0.5)
       } else {
         wRatio = 0
+      }
+      if (event.clientY < FIFTH_H || event.clientY > (FRACTION - 1) * FIFTH_H) {
+        hRatio = (event.clientY / h - 0.5)
+      } else {
+        hRatio = 0
       }
     }
   
@@ -148,7 +156,6 @@
         moveState.down = 0
         moveState.left = 0
         moveState.right = 0
-        console.log('reset')
       }, 100)
       switch (e.key) {
         case 's':
@@ -232,14 +239,27 @@
     useFrame(() => {
       if (!rigidBody) return
 
-      if (!isNaN(wRatio)) {
+      if (!isNaN(wRatio) && !isNaN(hRatio)) {
         _euler.setFromQuaternion($camera.quaternion)
-        _euler.y -= movementX * 0.004 * pointerSpeed + (wRatio / 100)
-        _euler.x -= movementY * 0.004 * pointerSpeed
-    
-        _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
-        _euler.x = Math.min(0.8, _euler.x)
-        _euler.x = Math.max(-0.8, _euler.x)
+
+        if (wRatio) {
+          if (wRatio > 0.5) {
+            _euler.y -= 0.004 * pointerSpeed * wRatio * 4
+          } else {
+            _euler.y -= 0.004 * pointerSpeed * wRatio * 4
+          }
+        }
+        
+        if (hRatio) {
+          if (hRatio > 0.5) {
+            _euler.x -= 0.004 * pointerSpeed * hRatio * 4
+          } else {
+            _euler.x -= 0.004 * pointerSpeed * hRatio * 4
+          }
+
+          _euler.x = Math.min(0.8, _euler.x)
+          _euler.x = Math.max(-0.8, _euler.x)
+        }
     
         $camera.quaternion.setFromEuler(_euler)
     
@@ -252,5 +272,5 @@
     $: grounded ? dispatch("groundenter") : dispatch("groundexit")
 </script>
 
-<svelte:window bind:innerWidth={w} on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
+<svelte:window bind:innerWidth={w} bind:innerHeight={h} on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} />
 
