@@ -52,7 +52,9 @@
   let imagePresent = false
   let imageClose = false
 
-  src = src.replace(/.*\//, '/workaround/')
+  if (import.meta.env.DEV) {
+    src = src.replace(/.*\//, 'https://far-near.netlify.app/workaround/')
+  }
 
   const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
   let colorMaterial = new MeshLambertMaterial({
