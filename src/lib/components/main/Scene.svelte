@@ -77,7 +77,7 @@
 <Sky color={combinedColor} />
 
 {#if import.meta.env.DEV}
-  <HitIndicator />
+  <!-- <HitIndicator /> -->
 {/if}
 
 <!-- <Debug /> -->

@@ -4,10 +4,13 @@
   // 1. Point to the JS files
   wp_enqueue_script('component-script', '/path/to/js/index.js');
 
-  // Render simple component
+  // 2. Function ro render simple component
   function simpleComponent (){
     return '<component-name></component-name>';
   }
+
+  // 3. Register shortcode
+  add_shortcode('simple-component', 'simpleComponent');
 
   // Render component with attributes
   function advancedComponent ($atts) {
@@ -19,7 +22,6 @@
     return '<component-name lang="'.$var["lang"].'></component-name>';
   }
 
-add_shortcode('simple-component', 'simpleComponent');
 // Use this code as follows: [component-name]
 
 add_shortcode('advanced-component', 'advancedComponent');

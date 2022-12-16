@@ -6,7 +6,7 @@
   import Map from './main/Map.svelte'
   import Overlay from './Overlay.svelte'
   import Stats from "./GUI/Stats.svelte"
-  import "../../assets/styles.css"
+  // import "https://far-near.netlify.app/styles.css"
   
   import GUI from "./GUI/index.svelte"
 

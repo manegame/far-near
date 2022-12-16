@@ -22,10 +22,10 @@
   let geometry
   
   const dispatch = createEventDispatcher()
-  const { gltf } = useGltf('/terrains/v7-compressed.glb', {
+  const { gltf } = useGltf('https://far-near.netlify.app/terrains/v7-compressed.glb', {
     useDraco: true
   })
-  const map = useTexture('/textures/grass/Grass_005_BaseColor.png')
+  const map = useTexture('https://far-near.netlify.app/textures/grass/Grass_005_BaseColor.png')
   map.wrapS = RepeatWrapping
   map.wrapT = RepeatWrapping
   map.repeat.set(16, 16);

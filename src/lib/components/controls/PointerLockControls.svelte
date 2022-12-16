@@ -23,6 +23,7 @@
     // T?
     const t = new Vector3()
     let isLocked = false
+    let timeout
     
     const { renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
@@ -97,6 +98,7 @@
 
     /** @param {KeyboardEvent} e */
     function onKeyDown(e) {
+      clearTimeout(timeout)
       switch (e.key) {
         case 's':
         case 'ArrowDown':
@@ -140,6 +142,15 @@
   
     /** @param {KeyboardEvent} e */
     function onKeyUp(e) {
+      timeout = setTimeout(() => {
+        moveState.backward = 0
+        moveState.forward = 0
+        moveState.up = 0
+        moveState.down = 0
+        moveState.left = 0
+        moveState.right = 0
+        console.log('reset')
+      }, 100)
       switch (e.key) {
         case 's':
         case 'ArrowDown':

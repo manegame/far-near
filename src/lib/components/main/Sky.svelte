@@ -3,7 +3,7 @@
   import { Vector2, SphereGeometry, MeshBasicMaterial, BackSide, RepeatWrapping } from "three"
   import { useTexture } from "@threlte/core"
 
-  const tex = useTexture('/textures/sky/sky.png')
+  const tex = useTexture('https://far-near.netlify.app/textures/sky/sky.png')
   tex.wrapS = RepeatWrapping
   tex.wrapT = RepeatWrapping
   tex.repeat.set( 22, 22 );

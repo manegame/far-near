@@ -50,7 +50,7 @@
   right: 0;
   bottom: 0;
   width: ${w}px;
-  background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%), url(/textures/sky/heightmap.png); 
+  background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%), url(https://far-near.netlify.app/textures/sky/heightmap.png); 
   height: ${h}px;
   `
   
@@ -176,13 +176,13 @@
                 {src}
                 alt=""
               >
-              <figcaption
+              <!-- <figcaption
                 style={captionStyles}
                 style:width="100%"
                 style:opacity={+active}
                 >
                 {@html title}
-              </figcaption>
+              </figcaption> -->
             </div>
           </figure>
         {/each}
