@@ -1,59 +1,85 @@
 <script>
   import panzoom from "panzoom"
+  import { Vector3 } from "three"
   import { onMount } from "svelte"
   import { onTop, placedEpochs, playerPosition } from "$lib/stores"
   import { range } from "$lib/functionality/maths"
 
   export let data = {}
-
   export const DEB = false
 
+  let oldPosition = new Vector3()
+
+  const UNIT = 1200
+  const min = 0
   let element
   let instance
   let activeUuid = ''
   let w, h
+  let playerStyle = ``
+  let mapStyle = ``
+  let worldStyle = ``
+  let imageContainerStyle = ``
+  let imageStyle = ``
+  let innerMapStyle = ``
+  let captionStyles = ``
 
   onMount(() => {
-    instance = panzoom(element, { initialZoom: 2 })
-    instance.moveTo(-w / 2, -h / 2)
+    const max = getMax()
+    instance = panzoom(element, {
+      initialZoom: 2,
+      transformOrigin: {x: 0.5, y: 0.5}
+    })
+    instance.moveTo(-translateComponent($playerPosition.x), -translateComponent($playerPosition.z))
   })
 
-  const mapStyle = `
-    font-family: "Neue Haas Unica";
-    font-weight: bold;
-    background: rgb(36,36,36);
-    background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%); 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: ${w}px;
-    height: ${h}px;
+  $: mapStyle = `
+  font-family: "Neue Haas Unica";
+  font-weight: bold;
+  background: rgb(36,36,36);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: ${w}px;
+  background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%), url(/textures/sky/heightmap.png); 
+  height: ${h}px;
+  `
+  
+  // background-color: red;
+  $: worldStyle = `
+  width: ${Math.max(w, h)}px;
+    height: ${Math.max(w, h)}px;
+    opacity: 0.2;
+    position: absolute;
+    z-index: -1;
   `
 
-  const imageContainerStyle = `
-    width: 30px;
+  $: imageContainerStyle = `
+    top: 0;
+    left: 0;
+    width: 10px;
     position: absolute;
     transition: all 0.3s ease;
   `
 
-  const imageStyle = `
+  $: imageStyle = `
     object-fit: contain;
     object-position: center bottom;
     width: 100%;
     transition: all 0.3s ease;
   `
 
-  let innerMapStyle = `
+  $: innerMapStyle = `
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
   `
-  let captionStyles = `
-    font-size: 1.8px;
+  $: captionStyles = `
+    font-size: 0.8px;
     line-height: 1.5;
     text-align: center;
   `
@@ -62,25 +88,28 @@
     innerMapStyle += 'background-color: red;'
   }
 
-  let playerStyle = ``
-
   $: playerStyle = `
     position: absolute;
     top: 0;
     left: 0;
     transform: ${translate($playerPosition)};
-    width: 5px;
-    height: 5px;
-    background-color: blue;
+    width: 10px;
+    height: 10px;
+    background-color: white;
     border-radius: 100%;
   `
 
-  function translate (pos) {
-    const unit = 1200
-    const min = 0
-    const max = Math.min(w, h)
+  function getMax () {
+    return Math.max(w, h)
+  }
 
-    return `translate(${range(-unit, unit, min, max, pos.x)}px, ${range(-unit, unit, min, max, pos.z)}px)`
+  function translateComponent (position) {
+    const max = getMax()
+    return range(-UNIT, UNIT, min, max, position)
+  }
+
+  function translate (pos) {
+    return `translate(${translateComponent(pos.x)}px, ${translateComponent(pos.z)}px)`
   }
 
   function scale (uuid) {
@@ -151,6 +180,7 @@
       {/each}
 
       <div style={playerStyle} />
+      <div style={worldStyle} />
     </div>
   </div>
 </div>

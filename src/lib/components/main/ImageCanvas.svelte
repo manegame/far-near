@@ -71,6 +71,10 @@
   let offsetY = 0
   let lineHeight = 1
 
+  title = title.replaceAll('&#8217;', '’')
+  title = title.replaceAll('&#8220;', '“')
+  title = title.replaceAll('&#8221;', '”')
+
   const { scene } = useThrelte()
 
   const onChange = () => {

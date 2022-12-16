@@ -8,6 +8,7 @@
     useFrame,
     useThrelte,
     PerspectiveCamera,
+    OrthographicCamera,
     Three
   } from "@threlte/core"
   import { getChildren } from "$lib/functionality/raycaster"
@@ -29,7 +30,7 @@
   const cameras = []
   const views = [
     { left: 0, bottom: 0, width: 1.0, height: 1.0 },
-    { left: 0.7, bottom: 0.7, width: 0.3, height: 0.3 }
+    // { left: 0, bottom: 0, width: 1.0, height: 1.0 }
   ]
   
   let hit = undefined
@@ -96,18 +97,14 @@
   function onPointerUp() {
     pointerdown = false
   }
-  
-  $: {
-    if (position) {
-      playerPosition.set(position)
-    }
-  }
 
   onMount(() => {
     window.addEventListener("pointermove", onPointerMove)
     window.addEventListener("pointerdown", onPointerDown)
     window.addEventListener("pointerup", onPointerUp)
   })
+
+  $: playerPosition.set(position)
 
 </script>
 
@@ -135,6 +132,14 @@
     args={[0xffffff, 100, 1000, ]}
   />
 </PerspectiveCamera>
+
+<!-- Top view Cam -->
+<!-- <OrthographicCamera
+  position={{ y: 10, x: position.x, z: position.z }}
+  rotation={{ x: -Math.PI / 2 }}
+  bind:camera={cameras[1]}
+/> -->
+
 
 <!-- Player -->
 <RigidBody

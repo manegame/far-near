@@ -73,7 +73,7 @@
   on:ready={(e) => { $terrainReady = true }}
 />
 
-<Fog near={50} far={500} color={combinedColor} />
+<Fog near={50} far={400} color={combinedColor} />
 <Sky color={combinedColor} />
 
 {#if import.meta.env.DEV}

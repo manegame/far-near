@@ -222,8 +222,6 @@
         moveState.backward - moveState.forward
       ])
 
-      console.log(velocityVector)
-
       const adjustedRotation = new Euler()
 
       adjustedRotation.copy($camera.rotation)
