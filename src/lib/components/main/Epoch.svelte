@@ -25,12 +25,15 @@
     return makeRandom()
   }
 
+  const asText = (str) => str.replace(/<[^>]+>/g, '')
+
   const images = epoch.map(i => {
     const point = getRandomPoint()
     return {
       uuid: i.slug,
       title: i.title.rendered || '',
       src: i.acf.preview_image?.url,
+      author: asText(i.acf.article_by),
       acf: i.acf,
       pos: new Vector3(
         point.x + position.x,
@@ -45,10 +48,12 @@
 
 </script>
 
-{#each images as { uuid, src, pos }, i (uuid)}
+{#each images as { uuid, src, pos: position, title, author }, i (uuid)}
   <ImageCanvas
+    {title}
+    {author}
     {uuid}
-    position={pos}
+    {position}
     {src}
     {i}
   />

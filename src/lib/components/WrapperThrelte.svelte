@@ -32,10 +32,10 @@
    async function getData () {
     try {
       const response = await fetch(apiUrl)
-  
+
       $data = [...$data, ...await response.json()]
       const total = Number(response.headers.get('x-wp-totalpages'))
-      
+
       if (page < total) {
         page++
       }
