@@ -75,29 +75,7 @@
   }
 
   useFrame(() => {
-    raycaster.setFromCamera(pointer, cameras[0])
     const children = getChildren(scene)
-    const intersects = raycaster.intersectObjects(children)
-
-    if (intersects.length > 0) {
-      const hit = closestObject(intersects)
-
-      hitPosition.set(hit.point)
-      hitLookAt.set(hit.face.normal)
-      
-      if (previousHit?.object === hit?.object) return
-
-      if (hit?.object.userData.isImageCanvas) {
-        lightsOff()
-      }
-
-      $activeCanvas = hit?.object.userData?.uuid
-
-      if (previousHit?.object.userData.isImageCanvas && !hit?.object.userData.isImageCanvas) {
-        lightsOn()
-      }
-      previousHit = hit
-    }
 
     if (cameras.length > 0) {
       for (let i = 0; i < cameras.length; i++) {
@@ -119,20 +97,6 @@
     pointerdown = false
   }
   
-  function lightsOff () {
-    lighting.set({
-      ambient: 0.2,
-      color: { r: 0.2, g: 0.2, b: 0.2 }
-  })
-  }
-  
-  function lightsOn () {
-    lighting.set({
-      ambient: 0.9,
-      color: { r: 0.9, g: 0.9, b: 0.9 }
-    })
-  }
-
   $: {
     if (position) {
       playerPosition.set(position)

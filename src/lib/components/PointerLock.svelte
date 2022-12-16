@@ -166,11 +166,6 @@
       if ( moveForward || moveBackward ) velocity.z -= direction.z * 4.0 * delta;
       if ( moveLeft || moveRight ) velocity.x -= direction.x * 4.0 * delta;
   
-      // if ( onObject === true ) {
-      //   velocity.y = Math.max( 0, velocity.y );
-      //   canJump = true;
-      // }
-  
       controls.moveRight( - velocity.x * delta );
       controls.moveForward( - velocity.z * delta );
   

@@ -10,7 +10,12 @@
     Box3
   } from 'three'
   import { cubicOut } from "svelte/easing"
-  import { terrainReady } from "$lib/stores"
+  import {
+    terrainReady,
+    lightsOn,
+    lightsOff,
+    playerPosition
+  } from "$lib/stores"
   import { AutoColliders, Collider } from '@threlte/rapier'
   import { getChildren, closestObject } from "$lib/functionality/raycaster"
   import { useTexture, Mesh, useLoader, useFrame, useThrelte, Three, Group } from "@threlte/core"
@@ -24,17 +29,29 @@
   export let title
   export let author
   export let base = 10
-  export let rotation = new Euler(0, 1 - i / 10, 0)
-  export let position = new Vector3(i * base, 100, i * base)
 
+  const INITIAL_ROTATION = new Euler(0, 1 - i / 10, 0)
+
+  export let rotation = tweened(INITIAL_ROTATION, {
+    duration: 100,
+    easing: cubicOut
+  })
+  export let position = new Vector3(i * base, 100, i * base)
+  export let MIN_DISTANCE = 50
+
+  const imageOpacity = tweened(0, {
+		duration: 400,
+		easing: cubicOut
+  })
   const opacity = tweened(0, {
 		duration: 400,
 		easing: cubicOut
   })
 
-  let present
+  let present = false
+  let imagePresent = false
+  let imageClose = false
 
-  // TODO: Remove workaround
   src = src.replace(/.*\//, '/workaround/')
 
   const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
@@ -87,20 +104,16 @@
       ratio = texture.source.data.naturalHeight / texture.source.data.naturalWidth
 
       boxHeight = base * ratio
-      geometry = new BoxGeometry(base, boxHeight, 0.1)
+      geometry = new BoxGeometry(base, boxHeight, 0)
       imageMaterial = new MeshLambertMaterial({
         map: tex,
+        transparent: true,
         lightMap: tex,
         lightMapIntensity: 2
       })
-      material = [
-        colorMaterial,
-        colorMaterial,
-        colorMaterial,
-        colorMaterial,
-        imageMaterial,
-        imageMaterial
-      ]
+
+      imageOpacity.subscribe(v => imageMaterial.opacity = v)
+
       ready = true
     }
   })
@@ -122,14 +135,51 @@
     }
   }
 
+  $: if (imagePresent) {
+    $imageOpacity = 1
+  } else {
+    $imageOpacity = 0
+  }
+
   $: if (present) {
     $opacity = 1
   } else {
     $opacity = 0
   }
+
+  // Emit the position and url for opening the article
+  $: if (imageClose) {
+    lightsOff()
+    // const newDir = new Vector3(1, 1, 1);
+    // const pos = new Vector3()
+    // pos.addVectors(newDir, $playerPosition);
+    // mesh.lookAt(pos);
+  } else {
+    lightsOn()
+  }
 </script>
 
-<!-- SENSOR -->
+<!-- SENSORS -->
+
+<!-- When you come close -->
+<Collider
+	on:sensorenter={() => (imageClose = true)}
+	on:sensorexit={() => (imageClose = false)}
+	sensor
+	shape={'ball'}
+	{position}
+	args={[MIN_DISTANCE]}
+/>
+<!-- When you are far away -->
+<Collider
+	on:sensorenter={() => (imagePresent = true)}
+	on:sensorexit={() => (imagePresent = false)}
+	sensor
+	shape={'ball'}
+	{position}
+	args={[1000]}
+/>
+<!-- When you wanna see the text -->
 <Collider
 	on:sensorenter={() => (present = true)}
 	on:sensorexit={() => (present = false)}
@@ -139,7 +189,7 @@
 	args={[90]}
 />
 
-<Group {position}>
+<Group {position} rotation={$rotation}>
   {#if ready}
     <AutoColliders shape={'cuboid'}>
       <Mesh
@@ -150,10 +200,8 @@
         bind:mesh
         on:change={onChange}
         {geometry}
-        receiveShadow
         castShadow
         material={imageMaterial}
-        {rotation}
       />
     </AutoColliders>
   {/if}
@@ -162,7 +210,6 @@
     font="/fonts/NeueHaasUnica-Bold.ttf"
     fontSize={1}
     maxWidth={20}
-    {rotation}
     whiteSpace="normal"
     text="{title}"
     textAlign="center"
@@ -174,12 +221,12 @@
     font="/fonts/NeueHaasUnica-Bold.ttf"
     fontSize={0.66}
     maxWidth={12}
-    {rotation}
     whiteSpace="normal"
     text="{author}"
     textAlign="center"
     anchorX="center"
     fillOpacity={$opacity}
   />
+  <!-- lookAt={imageClose ? $playerPosition : undefined} -->
 </Group>
 

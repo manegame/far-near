@@ -3,6 +3,8 @@
     import { Euler, Camera, Vector3, MathUtils } from 'three'
     import { onTop } from "$lib/stores"
     import { useThrelte, useParent, useFrame } from '@threlte/core'
+    import { cubicOut } from 'svelte/easing'
+    import { tweened } from "svelte/motion"
   
     // Set to constrain the pitch of the camera
     // Range is 0 to Math.PI radians
@@ -10,7 +12,7 @@
     export let maxPolarAngle = Math.PI // radians
     export let pointerSpeed = 1.0
     export let jumpStrength = 4
-    export let cameraSpeed = 20
+    export let cameraSpeed = tweened(20, { easing: cubicOut })
     export let grounded = false
     export let position
     export let rigidBody
@@ -98,24 +100,54 @@
       switch (e.key) {
         case 's':
         case 'ArrowDown':
+          moveState.up = 0 
+          moveState.down = 0 
+          moveState.left = 0 
+          moveState.right = 0 
+          moveState.forward = 0 
           moveState.backward = 1
           break
         case 'w':
         case 'ArrowUp':
+          moveState.up = 0 
+          moveState.down = 0 
+          moveState.left = 0 
+          moveState.right = 0 
+          moveState.backward = 0 
           moveState.forward = 1
           break
         case 'a':
         case 'ArrowLeft':
+          moveState.up = 0 
+          moveState.down = 0 
+          moveState.right = 0 
+          moveState.forward = 0 
+          moveState.backward = 0 
           moveState.left = 1
           break
         case 'd':
         case 'ArrowRight':
+          moveState.up = 0 
+          moveState.down = 0 
+          moveState.left = 0 
+          moveState.forward = 0 
+          moveState.backward = 0 
           moveState.right = 1
           break
         case 'e':
+          moveState.down = 0 
+          moveState.left = 0 
+          moveState.right = 0 
+          moveState.forward = 0 
+          moveState.backward = 0 
           moveState.up = 1
           break
         case 'q':
+          moveState.up = 0 
+          moveState.left = 0 
+          moveState.right = 0 
+          moveState.forward = 0 
+          moveState.backward = 0 
           moveState.down = 1
           break
         case 'm':
@@ -124,7 +156,7 @@
           break
         case 'Shift':
           if (fly) {
-            cameraSpeed = 40
+            cameraSpeed.set(100)
             if (!rigidBody || !grounded) break
             rigidBody.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true)
           }
@@ -165,11 +197,17 @@
           unlock()
         case 'Shift':
           if (fly) {
-            cameraSpeed = 20
+            cameraSpeed.set(20)
           }
           break
         default:
           break
+        moveState.up = 0 
+        moveState.down = 0 
+        moveState.left = 0 
+        moveState.right = 0 
+        moveState.forward = 0 
+        moveState.backward = 0 
       }
     }
 
@@ -184,6 +222,8 @@
         moveState.backward - moveState.forward
       ])
 
+      console.log(velocityVector)
+
       const adjustedRotation = new Euler()
 
       adjustedRotation.copy($camera.rotation)
@@ -192,7 +232,7 @@
         .applyEuler(adjustedRotation)
     
       velocityVector
-        .multiplyScalar(cameraSpeed)
+        .multiplyScalar($cameraSpeed)
 
       // don't override falling velocity
       if (!fly) {

@@ -19,6 +19,8 @@
   })
 
   const mapStyle = `
+    font-family: "Neue Haas Unica";
+    font-weight: bold;
     background: rgb(36,36,36);
     background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%); 
     position: fixed;
@@ -132,7 +134,6 @@
           >
             <div class="position: relative">
               <img
-                style:opacity={activeUuid !== '' ? active ? 1 : 0.2 : 1}
                 style={imageStyle}
                 {src}
                 alt=""

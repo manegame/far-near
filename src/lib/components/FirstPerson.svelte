@@ -52,7 +52,6 @@
         clock,
         coords,
         controls,
-        raycaster
 
   /**
    * Variables 
@@ -163,8 +162,6 @@
   */
   function addControls () {
     controls = new FirstPersonControls( camera, renderer.domElement ); // 
-
-    raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 )
   }
 
   /**

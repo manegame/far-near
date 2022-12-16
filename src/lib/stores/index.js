@@ -37,6 +37,20 @@ export const lighting = spring({
   damping: 0.95
 })
 
+export function lightsOff () {
+  lighting.set({
+    ambient: 0.2,
+    color: { r: 0.2, g: 0.2, b: 0.2 }
+})
+}
+
+export function lightsOn () {
+  lighting.set({
+    ambient: 0.9,
+    color: { r: 0.9, g: 0.9, b: 0.9 }
+  })
+}
+
 export let waterReady = writable(false)
 export let terrainReady = writable(false)
 export let playerPosition = writable(new Vector3())
