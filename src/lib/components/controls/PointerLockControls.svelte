@@ -189,7 +189,6 @@
           break
         default:
           break
-        moveState.up = 0 
         moveState.down = 0 
         moveState.left = 0 
         moveState.right = 0 
@@ -242,29 +241,37 @@
       if (!isNaN(wRatio) && !isNaN(hRatio)) {
         _euler.setFromQuaternion($camera.quaternion)
 
-        if (wRatio) {
+        if (hRatio || wRatio) {
           if (wRatio > 0.5) {
-            _euler.y -= 0.004 * pointerSpeed * wRatio * 4
+            _euler.y -= 0.002 * pointerSpeed * wRatio * 4
           } else {
-            _euler.y -= 0.004 * pointerSpeed * wRatio * 4
+            _euler.y -= 0.002 * pointerSpeed * wRatio * 4
           }
-        }
         
-        if (hRatio) {
           if (hRatio > 0.5) {
-            _euler.x -= 0.004 * pointerSpeed * hRatio * 4
+            _euler.x -= 0.002 * pointerSpeed * hRatio * 4
           } else {
-            _euler.x -= 0.004 * pointerSpeed * hRatio * 4
+            _euler.x -= 0.002 * pointerSpeed * hRatio * 4
           }
-
-          _euler.x = Math.min(0.8, _euler.x)
-          _euler.x = Math.max(-0.8, _euler.x)
         }
-    
-        $camera.quaternion.setFromEuler(_euler)
-    
-        onChange()
       }
+
+      // Y and X movement based on the mouse
+      if (movementX) {
+        _euler.y -= movementX * 0.002 * pointerSpeed
+      }
+      if (movementY) {
+        _euler.x -= movementY * 0.002 * pointerSpeed
+      }
+
+      // Restrictions on the axes
+      _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
+      _euler.x = Math.min(0.8, _euler.x)
+      _euler.x = Math.max(-0.8, _euler.x)
+
+      $camera.quaternion.setFromEuler(_euler)
+
+      onChange()
 
       defaultMove()
     })
