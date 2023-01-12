@@ -1,23 +1,18 @@
 <script>
   import {
-    Raycaster,
     Vector2,
-    SpotLight
+    SpotLight,
+    Vector3
   } from "three"
   import {
     useFrame,
     useThrelte,
-    PerspectiveCamera,
-    OrthographicCamera,
-    Three
+    PerspectiveCamera
   } from "@threlte/core"
-  import { getChildren } from "$lib/functionality/raycaster"
   import { RigidBody, CollisionGroups, Collider, Debug } from "@threlte/rapier"
-  import { onDestroy } from "svelte"
-  // import FlyControls from "$lib/components/controls/FlyControls.svelte"
   import PointerLockControls from "$lib/components/controls/PointerLockControls.svelte"
-  import { lighting, playerPosition, activeCanvas } from "$lib/stores"
-  import { hitPosition, hitLookAt, closestObject } from "$lib/functionality/raycaster"
+  import { playerPosition } from "$lib/stores"
+  import { multiCameraSetup } from "$lib/components/cameras"
   import { onMount } from "svelte"
 
   export let position = undefined
@@ -28,61 +23,23 @@
   export let grounded = false
   
   const cameras = []
-  const views = [
-    { left: 0, bottom: 0, width: 1.0, height: 1.0 },
-    // { left: 0, bottom: 0, width: 1.0, height: 1.0 }
-  ]
-  
-  let hit = undefined
-  let previousHit = undefined
+  const views = [{ left: 0, bottom: 0, width: 1.0, height: 1.0 }]
 
   let rigidBody
   let lock
   let light
   let pointerdown
-  let rotation
+  const pointer = new Vector2()
+  let rotation = new Vector3(0, 1, 0)
+
+  $: console.log(rotation)
 
   const { scene, renderer } = useThrelte()
 
-  const pointer = new Vector2()
-  const raycaster = new Raycaster()
-
-  const lockControls = () => {
-    // lock()
-  }
-
   if (!renderer) throw new Error()
 
-  renderer.domElement.addEventListener("click", lockControls)
-
-  $: if (hit) processHit()
-
-  onDestroy(() => {
-    renderer.domElement.removeEventListener("click", lockControls)
-  })
-
-  const makeView = (camera, background, { left, bottom, width, height }) => {
-    left = Math.floor(window.innerWidth * left)
-    bottom = Math.floor(window.innerHeight * bottom)
-    width = Math.floor(window.innerWidth * width)
-    height = Math.floor(window.innerHeight * height)
-
-    renderer.setViewport(left, bottom, width, height)
-    renderer.setScissor(left, bottom, width, height)
-    renderer.setScissorTest(true)
-    renderer.setClearColor(background)
-    renderer.render(scene, camera)
-    camera.updateProjectionMatrix()
-  }
-
   useFrame(() => {
-    const children = getChildren(scene)
-
-    if (cameras.length > 0) {
-      for (let i = 0; i < cameras.length; i++) {
-        makeView(cameras[i], 0xfffff, views[i])
-      }
-    }
+    multiCameraSetup(cameras, renderer, scene, views)
   })
 
   function onPointerMove(e) {
@@ -112,9 +69,8 @@
 <PerspectiveCamera
   bind:camera={cameras[0]}
   bind:position
-  bind:rotation={rotation}
   fov={70}
-  far={11000}
+  far={10000}
 >
   <PointerLockControls
     bind:position={position}
@@ -124,22 +80,7 @@
     pointerSpeed={2.0}
     fly
   />
-    <Three
-    bind:ref={light}
-    position={position}
-    rotation={rotation}
-    type={SpotLight}
-    args={[0xffffff, 100, 1000, ]}
-  />
 </PerspectiveCamera>
-
-<!-- Top view Cam -->
-<!-- <OrthographicCamera
-  position={{ y: 10, x: position.x, z: position.z }}
-  rotation={{ x: -Math.PI / 2 }}
-  bind:camera={cameras[1]}
-/> -->
-
 
 <!-- Player -->
 <RigidBody

@@ -12,8 +12,8 @@
   import { cubicOut } from "svelte/easing"
   import {
     terrainReady,
-    lightsOn,
-    lightsOff,
+    // lightsOn,
+    // lightsOff,
     playerPosition
   } from "$lib/stores"
   import { AutoColliders, Collider } from '@threlte/rapier'
@@ -52,9 +52,9 @@
   let imagePresent = false
   let imageClose = false
 
-  // if (import.meta.env.DEV) {
+  if (import.meta.env.DEV) {
     src = src.replace(/.*\//, '/workaround/')
-  // }
+  }
 
   const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
   let colorMaterial = new MeshLambertMaterial({
@@ -154,13 +154,13 @@
 
   // Emit the position and url for opening the article
   $: if (imageClose) {
-    lightsOff()
+    // lightsOff()
     const newDir = new Vector3(1, 1, 1);
     const pos = new Vector3()
     pos.addVectors(newDir, $playerPosition);
     group.lookAt(pos);
   } else {
-    lightsOn()
+    // lightsOn()
   }
 </script>
 

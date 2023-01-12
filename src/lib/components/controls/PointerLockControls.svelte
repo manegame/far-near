@@ -1,10 +1,11 @@
 <script>
-    import { createEventDispatcher, onDestroy } from 'svelte'
-    import { Euler, Camera, Vector3, MathUtils } from 'three'
+    import { createEventDispatcher, onDestroy, onMount } from 'svelte'
+    import { Euler, Camera, Vector3 } from 'three'
     import { onTop } from "$lib/stores"
     import { useThrelte, useParent, useFrame } from '@threlte/core'
     import { cubicOut } from 'svelte/easing'
     import { tweened } from "svelte/motion"
+    import { DEG2RAD } from "three/src/math/MathUtils"
   
     // Set to constrain the pitch of the camera
     // Range is 0 to Math.PI radians
@@ -17,6 +18,7 @@
     export let position
     export let rigidBody
     export let fly = false
+
     export const lock = () => domElement.requestPointerLock()
     export const unlock = () => document.exitPointerLock()
   
@@ -32,10 +34,13 @@
     const { renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
     const camera = useParent()
-    const dispatch = createEventDispatcher()
-  
-    const _euler = new Euler(0, 0, 0, 'YXZ')
+    // $camera.rotation.set(0, 1, 0)
+    
+    const _euler = new Euler(0, 1, 0, 'YXZ')
     const _PI_2 = Math.PI / 2
+
+    const dispatch = createEventDispatcher()
+
 
     const moveState = {
       up: 0,
@@ -62,12 +67,6 @@
     domElement.ownerDocument.addEventListener('pointerlockchange', onPointerlockChange)
     domElement.ownerDocument.addEventListener('pointerlockerror', onPointerlockError)
   
-    onDestroy(() => {
-      domElement.removeEventListener('mousemove', onMouseMove)
-      domElement.ownerDocument.removeEventListener('pointerlockchange', onPointerlockChange)
-      domElement.ownerDocument.removeEventListener('pointerlockerror', onPointerlockError)
-    })
-  
     /**
      * @param {MouseEvent} event
      */
@@ -93,10 +92,9 @@
       }
 
       mouseTimeout = setTimeout(() => {
-        console.log('reseting')
         movementX = 0
         movementY = 0
-      }, 100)
+      }, 50)
     }
   
     function onPointerlockChange() {
@@ -253,15 +251,15 @@
 
         if (hRatio || wRatio) {
           if (wRatio > 0.5) {
-            _euler.y -= 0.002 * pointerSpeed * wRatio * 4
+            _euler.y -= 0.016 * pointerSpeed * wRatio
           } else {
-            _euler.y -= 0.002 * pointerSpeed * wRatio * 4
+            _euler.y -= 0.016 * pointerSpeed * wRatio
           }
         
           if (hRatio > 0.5) {
-            _euler.x -= 0.002 * pointerSpeed * hRatio * 4
+            _euler.x -= 0.016 * pointerSpeed * hRatio
           } else {
-            _euler.x -= 0.002 * pointerSpeed * hRatio * 4
+            _euler.x -= 0.016 * pointerSpeed * hRatio
           }
         }
       }
@@ -284,6 +282,12 @@
       onChange()
 
       defaultMove()
+    })
+
+    onDestroy(() => {
+      domElement.removeEventListener('mousemove', onMouseMove)
+      domElement.ownerDocument.removeEventListener('pointerlockchange', onPointerlockChange)
+      domElement.ownerDocument.removeEventListener('pointerlockerror', onPointerlockError)
     })
 
     $: grounded ? dispatch("groundenter") : dispatch("groundexit")
