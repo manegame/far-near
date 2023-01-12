@@ -217,7 +217,7 @@
     {/if}
     <Text
     position={{ y: offsetY - 0.7 }}
-    font="https://far-near.netlify.app/fonts/NeueHaasUnica-ExtraBold.ttf"
+    font="/fonts/NeueHaasUnica-ExtraBold.ttf"
     fontSize={1}
     maxWidth={20}
     whiteSpace="normal"
@@ -228,7 +228,7 @@
     />
     <Text
     position={{ y: (offsetY - (lines * lineHeight)) - 2 }}
-    font="https://far-near.netlify.app/fonts/NeueHaasUnica-Bold.ttf"
+    font="/fonts/NeueHaasUnica-Bold.ttf"
     fontSize={0.66}
     maxWidth={12}
     whiteSpace="normal"

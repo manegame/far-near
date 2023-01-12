@@ -1,6 +1,7 @@
 import { writable, derived } from "svelte/store"
 import { spring } from "svelte/motion"
 import { Vector3 } from "three"
+import { persisted } from "./persisted"
 
 /**
  * Source of truth
