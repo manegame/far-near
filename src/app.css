@@ -2,21 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-
-html {
-  background: black;
-  color: white;
+@font-face {
+  font-family: Neue Haas Unica;
+  src: url('$assets/fonts/NeueHaasUnica-Bold.ttf');
+  font-weight: 500;
 }
-
-html .map {
-  
-}
-
-
-
-.map {
-}
-
-:global(.map) {
-  background: green !important;
+@font-face {
+  font-family: Neue Haas Unica;
+  src: url('$assets/fonts/NeueHaasUnica-ExtraBold.ttf');
+  font-weight: 700;
 }

@@ -1,6 +1,7 @@
 <svelte:options accessors={true} />
 
 <script lang="ts">
+  import { base } from "$lib/utils"
   import { Mesh, useTexture } from "@threlte/core"
   import { useGltf } from "@threlte/extras"
   import {
@@ -22,10 +23,10 @@
   let geometry
   
   const dispatch = createEventDispatcher()
-  const { gltf } = useGltf('https://far-near.netlify.app/terrains/v7-compressed.glb', {
+  const { gltf } = useGltf(base() + '/terrains/v7-compressed.glb', {
     useDraco: true
   })
-  const map = useTexture('https://far-near.netlify.app/textures/grass/Grass_005_BaseColor.png')
+  const map = useTexture(base() + '/textures/grass/Grass_005_BaseColor.png')
   map.wrapS = RepeatWrapping
   map.wrapT = RepeatWrapping
   map.repeat.set(16, 16);
@@ -38,14 +39,9 @@
       dispatch('ready')
     }
   }
-
 </script>
 
-<!-- https://codeworkshop.dev/blog/2020-11-05-displacement-maps-normal-maps-and-textures-in-react-three-fiber/ -->
-
-<!-- <Debug /> -->
-
-{#if $gltf}
+{#if $gltf && $waterReady}
   <AutoColliders shape={"trimesh"}>
     <Mesh
       bind:mesh
@@ -65,8 +61,6 @@
   </AutoColliders>
 {/if}
 
-<Water
-  bind:ready={$waterReady}
-/>
+<Water />
 
 <!-- https://threejs.org/examples/webgl_water.html -->

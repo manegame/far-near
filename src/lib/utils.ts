@@ -1,0 +1,1 @@
+export const base = () => import.meta.env.DEV ? '' : '/wp-content/themes/far-near-v2'

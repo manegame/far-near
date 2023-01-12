@@ -1,28 +1,25 @@
-// vite.config.js
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import * as path from 'path'
+import path from "path"
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  resolve: {
-    alias: {
-      '$lib': path.resolve(__dirname, './src/lib')
-    }
+export default defineConfig(({ command }) => ({
+  plugins: [svelte()],
+  assetsInclude: [
+    '**/*.gltf',
+    '**/*.glb',
+  ],
+  build: {
+    sourcemap: true,
+    // assetsDir: '/wp-content/themes/far-near-v2/'
   },
-  plugins: [
-    svelte({
-      exclude: ['./src/lib/web-components/*.svelte']
-    }),
-    svelte({
-      exclude: [
-        './src/App.svelte',
-        'node_modules/**/*.svelte',
-        './src/lib/components/**/*.svelte'
-      ],
-      compilerOptions: {
-        customElement: true,
-      }
-    })
-  ]
-})
+  resolve:{
+    alias:{
+      '$lib' : path.resolve(__dirname, './src/lib'),
+      '$assets' : path.resolve(__dirname, './src/assets'),
+    },
+  },
+}))
+
+  
+

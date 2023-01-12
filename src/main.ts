@@ -1,4 +1,8 @@
 import './app.css'
+import App from './App.svelte'
 
-// Export the web components
-export * from "./lib/web-components/Entry.svelte"
+const app = new App({
+  target: document.getElementById('far-near-entry'),
+})
+
+export default app

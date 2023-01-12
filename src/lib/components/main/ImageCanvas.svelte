@@ -2,12 +2,12 @@
   import {
     BoxGeometry,
     MeshLambertMaterial,
-    TextureLoader,
     Raycaster,
     Vector3,
     Euler,
     Color,
-    Box3
+    Box3,
+    MeshBasicMaterial
   } from 'three'
   import { cubicOut } from "svelte/easing"
   import {
@@ -18,7 +18,7 @@
   } from "$lib/stores"
   import { AutoColliders, Collider } from '@threlte/rapier'
   import { getChildren, closestObject } from "$lib/functionality/raycaster"
-  import { useTexture, Mesh, useLoader, useFrame, useThrelte, Three, Group } from "@threlte/core"
+  import { useTexture, Mesh, useFrame, useThrelte, Group, InteractiveObject } from "@threlte/core"
   import { Text } from "@threlte/extras"
   import { activeCanvas } from "$lib/stores"
   import { tweened } from 'svelte/motion';
@@ -53,7 +53,7 @@
   let imageClose = false
 
   // if (import.meta.env.DEV) {
-    src = src.replace(/.*\//, 'https://far-near.netlify.app/workaround/')
+    src = src.replace(/.*\//, '/workaround/')
   // }
 
   const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
@@ -82,6 +82,10 @@
 
   const onChange = () => {
     console.log('on that change')
+  }
+
+  const onClick = () => {
+    console.log('on some click')
   }
 
   useFrame(() => {
@@ -127,12 +131,6 @@
 
   $: {
     if (mesh) {
-      if (uuid === $activeCanvas) {
-        mesh.material.emissive = new Color(0x000000)
-      } else {
-        mesh.material.emissive = new Color(0x000000)
-      }
-
       boundingBox = new Box3().setFromObject(mesh)
 
       const height = boundingBox.max.y - boundingBox.min.y
@@ -196,9 +194,14 @@
 	args={[90]}
 />
 
-<Group bind:group {position} rotation={$rotation}>
+<Group
+  bind:group
+  {position}
+  rotation={$rotation}
+>
   {#if ready}
-    <AutoColliders shape={'cuboid'}>
+    <AutoColliders
+      shape={'cuboid'}>
       <Mesh
         userData={{
           isImageCanvas: true,
@@ -211,8 +214,8 @@
         material={imageMaterial}
       />
     </AutoColliders>
-  {/if}
-  <Text
+    {/if}
+    <Text
     position={{ y: offsetY - 0.7 }}
     font="https://far-near.netlify.app/fonts/NeueHaasUnica-ExtraBold.ttf"
     fontSize={1}
@@ -222,8 +225,8 @@
     textAlign="center"
     anchorX="center"
     fillOpacity={$opacity}
-  />
-  <Text
+    />
+    <Text
     position={{ y: (offsetY - (lines * lineHeight)) - 2 }}
     font="https://far-near.netlify.app/fonts/NeueHaasUnica-Bold.ttf"
     fontSize={0.66}
@@ -233,7 +236,5 @@
     textAlign="center"
     anchorX="center"
     fillOpacity={$opacity}
-  />
-  <!-- lookAt={imageClose ? $playerPosition : undefined} -->
-</Group>
-
+    />
+  </Group>

@@ -12,7 +12,7 @@
     export let maxPolarAngle = Math.PI // radians
     export let pointerSpeed = 2.0
     export let jumpStrength = 4
-    export let cameraSpeed = tweened(20, { easing: cubicOut })
+    export let cameraSpeed = tweened(30, { easing: cubicOut })
     export let grounded = false
     export let position
     export let rigidBody
@@ -24,6 +24,7 @@
     const t = new Vector3()
     let isLocked = false
     let timeout
+    let mouseTimeout
     let movementX, movementY
     let w, wRatio
     let h, hRatio
@@ -71,12 +72,15 @@
      * @param {MouseEvent} event
      */
     function onMouseMove(event) {
+      clearTimeout(mouseTimeout)
+
       movementX = event.movementX
       movementY = event.movementY
 
       const FRACTION = 8
       const FIFTH_W = w / FRACTION
       const FIFTH_H = h / FRACTION
+
       if (event.clientX < FIFTH_W || event.clientX > (FRACTION - 1) * FIFTH_W) {
         wRatio = (event.clientX / w - 0.5)
       } else {
@@ -87,6 +91,12 @@
       } else {
         hRatio = 0
       }
+
+      mouseTimeout = setTimeout(() => {
+        console.log('reseting')
+        movementX = 0
+        movementY = 0
+      }, 100)
     }
   
     function onPointerlockChange() {
@@ -184,7 +194,7 @@
           // unlock()
         case 'Shift':
           if (fly) {
-            cameraSpeed.set(20)
+            cameraSpeed.set(30)
           }
           break
         default:

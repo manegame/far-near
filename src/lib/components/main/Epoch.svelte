@@ -46,6 +46,10 @@
 
   $placedEpochs[year] = images
 
+  const onClick = () => {
+    console.log('on click')
+  }
+
 </script>
 
 {#each images as { uuid, src, pos: position, title, author }, i (uuid)}

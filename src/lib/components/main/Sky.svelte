@@ -1,9 +1,10 @@
 <script>
   import { Mesh } from "@threlte/core"
   import { Vector2, SphereGeometry, MeshBasicMaterial, BackSide, RepeatWrapping } from "three"
+  import { base } from "$lib/utils"
   import { useTexture } from "@threlte/core"
 
-  const tex = useTexture('https://far-near.netlify.app/textures/sky/sky.png')
+  const tex = useTexture(base() + '/textures/sky/sky.png')
   tex.wrapS = RepeatWrapping
   tex.wrapT = RepeatWrapping
   tex.repeat.set( 22, 22 );

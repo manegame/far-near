@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/wp-content/themes/far-near-v2/",
     "build:components": "vite build --",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"

@@ -40,17 +40,6 @@
 </script>
 
 <RigidBody type={'dynamic'} {position} {rotation} on:contact={fireSound}>
-	<!-- {#each audios as audio}
-		<PositionalAudio
-			autoplay={false}
-			detune={600 - Math.random() * 1200}
-			bind:stop={audio.stop}
-			bind:play={audio.play}
-			source={audio.source}
-			volume={audio.volume}
-		/>
-	{/each}
- -->
 	<Collider
 		contactForceEventThreshold={30}
 		restitution={0.4}

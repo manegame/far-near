@@ -3,6 +3,8 @@ import preprocess from 'svelte-preprocess'
 import { preprocessThrelte } from '@threlte/preprocess'
 import path from 'path'
 
+console.log('svelte config')
+
 export default {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
@@ -20,7 +22,8 @@ export default {
   vite: {
     resolve: {
       alias: {
-        $lib: path.resolve("./src/lib")
+        $lib: path.resolve("./src/lib"),
+        $assets: path.resolve("./src/assets"),
       }
     }
   }

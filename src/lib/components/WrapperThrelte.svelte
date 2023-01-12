@@ -6,9 +6,6 @@
   import Map from './main/Map.svelte'
   import Overlay from './Overlay.svelte'
   import Stats from "./GUI/Stats.svelte"
-  // import "https://far-near.netlify.app/styles.css"
-  
-  import GUI from "./GUI/index.svelte"
 
   let page = 1
   let apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=12&page=${page}`
@@ -48,9 +45,6 @@
   onMount(getData)
 </script>
 
-
-<slot></slot>
-
 <Overlay />  
 
 {#if $onTop === 'map'}
@@ -61,6 +55,6 @@
   <Physics />
 
   {#if import.meta.env.DEV}
-    <!-- <Stats /> -->
+    <Stats />
   {/if}
 </Canvas>

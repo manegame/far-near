@@ -6,11 +6,10 @@
     useThrelte
 	} from '@threlte/core'
   import { Vector3, Color } from "three"
-  import { onTop, epochs, lighting, terrainReady } from "$lib/stores"
+  import { onTop, epochs, lighting, terrainReady, waterReady } from "$lib/stores"
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
-  import HitIndicator from './HitIndicator.svelte'
   import Sky from './Sky.svelte'
   
   let position = new Vector3(0, 5, 0)
@@ -57,7 +56,7 @@
   />
 {/if}
 
-{#if $terrainReady}
+{#if $terrainReady && $waterReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
       {year}
