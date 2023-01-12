@@ -28,6 +28,7 @@
    * Get data
    */
    async function getData () {
+    console.log('called the API')
     try {
       const response = await fetch(apiUrl)
 

@@ -4,11 +4,11 @@
 
 @font-face {
   font-family: Neue Haas Unica;
-  src: url('$assets/fonts/NeueHaasUnica-Bold.ttf');
+  src: url('/fonts/NeueHaasUnica-Bold.ttf');
   font-weight: 500;
 }
 @font-face {
   font-family: Neue Haas Unica;
-  src: url('$assets/fonts/NeueHaasUnica-ExtraBold.ttf');
+  src: url('/fonts/NeueHaasUnica-ExtraBold.ttf');
   font-weight: 700;
 }

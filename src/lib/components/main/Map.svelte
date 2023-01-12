@@ -95,17 +95,6 @@
     innerMapStyle += 'background-color: red;'
   }
 
-  $: playerStyle = `
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: ${translate($playerPosition)};
-    width: 10px;
-    height: 10px;
-    background-color: white;
-    border-radius: 100%;
-  `
-
   function getMax () {
     return Math.max(w, h)
   }
@@ -176,19 +165,16 @@
                 {src}
                 alt=""
               >
-              <!-- <figcaption
-                style={captionStyles}
-                style:width="100%"
-                style:opacity={+active}
-                >
-                {@html title}
-              </figcaption> -->
             </div>
           </figure>
         {/each}
       {/each}
 
-      <div style={playerStyle} />
+      <div class="absolute top-0 left-0 w-3 h-3 rounded-full" style:transform={translate($playerPosition)}>
+        <svg class="w-full h-full" width="58" height="57" viewBox="0 0 58 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24.26 0.119997C23.96 10.38 25.1 37.32 0.68 50.46C3.02 52.08 5.36 54.36 6.68 56.28C31.76 41.52 32.12 12.54 32.48 0.119997H24.26ZM31.82 7.44L24.86 8.22C25.76 14.22 27.74 44.22 52.34 55.92C53.42 53.88 55.46 51.42 57.62 49.74C34.22 39.3 32.3 12.3 31.82 7.44Z" fill="white"/>
+        </svg>          
+      </div>
       <div style={worldStyle} />
     </div>
   </div>

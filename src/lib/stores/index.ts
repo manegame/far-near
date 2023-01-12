@@ -2,8 +2,15 @@ import { writable, derived } from "svelte/store"
 import { spring } from "svelte/motion"
 import { Vector3 } from "three"
 
+/**
+ * Source of truth
+ */
 export const data = writable([])
-export const onTop = writable('walk')
+
+/**
+ * Which we are seeing
+ */
+export const onTop = writable('map')
 
 /**
  * Derived from data
