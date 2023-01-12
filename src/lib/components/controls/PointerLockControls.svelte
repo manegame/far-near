@@ -34,7 +34,6 @@
     const { renderer, invalidate } = useThrelte()
     const domElement = renderer.domElement
     const camera = useParent()
-    // $camera.rotation.set(0, 1, 0)
     
     const _euler = new Euler(0, 1, 0, 'YXZ')
     const _PI_2 = Math.PI / 2
