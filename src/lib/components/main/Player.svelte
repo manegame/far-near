@@ -41,14 +41,7 @@
     multiCameraSetup(cameras, renderer, scene, views)
   })
 
-  function onPointerMove(e) {
-    pointer.x = (e.clientX / window.innerWidth) * 2 - 1
-    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
-  }
-
-  function onPointerDown(e) {
-    pointerdown = true
-
+  function raycastClosest  (e) {
     pointer.x = (e.clientX / window.innerWidth) * 2 - 1
     pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
 
@@ -56,8 +49,22 @@
 
     const intersects = raycaster.intersectObjects(getChildren(scene));
 
-    const closest = closestObject(intersects)
-    console.log(closest)
+    return closestObject(intersects)
+  }
+
+  function processHit (object) {
+    $currentHit = object
+  }
+
+  function onPointerMove(e) {
+    const closest = raycastClosest(e)
+    processHit(closest)
+  }
+
+  function onPointerDown(e) {
+    pointerdown = true
+    const closest = raycastClosest(e)
+    processHit(closest)
   }
 
   function onPointerUp() {

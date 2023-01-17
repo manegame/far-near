@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import { writable } from "svelte/store"
+import { writable, derived } from "svelte/store"
 
 import {
   DirectionalLight,
@@ -17,5 +17,6 @@ export const closestObject = (intersects) => {
 }
 
 export const currentHit = writable(null)
+export const currentObject = derived(currentHit, $ch => $ch?.object)
 export const hitPosition = writable(new Vector3())
 export const hitLookAt = writable(new Vector3())

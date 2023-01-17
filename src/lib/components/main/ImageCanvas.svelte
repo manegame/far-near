@@ -12,16 +12,17 @@
   import { cubicOut } from "svelte/easing"
   import {
     terrainReady,
-    // lightsOn,
-    // lightsOff,
+    lightsOff,
+    lightsOn,
     playerPosition
   } from "$lib/stores"
+  import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
   import { AutoColliders, Collider } from '@threlte/rapier'
-  import { getChildren, closestObject } from "$lib/functionality/raycaster"
+  import { getChildren, closestObject, currentObject } from "$lib/functionality/raycaster"
   import { useTexture, Mesh, useFrame, useThrelte, Group, InteractiveObject } from "@threlte/core"
   import { Text } from "@threlte/extras"
   import { activeCanvas } from "$lib/stores"
-  import { tweened } from 'svelte/motion';
+  import { tweened } from "svelte/motion"
 
   export let uuid
   export let src
@@ -47,6 +48,7 @@
 		duration: 400,
 		easing: cubicOut
   })
+  const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
 
   let present = false
   let imagePresent = false
@@ -56,10 +58,7 @@
     src = src.replace(/.*\//, '/workaround/')
   }
 
-  const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
-  let colorMaterial = new MeshLambertMaterial({
-    color: 0xffffff
-  })
+  let colorMaterial = new MeshLambertMaterial({ color: 0xffffff })
   let ready = false
   let placed = false
   let ratio = 0
@@ -72,6 +71,7 @@
   let boundingBox
   let offsetY = 0
   let lineHeight = 1
+  let lightsAreOff = false
 
   title = title.replaceAll('&#8217;', '’')
   title = title.replaceAll('&#8220;', '“')
@@ -85,6 +85,7 @@
 
   useFrame(() => {
     d+= 0.01
+
     if (!placed && ready && $terrainReady) {
       const intersects = raycaster.intersectObjects(getChildren(scene))
 
@@ -101,6 +102,8 @@
     if (mesh && placed) {
       position.y += Math.sin(d) * 0.01
     }
+
+    TWEEN.update();
   })
 
   let lines = Math.floor(title.length / 32)
@@ -123,6 +126,40 @@
       ready = true
     }
   })
+
+
+
+  function fadeOut () {
+    scene.traverse(object => {
+      if (object?.material) {
+        if (object.material.opacity && object?.userData?.uuid !== $currentObject.userData.uuid) {
+          new TWEEN.Tween(object.material)
+            .to({ opacity: 0.1 }, 500)
+            //.delay (1000)
+            .easing(TWEEN.Easing.Cubic.Out)
+            // .onUpdate(() => render())
+            .start()
+        }
+      }
+    })
+  }
+
+  function fadeIn () {
+    scene.traverse(object => {
+      if (object?.material) {
+        if (object.material.opacity) {
+          new TWEEN.Tween(object.material)
+            .to({ opacity: 1 }, 500)
+            //.delay (1000)
+            .easing(TWEEN.Easing.Cubic.Out)
+            // .onUpdate(() => { console.log('trying to update') })
+            .start()
+        }
+      }
+    })
+
+    lightsAreOff = false
+  }
 
   $: {
     if (mesh) {
@@ -154,6 +191,23 @@
     const pos = new Vector3()
     pos.addVectors(newDir, $playerPosition);
     group.lookAt(pos);
+  }
+
+  $: {
+    console.log(!!$currentObject?.userData?.uuid)
+    if ($currentObject?.userData?.uuid === uuid) {
+      lightsOff()
+      fadeOut()
+      // lightsAreOff = true
+      setTimeout(() => {
+      lightsAreOff = true
+    }, 500)
+    } else if (lightsAreOff) {
+      if (!!$currentObject?.userData?.uuid === false) {
+        lightsOn()
+        fadeIn()
+      }
+    }
   }
 </script>
 
@@ -209,6 +263,10 @@
     </AutoColliders>
     {/if}
     <Text
+    userData={{
+      isImageCanvas: false,
+      uuid
+    }}
     position={{ y: offsetY - 0.7 }}
     font="/fonts/NeueHaasUnica-ExtraBold.ttf"
     fontSize={1}
@@ -220,6 +278,10 @@
     fillOpacity={$opacity}
     />
     <Text
+    userData={{
+      isImageCanvas: false,
+      uuid
+    }}
     position={{ y: (offsetY - (lines * lineHeight)) - 2 }}
     font="/fonts/NeueHaasUnica-Bold.ttf"
     fontSize={0.66}
