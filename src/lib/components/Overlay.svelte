@@ -27,7 +27,7 @@
 {/if}
 
 <nav
-  class="nav"
+  class="fn-nav"
   style:position="fixed"
   style:z-index="99"
   style:display="flex"

@@ -8,8 +8,8 @@
   import Stats from "./GUI/Stats.svelte"
 
   let page = 1
-  let apiUrl = "/data/data.json"
-  // let apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=100&page=${page}`
+  // let apiUrl = "/data/data.json"
+  let apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=12&page=${page}`
 
   let insetContainer = `
     position: fixed;
@@ -21,8 +21,8 @@
   let height  = window.innerHeight
 
   $: {
-    // apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=100&page=${page}`
-    apiUrl = `/data/data.json`
+    apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=12&page=${page}`
+    // apiUrl = `/data/data.json`
     getData()
   }
 
@@ -59,7 +59,7 @@
 <Canvas size={{ width, height  }}>
   <Physics />
 
-  {#if import.meta.env.DEV}
+  <!-- {#if import.meta.env.DEV} -->
     <Stats />
-  {/if}
+  <!-- {/if} -->
 </Canvas>

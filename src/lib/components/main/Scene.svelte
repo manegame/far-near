@@ -29,8 +29,16 @@
 
   function onKeyDown (e) {
 		 switch(e.keyCode) {
-      case(81):
+       case(81):
         $onTop = $onTop === 'map' ? 'walk' : 'map'
+        break
+       case(27):
+        if ($onTop === 'walk') {
+          $onTop = 'map'
+        }
+        break
+       default:
+        console.log(e.keyCode)
         break
      }
   }

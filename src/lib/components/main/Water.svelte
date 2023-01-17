@@ -56,7 +56,7 @@
     {geometry}
     userData={{ raycasterIgnore: true }}
     material={new MeshBasicMaterial({ color: 0xff0000, visible: false })}
-    position={{ y: 0 }}
+    position={{ y: 2 }}
     rotation={{ x: - Math.PI / 2 }}
   />
 </AutoColliders>

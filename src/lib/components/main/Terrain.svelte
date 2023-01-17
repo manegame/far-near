@@ -23,8 +23,6 @@
   let geometry
   
   const dispatch = createEventDispatcher()
-  console.log('!import.meta.env.DEV')
-  console.log(!import.meta.env.DEV)
   const { gltf } = useGltf(base() + '/terrains/v7-compressed.glb', { useDraco: '/three/decoders/' })
   const map = useTexture(base() + '/textures/grass/Grass_005_BaseColor.png')
   map.wrapS = RepeatWrapping

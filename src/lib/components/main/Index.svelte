@@ -9,7 +9,7 @@
   <Scene />
 
   <HTML slot="fallback" transform>
-    <p class="text-xs">
+    <p class="fn-text-xs">
       It seems your browser<br />
       doesn't support WASM.<br />
       I'm sorry.

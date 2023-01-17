@@ -50,13 +50,14 @@
   right: 0;
   bottom: 0;
   width: ${w}px;
-  background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%), url(/textures/sky/heightmap.png); 
+  background: black;
+  // background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(91,91,91,1) 100%), url(/textures/sky/heightmap.png); 
   height: ${h}px;
   `
   
   // background-color: red;
   $: worldStyle = `
-  width: ${Math.max(w, h)}px;
+  width: ${Math.max(w, h)}px;fl
     height: ${Math.max(w, h)}px;
     opacity: 0.2;
     position: absolute;
@@ -143,7 +144,7 @@
 <div
   style={mapStyle}
   style:z-index={$onTop === 'map' ? 1 : -1}
->
+> 
   <div style:position="relative" style:width="100%" style:height="100%" style:overflow="hidden">
     <div
       style={innerMapStyle}
@@ -159,7 +160,7 @@
             on:mouseenter={() => highlight(uuid) }
             on:mouseleave={() => highlight('') }
           >
-            <div class="position: relative">
+            <div class="fn-relative">
               <img
                 style={imageStyle}
                 {src}
@@ -170,8 +171,8 @@
         {/each}
       {/each}
 
-      <div class="absolute top-0 left-0 w-3 h-3 rounded-full" style:transform={translate($playerPosition)}>
-        <svg class="w-full h-full" width="58" height="57" viewBox="0 0 58 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="fn-absolute fn-top-0 fn-left-0 fn-w-3 fn-h-3 fn-rounded-full" style:transform={translate($playerPosition)}>
+        <svg class="fn-w-full fn-h-full" width="58" height="57" viewBox="0 0 58 57" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M24.26 0.119997C23.96 10.38 25.1 37.32 0.68 50.46C3.02 52.08 5.36 54.36 6.68 56.28C31.76 41.52 32.12 12.54 32.48 0.119997H24.26ZM31.82 7.44L24.86 8.22C25.76 14.22 27.74 44.22 52.34 55.92C53.42 53.88 55.46 51.42 57.62 49.74C34.22 39.3 32.3 12.3 31.82 7.44Z" fill="white"/>
         </svg>          
       </div>

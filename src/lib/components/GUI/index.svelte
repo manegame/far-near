@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="container"
+  class="fn-container"
   style:position="fixed"
   style:z-index="10"
   style:font-family="sans-serif"

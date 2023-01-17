@@ -492,7 +492,7 @@
 
 {#if controls}
   {#if controls.isLocked === false}
-    <div class="instructions" on:click={play}>
+    <div class="fn-instructions" on:click={play}>
       <!-- ClllLick toO PlayyYAYyyy -->
     </div>
   {/if}
@@ -502,7 +502,7 @@
 <div bind:this={container} />
 
 <style lang="postcss">
-  .instructions {
+  .fn-instructions {
     position: fixed;
     top: 0;
     right: 0;
