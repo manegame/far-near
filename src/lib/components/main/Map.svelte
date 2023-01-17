@@ -24,14 +24,6 @@
   let captionStyles = ``
 
   onMount(() => {
-    eppies = Object.entries($placedEpochs).map(([year, epoch]) => {
-      return [year, epoch.map((entry) => {
-        if (entry.uuid === activeUuid) {
-          return {...entry, active: true }
-        }
-        return { ...entry, active: false }
-      })]
-    })
     const max = getMax()
     instance = panzoom(element, {
       initialZoom: 2,

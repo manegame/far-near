@@ -7,6 +7,7 @@
 	} from '@threlte/core'
   import { Vector3, Color } from "three"
   import { onTop, epochs, lighting, terrainReady, waterReady } from "$lib/stores"
+  import { currentHit } from "$lib/functionality/raycaster"
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
@@ -25,8 +26,6 @@
   
   const { camera } = useThrelte()
 
-  $: combinedColor = new Color($lighting.color.r, $lighting.color.g, $lighting.color.b)
-
   function onKeyDown (e) {
 		 switch(e.keyCode) {
        case(81):
@@ -36,9 +35,6 @@
         if ($onTop === 'walk') {
           $onTop = 'map'
         }
-        break
-       default:
-        console.log(e.keyCode)
         break
      }
   }
@@ -58,7 +54,6 @@
   <DirectionalLight
     intensity={$lighting.ambient}
     color={combinedColor}
-    shadow
     position={{ y: 50, x: position.x, z: position.z }}
     target={{ x: position.x, z: position.z - 50 }}
   />

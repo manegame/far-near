@@ -16,5 +16,6 @@ export const closestObject = (intersects) => {
   return intersects[distances.indexOf(Math.min(...distances))] // closest hit
 }
 
+export const currentHit = writable(null)
 export const hitPosition = writable(new Vector3())
 export const hitLookAt = writable(new Vector3())

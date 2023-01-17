@@ -1,5 +1,6 @@
 <script>
-  import { Vector3 } from "three"
+  import { Vector3, BoxGeometry, MeshBasicMaterial } from "three"
+  import { InstancedMesh, Instance } from '@threlte/core'
   import { placedEpochs } from "$lib/stores"
   import ImageCanvas from "./ImageCanvas.svelte"
 
@@ -53,12 +54,12 @@
 </script>
 
 {#each images as { uuid, src, pos: position, title, author }, i (uuid)}
-  <ImageCanvas
-    {title}
-    {author}
-    {uuid}
-    {position}
-    {src}
-    {i}
-  />
+<ImageCanvas
+  {title}
+  {author}
+  {uuid}
+  {position}
+  {src}
+  {i}
+/>
 {/each}

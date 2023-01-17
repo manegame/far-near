@@ -67,7 +67,6 @@
   let d = Math.random() * 10
   let geometry
   let imageMaterial
-  let material
   let mesh
   let group
   let boundingBox
@@ -82,10 +81,6 @@
 
   const onChange = () => {
     console.log('on that change')
-  }
-
-  const onClick = () => {
-    console.log('on some click')
   }
 
   useFrame(() => {
@@ -159,8 +154,6 @@
     const pos = new Vector3()
     pos.addVectors(newDir, $playerPosition);
     group.lookAt(pos);
-  } else {
-    // lightsOn()
   }
 </script>
 

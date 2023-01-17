@@ -1,8 +1,8 @@
 <script>
   import {
     Vector2,
-    SpotLight,
-    Vector3
+    Vector3,
+    Raycaster
   } from "three"
   import {
     useFrame,
@@ -14,6 +14,7 @@
   import { playerPosition } from "$lib/stores"
   import { multiCameraSetup } from "$lib/components/cameras"
   import { onMount } from "svelte"
+  import { currentHit, closestObject, getChildren } from "$lib/functionality/raycaster"
 
   export let position = undefined
   export let playerCollisionGroups = [0]
@@ -24,15 +25,13 @@
   
   const cameras = []
   const views = [{ left: 0, bottom: 0, width: 1.0, height: 1.0 }]
+  const raycaster = new Raycaster()
+  const pointer = new Vector2()
 
   let rigidBody
   let lock
-  let light
-  let pointerdown
-  const pointer = new Vector2()
   let rotation = new Vector3(0, 1, 0)
-
-  $: console.log(rotation)
+  let pointerdown // do not remove
 
   const { scene, renderer } = useThrelte()
 
@@ -47,8 +46,18 @@
     pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
   }
 
-  function onPointerDown() {
+  function onPointerDown(e) {
     pointerdown = true
+
+    pointer.x = (e.clientX / window.innerWidth) * 2 - 1
+    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
+
+    raycaster.setFromCamera(pointer, cameras[0]);
+
+    const intersects = raycaster.intersectObjects(getChildren(scene));
+
+    const closest = closestObject(intersects)
+    console.log(closest)
   }
 
   function onPointerUp() {
@@ -62,7 +71,6 @@
   })
 
   $: playerPosition.set(position)
-
 </script>
 
 <!-- FPS camera -->
@@ -70,7 +78,7 @@
   bind:camera={cameras[0]}
   bind:position
   fov={70}
-  far={10000}
+  far={20000}
 >
   <PointerLockControls
     bind:position={position}

@@ -37,6 +37,8 @@ export const placedEpochs = writable({})
 
 export const activeCanvas = writable('')
 
+export const locked = writable(true)
+
 export const lighting = spring({
   ambient: 0.9,
   color: { r: 0.9, g: 0.9, b: 0.9 }

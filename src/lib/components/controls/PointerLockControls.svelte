@@ -6,6 +6,7 @@
     import { cubicOut } from 'svelte/easing'
     import { tweened } from "svelte/motion"
     import { DEG2RAD } from "three/src/math/MathUtils"
+    import { locked } from "$lib/stores"
   
     // Set to constrain the pitch of the camera
     // Range is 0 to Math.PI radians
@@ -72,28 +73,30 @@
     function onMouseMove(event) {
       clearTimeout(mouseTimeout)
 
-      movementX = event.movementX
-      movementY = event.movementY
-
-      const FRACTION = 8
-      const FIFTH_W = w / FRACTION
-      const FIFTH_H = h / FRACTION
-
-      if (event.clientX < FIFTH_W || event.clientX > (FRACTION - 1) * FIFTH_W) {
-        wRatio = (event.clientX / w - 0.5)
-      } else {
-        wRatio = 0
-      }
-      if (event.clientY < FIFTH_H || event.clientY > (FRACTION - 1) * FIFTH_H) {
-        hRatio = (event.clientY / h - 0.5)
-      } else {
-        hRatio = 0
-      }
-
-      mouseTimeout = setTimeout(() => {
-        movementX = 0
-        movementY = 0
-      }, 50)
+      // if (!$locked) {
+        movementX = event.movementX
+        movementY = event.movementY
+  
+        const FRACTION = 8
+        const FIFTH_W = w / FRACTION
+        const FIFTH_H = h / FRACTION
+  
+        if (event.clientX < FIFTH_W || event.clientX > (FRACTION - 1) * FIFTH_W) {
+          wRatio = (event.clientX / w - 0.5)
+        } else {
+          wRatio = 0
+        }
+        if (event.clientY < FIFTH_H || event.clientY > (FRACTION - 1) * FIFTH_H) {
+          hRatio = (event.clientY / h - 0.5)
+        } else {
+          hRatio = 0
+        }
+  
+        mouseTimeout = setTimeout(() => {
+          movementX = 0
+          movementY = 0
+        }, 50)
+      // }
     }
   
     function onPointerlockChange() {
@@ -245,36 +248,38 @@
     useFrame(() => {
       if (!rigidBody) return
 
-      if (!isNaN(wRatio) && !isNaN(hRatio)) {
-        _euler.setFromQuaternion($camera.quaternion)
-
-        if (hRatio || wRatio) {
-          if (wRatio > 0.5) {
-            _euler.y -= 0.016 * pointerSpeed * wRatio
-          } else {
-            _euler.y -= 0.016 * pointerSpeed * wRatio
-          }
-        
-          if (hRatio > 0.5) {
-            _euler.x -= 0.016 * pointerSpeed * hRatio
-          } else {
-            _euler.x -= 0.016 * pointerSpeed * hRatio
+      if (!$locked) {
+        if (!isNaN(wRatio) && !isNaN(hRatio)) {
+          _euler.setFromQuaternion($camera.quaternion)
+  
+          if (hRatio || wRatio) {
+            if (wRatio > 0.5) {
+              _euler.y -= 0.016 * pointerSpeed * wRatio
+            } else {
+              _euler.y -= 0.016 * pointerSpeed * wRatio
+            }
+          
+            if (hRatio > 0.5) {
+              _euler.x -= 0.016 * pointerSpeed * hRatio
+            } else {
+              _euler.x -= 0.016 * pointerSpeed * hRatio
+            }
           }
         }
+  
+        // Y and X movement based on the mouse
+        if (movementX) {
+          _euler.y -= movementX * 0.002 * pointerSpeed
+        }
+        if (movementY) {
+          _euler.x -= movementY * 0.002 * pointerSpeed
+        }
+  
+        // Restrictions on the axes
+        _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
+        _euler.x = Math.min(0.8, _euler.x)
+        _euler.x = Math.max(-0.8, _euler.x)
       }
-
-      // Y and X movement based on the mouse
-      if (movementX) {
-        _euler.y -= movementX * 0.002 * pointerSpeed
-      }
-      if (movementY) {
-        _euler.x -= movementY * 0.002 * pointerSpeed
-      }
-
-      // Restrictions on the axes
-      _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
-      _euler.x = Math.min(0.8, _euler.x)
-      _euler.x = Math.max(-0.8, _euler.x)
 
       $camera.quaternion.setFromEuler(_euler)
 

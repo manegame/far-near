@@ -40,14 +40,14 @@
 </script>
 
 {#if $gltf && $waterReady}
-  <AutoColliders shape={"trimesh"}>
+  <AutoColliders shape={"trimesh"} >
     <Mesh
       bind:mesh
       receiveShadow
       castShadow
       {geometry}
       scale={{ x: 800, y: 300, z: 800 }}
-      position={{ y: 50 }}
+      position={{ y: 48 }}
       material={new MeshLambertMaterial({
         // transparent: true,
         // opacity: 0.5,
