@@ -42,6 +42,9 @@
 {#if $gltf && $waterReady}
   <AutoColliders shape={"trimesh"} >
     <Mesh
+      userData={{
+        terrain: true
+      }}
       bind:mesh
       receiveShadow
       castShadow
@@ -49,7 +52,7 @@
       scale={{ x: 800, y: 300, z: 800 }}
       position={{ y: 48 }}
       material={new MeshLambertMaterial({
-        // transparent: true,
+        transparent: true,
         // opacity: 0.5,
         color,
         map,

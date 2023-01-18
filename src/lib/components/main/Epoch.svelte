@@ -3,11 +3,14 @@
   import { InstancedMesh, Instance } from '@threlte/core'
   import { placedEpochs } from "$lib/stores"
   import ImageCanvas from "./ImageCanvas.svelte"
+  import { createEventDispatcher } from "svelte"
 
   export let year
   export let position = new Vector3(0, 0, -50)
   export let epoch
   export let radius
+
+  const dispatch = createEventDispatcher()
 
   const getRandomPoint = () => {
     function makeRandom () {
@@ -51,10 +54,22 @@
     console.log('on click')
   }
 
+  const onFadeout = () => {
+    console.log('epoch fade')
+    dispatch('fadeout')
+  }
+
+  const onFadein = () => {
+    console.log('epoch fade in')
+    dispatch('fadein')
+  }
+
 </script>
 
 {#each images as { uuid, src, pos: position, title, author }, i (uuid)}
 <ImageCanvas
+  on:fadeout={onFadeout}
+  on:fadein={onFadein}
   {title}
   {author}
   {uuid}

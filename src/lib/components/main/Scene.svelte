@@ -3,15 +3,18 @@
 		DirectionalLight,
     AmbientLight,
     Fog,
-    useThrelte
+    useThrelte,
+    useFrame
 	} from '@threlte/core'
   import { Vector3, Color } from "three"
-  import { onTop, epochs, lighting, terrainReady, waterReady } from "$lib/stores"
-  import { currentHit } from "$lib/functionality/raycaster"
+  import { onTop, locked, epochs, lighting, terrainReady, waterReady } from "$lib/stores"
+  import { currentObject } from "$lib/functionality/raycaster"
 	import Terrain from './Terrain.svelte'
   import Epoch from './Epoch.svelte'
   import Player from './Player.svelte'
   import Sky from './Sky.svelte'
+  import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
+
   
   let position = new Vector3(0, 5, 0)
 
@@ -24,7 +27,7 @@
   ]
   let combinedColor
   
-  const { camera } = useThrelte()
+  const { scene, camera } = useThrelte()
 
   function onKeyDown (e) {
 		 switch(e.keyCode) {
@@ -39,7 +42,48 @@
      }
   }
 
-  const color = 0xccbbbb
+  function onLeave (e) {
+    $locked = true
+    setTimeout(() => {
+      window.location = `https://far-near.media/stories/${e.detail}`
+    }, 500)
+  }
+
+  function fadeIn () {
+    console.log('fade in')
+    scene.traverse(object => {
+      if (object?.material) {
+        if (object.material.opacity) {
+          new TWEEN.Tween(object.material)
+            .to({ opacity: 1 }, 500)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .start()
+        }
+      }
+    })
+  }
+
+  function fadeOut () {
+    console.log('fade out')
+    if (!$locked) {
+      scene.traverse(object => {
+        if (object?.material && !object?.userData.keep) {
+          // console.log(object.userData.keep)
+          object.material.transparent = true
+          if (object.material.opacity && object?.userData?.uuid !== $currentObject.userData.uuid) {
+            new TWEEN.Tween(object.material)
+              .to({ opacity: 0.1 }, 500)
+              .easing(TWEEN.Easing.Cubic.Out)
+              .start()
+          }
+        }
+      })
+    }
+  }
+
+  useFrame(() => {
+    TWEEN.update()
+  })
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -48,6 +92,7 @@
 
 {#if $camera}
   <Player
+    on:leave={onLeave}
     bind:position={position}
   />
 
@@ -62,6 +107,8 @@
 {#if $terrainReady && $waterReady}
   {#each Object.keys($epochs) as year, i (year)}
     <Epoch
+      on:fadein={fadeIn}
+      on:fadeout={fadeOut}
       {year}
       position={positions[i]}
       epoch={$epochs[year]}
@@ -76,6 +123,7 @@
 />
 
 <Fog near={50} far={400} color={combinedColor} />
+
 <Sky color={combinedColor} />
 
 {#if import.meta.env.DEV}

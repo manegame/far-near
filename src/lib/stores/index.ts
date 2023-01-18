@@ -11,7 +11,7 @@ export const data = writable([])
 /**
  * Which we are seeing
  */
-export const onTop = writable('map')
+export const onTop = writable('walk')
 
 /**
  * Derived from data

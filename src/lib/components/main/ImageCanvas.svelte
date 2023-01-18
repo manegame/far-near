@@ -14,15 +14,16 @@
     terrainReady,
     lightsOff,
     lightsOn,
-    playerPosition
+    playerPosition,
+    locked
   } from "$lib/stores"
-  import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
   import { AutoColliders, Collider } from '@threlte/rapier'
   import { getChildren, closestObject, currentObject } from "$lib/functionality/raycaster"
   import { useTexture, Mesh, useFrame, useThrelte, Group, InteractiveObject } from "@threlte/core"
   import { Text } from "@threlte/extras"
   import { activeCanvas } from "$lib/stores"
   import { tweened } from "svelte/motion"
+  import { createEventDispatcher } from "svelte"
 
   export let uuid
   export let src
@@ -31,6 +32,7 @@
   export let author
   export let base = 10
 
+  const dispatch = createEventDispatcher()
   const INITIAL_ROTATION = new Euler(0, 1 - i / 10, 0)
 
   export let rotation = tweened(INITIAL_ROTATION, {
@@ -79,10 +81,6 @@
 
   const { scene } = useThrelte()
 
-  const onChange = () => {
-    console.log('on that change')
-  }
-
   useFrame(() => {
     d+= 0.01
 
@@ -102,8 +100,6 @@
     if (mesh && placed) {
       position.y += Math.sin(d) * 0.01
     }
-
-    TWEEN.update();
   })
 
   let lines = Math.floor(title.length / 32)
@@ -127,37 +123,12 @@
     }
   })
 
-
-
   function fadeOut () {
-    scene.traverse(object => {
-      if (object?.material) {
-        if (object.material.opacity && object?.userData?.uuid !== $currentObject.userData.uuid) {
-          new TWEEN.Tween(object.material)
-            .to({ opacity: 0.1 }, 500)
-            //.delay (1000)
-            .easing(TWEEN.Easing.Cubic.Out)
-            // .onUpdate(() => render())
-            .start()
-        }
-      }
-    })
+    dispatch('fadeout')
   }
 
   function fadeIn () {
-    scene.traverse(object => {
-      if (object?.material) {
-        if (object.material.opacity) {
-          new TWEEN.Tween(object.material)
-            .to({ opacity: 1 }, 500)
-            //.delay (1000)
-            .easing(TWEEN.Easing.Cubic.Out)
-            // .onUpdate(() => { console.log('trying to update') })
-            .start()
-        }
-      }
-    })
-
+    dispatch('fadein')
     lightsAreOff = false
   }
 
@@ -255,7 +226,6 @@
           uuid
         }}
         bind:mesh
-        on:change={onChange}
         {geometry}
         castShadow
         material={imageMaterial}

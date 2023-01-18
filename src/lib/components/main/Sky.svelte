@@ -14,6 +14,7 @@
 </script>
 
 <Mesh
+  userData={{ keep: true }}
   geometry={new SphereGeometry(10000, 20, 20)}
   material={new MeshBasicMaterial({
     map: tex,

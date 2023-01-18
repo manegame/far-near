@@ -11,10 +11,11 @@
   } from "@threlte/core"
   import { RigidBody, CollisionGroups, Collider, Debug } from "@threlte/rapier"
   import PointerLockControls from "$lib/components/controls/PointerLockControls.svelte"
-  import { playerPosition } from "$lib/stores"
+  import { playerPosition, locked } from "$lib/stores"
   import { multiCameraSetup } from "$lib/components/cameras"
   import { onMount } from "svelte"
   import { currentHit, closestObject, getChildren } from "$lib/functionality/raycaster"
+  import { createEventDispatcher } from "svelte"
 
   export let position = undefined
   export let playerCollisionGroups = [0]
@@ -27,6 +28,7 @@
   const views = [{ left: 0, bottom: 0, width: 1.0, height: 1.0 }]
   const raycaster = new Raycaster()
   const pointer = new Vector2()
+  const dispatch = createEventDispatcher()
 
   let rigidBody
   let lock
@@ -65,6 +67,14 @@
     pointerdown = true
     const closest = raycastClosest(e)
     processHit(closest)
+
+    if (closest?.object?.userData?.uuid) {
+      goTo(closest.object.userData.uuid)
+    }
+  }
+
+  function goTo(uuid) {
+    dispatch('leave', uuid)
   }
 
   function onPointerUp() {
