@@ -59,7 +59,7 @@
   $: imageContainerStyle = `
     top: 0;
     left: 0;
-    width: 10px;
+    width: 20px;
     position: absolute;
     transition: all 0.3s ease;
   `

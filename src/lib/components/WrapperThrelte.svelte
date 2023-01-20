@@ -20,28 +20,29 @@
   let width   = window.innerWidth
   let height  = window.innerHeight
 
-  $: {
-    apiUrl = `https://far-near.media/wp-json/wp/v2/articles?orderby=date&per_page=12&page=${page}`
-    // apiUrl = `/data/data.json`
-    getData()
-  }
-
   /**
    * Get data
    */
    async function getData () {
-    console.log('called the API')
     try {
-      const response = await fetch(apiUrl)
-
-      $data = [...$data, ...await response.json()]
-      const total = Number(response.headers.get('x-wp-totalpages'))
-
-      console.log(JSON.stringify($data))
-
-      if (page < total) {
-        page++
+      const d = []
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          d.push({
+            acf: {
+              preview_image: { url: '/workaround/4.1.jpg' },
+              article_by: 'manegame',
+              uuid: 'i-' + i + '-j-' + j,
+              src: '/workaround/4.1.jpg',
+              title: 'Title ' + i + 1,
+              author: 'manegame'
+            },
+            title: 'Title ' + i,
+            date: new Date().setFullYear(2010 + i)
+          })
+        }
       }
+      $data = d
     } catch (error) {
       console.error(error)
     }

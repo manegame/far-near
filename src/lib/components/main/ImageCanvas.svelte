@@ -31,17 +31,13 @@
   export let title
   export let author
   export let base = 10
-
-  const dispatch = createEventDispatcher()
-  const INITIAL_ROTATION = new Euler(0, 1 - i / 10, 0)
-
-  export let rotation = tweened(INITIAL_ROTATION, {
-    duration: 100,
-    easing: cubicOut
-  })
   export let position = new Vector3(i * base, 100, i * base)
   export let MIN_DISTANCE = 50
 
+  console.log('image canvas')
+
+  const dispatch = createEventDispatcher()
+  const INITIAL_ROTATION = new Euler(0, 1 - i / 10, 0)
   const imageOpacity = tweened(0, {
 		duration: 400,
 		easing: cubicOut
@@ -51,16 +47,11 @@
 		easing: cubicOut
   })
   const raycaster = new Raycaster(position, new Vector3( 0, -1, 0 ))
+  const { scene } = useThrelte()
 
   let present = false
   let imagePresent = false
   let imageClose = false
-
-  if (import.meta.env.DEV) {
-    src = src.replace(/.*\//, '/workaround/')
-  }
-
-  let colorMaterial = new MeshLambertMaterial({ color: 0xffffff })
   let ready = false
   let placed = false
   let ratio = 0
@@ -74,12 +65,20 @@
   let offsetY = 0
   let lineHeight = 1
   let lightsAreOff = false
+  let lines = Math.floor(title.length / 32)
+
+  export let rotation = tweened(INITIAL_ROTATION, {
+    duration: 100,
+    easing: cubicOut
+  })
+
+  if (import.meta.env.DEV) {
+    src = src.replace(/.*\//, '/workaround/')
+  }
 
   title = title.replaceAll('&#8217;', '’')
   title = title.replaceAll('&#8220;', '“')
   title = title.replaceAll('&#8221;', '”')
-
-  const { scene } = useThrelte()
 
   useFrame(() => {
     d+= 0.01
@@ -102,8 +101,6 @@
     }
   })
 
-  let lines = Math.floor(title.length / 32)
-
   const tex = useTexture(src, {
     onLoad: (texture) => {
       ratio = texture.source.data.naturalHeight / texture.source.data.naturalWidth
@@ -122,15 +119,6 @@
       ready = true
     }
   })
-
-  function fadeOut () {
-    dispatch('fadeout')
-  }
-
-  function fadeIn () {
-    dispatch('fadein')
-    lightsAreOff = false
-  }
 
   $: {
     if (mesh) {
@@ -165,10 +153,9 @@
   }
 
   $: {
-    console.log(!!$currentObject?.userData?.uuid)
     if ($currentObject?.userData?.uuid === uuid) {
       lightsOff()
-      fadeOut()
+      dispatch('fadeout')
       // lightsAreOff = true
       setTimeout(() => {
       lightsAreOff = true
@@ -176,9 +163,14 @@
     } else if (lightsAreOff) {
       if (!!$currentObject?.userData?.uuid === false) {
         lightsOn()
-        fadeIn()
+        dispatch('fadein')
+        lightsAreOff = false
       }
     }
+  }
+
+  const onClick = () => {
+    console.log('on click')
   }
 </script>
 
@@ -221,6 +213,8 @@
     <AutoColliders
       shape={'cuboid'}>
       <Mesh
+        interactive
+        on:click={onClick}
         userData={{
           isImageCanvas: true,
           uuid

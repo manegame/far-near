@@ -14,7 +14,6 @@
   import Player from './Player.svelte'
   import Sky from './Sky.svelte'
   import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
-
   
   let position = new Vector3(0, 5, 0)
 
@@ -105,10 +104,8 @@
 {/if}
 
 {#if $terrainReady && $waterReady}
-  {#each Object.keys($epochs) as year, i (year)}
+  {#each Object.keys($epochs) as year, i (i)}
     <Epoch
-      on:fadein={fadeIn}
-      on:fadeout={fadeOut}
       {year}
       position={positions[i]}
       epoch={$epochs[year]}

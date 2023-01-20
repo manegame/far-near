@@ -7,7 +7,7 @@
   let fontStyle =
     "font-size: 24px; margin: 0; color: white; font-family: 'Neue Haas Unica'; font-weight: 500; text-decoration: none;"
   let fontSmallStyle =
-    "font-size: 18px; line-height: 26px; margin: 0; color: white; font-family: 'Neue Haas Unica'; font-weight: 500; text-decoration: none;"
+    "font-size: 18px; line-height: 30px; margin: 0; color: white; font-family: 'Neue Haas Unica'; font-weight: 500; text-decoration: none;"
 
   const enter = () => {
     initial = false
@@ -99,12 +99,12 @@
         on:mouseleave={() => mouseover = false}
         style:opacity={$onTop === 'walk' || mouseover === 'walk' ? 1 : 0.7}
         style:user-select="none"
-        style:padding="12px 12px 12px 16px"
+        style:padding="12px 12px 8px 16px"
         style:text-align="left"
         style:width="50%"
         style={fontSmallStyle}
       >
-        Walk
+        Drift
       </div>
     </div>
   </div>

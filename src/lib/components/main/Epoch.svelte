@@ -55,26 +55,24 @@
   }
 
   const onFadeout = () => {
-    console.log('epoch fade')
     dispatch('fadeout')
   }
 
   const onFadein = () => {
-    console.log('epoch fade in')
     dispatch('fadein')
   }
 
 </script>
 
-{#each images as { uuid, src, pos: position, title, author }, i (uuid)}
-<ImageCanvas
-  on:fadeout={onFadeout}
-  on:fadein={onFadein}
-  {title}
-  {author}
-  {uuid}
-  {position}
-  {src}
-  {i}
-/>
+{#each images as { uuid, src, pos: position, title, author }, i (`${uuid}${i}`)}
+  <ImageCanvas
+    on:fadeout={onFadeout}
+    on:fadein={onFadein}
+    {title}
+    {author}
+    {uuid}
+    {position}
+    {src}
+    {i}
+  />
 {/each}
